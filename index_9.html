@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioPlan - Professional Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-bar {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Pattern for the safety bar */
+        .hatch-pattern {
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                #e2e8f0 2px,
+                #e2e8f0 4px
+            );
+        }
+
+        /* Utility to hide scrollbar for horizontal scrolling areas */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Header Navigation -->
+    <nav class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-slate-900 tracking-tight text-lg">
+                <div class="w-6 h-6 bg-slate-900 text-white flex items-center justify-center text-xs rounded-sm">AP</div>
+                AUDIOPLAN <span class="text-slate-400 font-normal hidden sm:inline">| CAMPAIGN MANAGER</span>
+            </div>
+            <div class="text-xs font-mono text-slate-500">
+                SESSION: #8492-AD
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteneur Principal -->
+    <main id="app" class="max-w-7xl mx-auto p-4 lg:p-8">
+        <!-- Injection JS -->
+    </main>
+
+    <!-- Scripts Logique -->
+    <script>
+        // --- DONNÉES ENRICHIES ---
+        
+        // Liste principale fusionnée (Podcasts + Vidéos + Musique)
+        const items = [
+            // --- PODCASTS & VIDÉOS EXISTANTS ---
+            {
+                id: 1,
+                number: "01",
+                title: "Transfert",
+                host: "Slate Audio",
+                imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/7d/45/24/7d4524f1-f633-6535-1ceb-25c1ec067e39/mza_2287600864311144759.jpg/1200x1200bf-60.jpg",
+                category: "Society",
+                scores: { performance: 88, pertinence: 95, reach: 62 },
+                description: "Le format intime par excellence qui crée une relation de confiance rare. Les auditeurs sont captifs, générant un environnement de 'Deep Attention' propice à la mémorisation. C'est le contexte idéal pour associer la marque à des valeurs humaines et d'empathie.",
+                tags: ["Storytelling", "Intime", "CSP+"],
+                audience: { age: "25-45 ans", sex: "65% F", csp: "CSP+ Urbain" },
+                channels: ["Podcast", "Web"],
+                similar: [{ title: "Les Pieds sur Terre", host: "France Culture" }],
+                safetyIndex: 3 
+            },
+            {
+                id: 2,
+                number: "02",
+                title: "HugoDecrypte",
+                host: "Hugo Travers",
+                imageUrl: "https://pbs.twimg.com/media/E9foLABX0AIC8UZ.jpg",
+                videoThumbnail: "https://img.youtube.com/vi/beKEG7XSMFs/maxresdefault.jpg",
+                videoLink: "https://www.youtube.com/watch?v=beKEG7XSMFs", 
+                category: "News",
+                scores: { performance: 76, pertinence: 65, reach: 98 },
+                description: "Une puissance de frappe massive pour toucher les 15-34 ans rapidement. Le format 'Actus du jour' garantit une récurrence d'écoute quotidienne quasi-automatique. C'est un levier incontournable pour travailler la notoriété top-of-mind sur cette cible.",
+                tags: ["Gen Z", "News", "Mass Market"],
+                audience: { age: "15-34 ans", sex: "50% H", csp: "Étudiants" },
+                channels: ["Podcast", "YouTube", "TikTok"],
+                similar: [{ title: "Brut.", host: "News" }],
+                safetyIndex: 1
+            },
+            {
+                id: 3,
+                number: "03",
+                title: "Génération Do It Yourself",
+                host: "Mathieu Stefani",
+                imageUrl: "https://i.scdn.co/image/ab6765630000ba8ae1325ea6e500ddcc8ec266e9",
+                category: "Business",
+                scores: { performance: 92, pertinence: 90, reach: 74 },
+                description: "La référence absolue pour cibler les décideurs et entrepreneurs. L'engagement est maximisé par la durée longue des épisodes qui permet d'installer un discours de marque complexe. Le ton direct de Mathieu Stefani crédibilise instantanément les recommandations.",
+                tags: ["Business", "Decision Makers"],
+                audience: { age: "30-55 ans", sex: "80% H", csp: "Cadres Sup." },
+                channels: ["Podcast", "YouTube", "LinkedIn"],
+                similar: [{ title: "Le Panier", host: "E-commerce" }],
+                safetyIndex: 2
+            },
+            // --- JARDINAGE ---
+            {
+                id: 4,
+                number: "04",
+                title: "Art le pouvoir des plantes",
+                host: "Meilland Richardier",
+                imageUrl: "https://yt3.ggpht.com/ytc/AIdro_kbS2cegk2Hk9EtmQEehYDoxNAsh_I3zEkVm4pJxUBw5C4=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 81, pertinence: 88, reach: 45 },
+                description: "Des astuces d'experts reconnus pour l'entretien des vivaces et des rosiers. La cible est passionnée et dispose d'un fort pouvoir d'achat pour l'aménagement extérieur. Un contexte très qualitatif pour valoriser des offres premium.",
+                tags: ["Nature", "Jardinage", "Expert"],
+                audience: { age: "40-65 ans", sex: "60% F", csp: "Propriétaires" },
+                channels: ["YouTube"],
+                similar: [{ title: "Silence ça pousse", host: "TV" }],
+                safetyIndex: 1
+            },
+            {
+                id: 5,
+                number: "05",
+                title: "f1rcx",
+                host: "Philippe",
+                imageUrl: "https://yt3.ggpht.com/NK9tjpwfqdEj3-vjg_9o3j20s4sgxgPBpa-8mBvUh5wRTxs_kbrWOC2kbqrWbekmtFckQwHTbA=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 79, pertinence: 85, reach: 30 },
+                description: "Des conseils authentiques de semis et plantation, filmés 'les mains dans la terre'. Une très forte communauté engagée s'est construite autour de la réussite potagère. L'authenticité du créateur garantit une excellente réception des messages publicitaires.",
+                tags: ["Authentique", "Potager", "Tuto"],
+                audience: { age: "35-60 ans", sex: "55% H", csp: "Ruraux/Péri-urbains" },
+                channels: ["YouTube"],
+                similar: [{ title: "Rustica", host: "Presse" }],
+                safetyIndex: 1
+            },
+            {
+                id: 6,
+                number: "06",
+                title: "Le potager d'Olivier",
+                host: "Olivier",
+                imageUrl: "https://yt3.ggpht.com/ytc/AIdro_nBPm_7LJ0E3WbTen1JU8DMSGl-5T0BeiPl_LqiEEdhpQE=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 94, pertinence: 92, reach: 55 },
+                description: "La référence incontournable du potager bio sur YouTube en France. La production est de haute qualité avec une approche pédagogique calme et rassurante. C'est le support idéal pour toucher une audience large mais qualifiée.",
+                tags: ["Bio", "Permaculture", "Pédagogie"],
+                audience: { age: "25-50 ans", sex: "50% H", csp: "Tous" },
+                channels: ["YouTube"],
+                similar: [{ title: "Permaculture Agroécologie", host: "Assoc" }],
+                safetyIndex: 1
+            },
+            {
+                id: 7,
+                number: "07",
+                title: "Aménager Son Jardin",
+                host: "Expert Paysage",
+                imageUrl: "https://yt3.ggpht.com/ytc/AIdro_nCa7dsgHeutkCFC054-rvZDTPiw07Kou5HlK6dkfxcSA=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 75, pertinence: 80, reach: 25 },
+                description: "Un focus spécifique sur le design, l'architecture et l'exotisme au jardin. Parfait pour le placement de produits d'aménagement, de mobilier ou de décoration extérieure. L'audience cherche avant tout l'inspiration visuelle.",
+                tags: ["Design", "Exotique", "Déco"],
+                audience: { age: "30-55 ans", sex: "50% H", csp: "CSP+" },
+                channels: ["YouTube"],
+                similar: [{ title: "D&CO", host: "TV" }],
+                safetyIndex: 1
+            },
+            {
+                id: 8,
+                number: "08",
+                title: "Une Pluie de Roses",
+                host: "Passionnée",
+                imageUrl: "https://yt3.ggpht.com/nAGNqcNvdqNsWL4C1sUlK2XSR-ow9VK8mS91u00hrokZx3WhVOtl1OdEsmEXjI-9gxApwsJR_g=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 68, pertinence: 90, reach: 15 },
+                description: "Une niche très spécifique dédiée exclusivement aux rosiers et fleurs délicates. L'audience est captive, très attentive et suit scrupuleusement les recommandations variétales. Un excellent canal pour des produits de soin spécifiques.",
+                tags: ["Niche", "Fleurs", "Esthétique"],
+                audience: { age: "45+ ans", sex: "80% F", csp: "Retraités/Actifs" },
+                channels: ["YouTube"],
+                similar: [{ title: "Mon Jardin & Ma Maison", host: "Presse" }],
+                safetyIndex: 1
+            },
+            {
+                id: 9,
+                number: "09",
+                title: "Le jardin de Rodolphe",
+                host: "Rodolphe",
+                imageUrl: "https://yt3.ggpht.com/oRKfDb5cmh3ask3q4Rj72OuBS_QszhvVllNpkBQ8ppHaeO-_z6Y-2AQlNnkK5O1iutPB560jQw=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 72, pertinence: 82, reach: 22 },
+                description: "Des conseils pratiques très liés à la saisonnalité (hivernage, salades d'hiver). Le format vlog crée une proximité forte avec ce jardinier amateur passionné. Idéal pour pousser des offres promotionnelles tactiques.",
+                tags: ["Technique", "Saisonnier", "Pratique"],
+                audience: { age: "35-65 ans", sex: "60% H", csp: "Jardiniers Amateurs" },
+                channels: ["YouTube"],
+                similar: [{ title: "Gamm Vert", host: "Marque" }],
+                safetyIndex: 1
+            },
+            {
+                id: 10,
+                number: "10",
+                title: "Le potager d'Alexandre",
+                host: "Alexandre",
+                imageUrl: "https://yt3.ggpht.com/z27hYfPejS97aZ7xNJdtPmx3mT4teWucbYumPInrHhqT8dmqRSc1P64gaD8Pl-ax4CQRjJirhg=s800-c-k-c0x00ffffff-no-rj",
+                category: "Jardin",
+                scores: { performance: 70, pertinence: 78, reach: 18 },
+                description: "Des techniques maraîchères spécifiques comme la mise en jauge ou le greffage. Un contenu éducatif pointu qui s'adresse à des jardiniers intermédiaires ou experts. L'engagement est fort sur les aspects techniques.",
+                tags: ["Tuto", "Technique", "Apprentissage"],
+                audience: { age: "30-50 ans", sex: "55% H", csp: "Actifs" },
+                channels: ["YouTube"],
+                similar: [{ title: "Truffaut", host: "Marque" }],
+                safetyIndex: 1
+            },
+
+            // --- TOURISME / PARCS ---
+            {
+                id: 11,
+                number: "11",
+                title: "Ecorama",
+                host: "Audion",
+                imageUrl: "https://artworks.360.audion.fm/5c3320ed-5932-4418-8f9f-3e204f2059f0.jpg?width=3000&height=3000",
+                category: "Travel/Eco",
+                scores: { performance: 85, pertinence: 70, reach: 60 },
+                description: "Une analyse économique pointue du secteur tourisme, notamment les stations de ski. Un contenu hybride B2B/B2C très informatif et sérieux. Parfait pour toucher une cible CSP+ intéressée par l'envers du décor économique.",
+                tags: ["Économie", "Tourisme", "Analyse"],
+                audience: { age: "25-50 ans", sex: "60% H", csp: "CSP+" },
+                channels: ["Podcast"],
+                similar: [{ title: "BFM Business", host: "Radio" }],
+                safetyIndex: 1
+            },
+            {
+                id: 12,
+                number: "12",
+                title: "Magic Ears",
+                host: "Disney Fans",
+                imageUrl: "https://artworks.360.audion.fm/cbc8cd0d-bd61-47fe-83a1-1b50ae6af3b3.jpg?width=3000&height=3000",
+                category: "Parcs",
+                scores: { performance: 88, pertinence: 95, reach: 40 },
+                description: "Le podcast immersif de référence sur l'univers Disney et ses parcs. Il rassemble une audience de 'Superfans' très engagée émotionnellement et prête à dépenser. Le contexte est ultra-positif pour une marque de loisirs.",
+                tags: ["Disney", "Fanbase", "Famille"],
+                audience: { age: "20-40 ans", sex: "60% F", csp: "Jeunes Actifs" },
+                channels: ["Podcast"],
+                similar: [{ title: "Rien que d'y penser", host: "Podcast" }],
+                safetyIndex: 1
+            },
+            {
+                id: 13,
+                number: "13",
+                title: "Hello Maureen",
+                host: "Maureen",
+                imageUrl: "https://yt3.ggpht.com/v9vm8fDgS5-2MOIK7qHz-6nDbXjKD03Xul8oAhWs6NIpSL1yA3l2W4M7rGCuH2KpG7EHrX58dQ=s800-c-k-c0x00ffffff-no-rj",
+                category: "Vlog Voyage",
+                scores: { performance: 91, pertinence: 85, reach: 75 },
+                description: "Des vlogs dynamiques et esthétiques sur les parcs californiens et la culture US. Excellente qualité visuelle accompagnée d'un storytelling très personnel. L'influenceuse possède un fort pouvoir de prescription sur les voyages.",
+                tags: ["Lifestyle", "Voyage", "USA"],
+                audience: { age: "18-35 ans", sex: "70% F", csp: "Étudiants/Actifs" },
+                channels: ["YouTube"],
+                similar: [{ title: "Sparkdise", host: "Influencer" }],
+                safetyIndex: 1
+            },
+            {
+                id: 14,
+                number: "14",
+                title: "Raphy Over The World",
+                host: "Raphy",
+                imageUrl: "https://yt3.ggpht.com/FQOntxFXr52V6y3RFigBj1TbbsY3d2VDnSZJMcyh-VxoY8g-3rIxXcY1E7KJJvLk4r0ptIxMgw=s800-c-k-c0x00ffffff-no-rj",
+                category: "Parcs",
+                scores: { performance: 83, pertinence: 88, reach: 35 },
+                description: "Tests détaillés de nouveautés et critiques constructives de parcs, avec un focus Floride. L'approche 'Review' produit rassure les futurs visiteurs. C'est un guide de confiance pour préparer un voyage coûteux.",
+                tags: ["Review", "Floride", "Guide"],
+                audience: { age: "20-40 ans", sex: "50% H", csp: "Voyageurs" },
+                channels: ["YouTube"],
+                similar: [{ title: "Floride", host: "Destination" }],
+                safetyIndex: 1
+            },
+            {
+                id: 15,
+                number: "15",
+                title: "Reveur de magie",
+                host: "Creator",
+                imageUrl: "https://yt3.ggpht.com/ItFKI1mcwxTJQMiqlv0Bd1-h541UI3j_5XZenqIAlP5EUAPtsjJcbwJM7RUQLD_BKBdaQLYK=s800-c-k-c0x00ffffff-no-rj",
+                category: "Parcs/Food",
+                scores: { performance: 77, pertinence: 80, reach: 20 },
+                description: "Un focus gourmand sur l'expérience hôtelière et culinaire à Disneyland. Les vidéos présentent les restaurants et buffets en détail. Idéal pour cibler les familles qui planifient leur budget restauration.",
+                tags: ["Food", "Hôtel", "Experience"],
+                audience: { age: "25-45 ans", sex: "55% F", csp: "Familles" },
+                channels: ["YouTube"],
+                similar: [{ title: "TripAdvisor", host: "Avis" }],
+                safetyIndex: 1
+            },
+            {
+                id: 16,
+                number: "16",
+                title: "Wonder Hook",
+                host: "Hook",
+                imageUrl: "https://yt3.ggpht.com/iCBKdVlaxmlAMZ-jW4JXiQymj47dF4M2Sv_OKIG_7xOAGJ9h92hgDFRxcyYiN2dE9liDTX4ySA=s800-c-k-c0x00ffffff-no-rj",
+                category: "Parcs/Actu",
+                scores: { performance: 89, pertinence: 90, reach: 50 },
+                description: "Suivi de chantier minutieux et actualités sur les travaux à Disneyland Paris. L'audience est composée de passionnés fidèles et curieux des coulisses. Un excellent support pour toucher une communauté d'ambassadeurs.",
+                tags: ["BehindScenes", "Travaux", "News"],
+                audience: { age: "20-50 ans", sex: "65% H", csp: "Passionnés" },
+                channels: ["YouTube"],
+                similar: [{ title: "Disneyphile", host: "Média" }],
+                safetyIndex: 1
+            },
+            {
+                id: 17,
+                number: "17",
+                title: "100% ATTRACTIONS",
+                host: "Fan",
+                imageUrl: "https://yt3.ggpht.com/_8fskmCzeys1C0yt6cNAr0sr_6SUvJGh95mYV3iOGTdeFAU5pEMubDu_kSZXStZQ7rrIBf7U=s800-c-k-c0x00ffffff-no-rj",
+                category: "Parcs",
+                scores: { performance: 74, pertinence: 75, reach: 28 },
+                description: "Découverte sympathique des parcs régionaux français comme le Bocasse. La cible est locale, familiale et cherche des idées de sorties accessibles. Un contexte populaire et proche des gens.",
+                tags: ["France", "Famille", "Attractions"],
+                audience: { age: "15-45 ans", sex: "50% H", csp: "Grand Public" },
+                channels: ["YouTube"],
+                similar: [{ title: "Parc Astérix", host: "Parc" }],
+                safetyIndex: 1
+            },
+
+            // --- SPORT / CULTURE / SCIENCE ---
+            {
+                id: 18,
+                number: "18",
+                title: "Mourir Moins Con",
+                host: "Audion",
+                imageUrl: "https://artworks.360.audion.fm/e746f1e7-ca08-4716-92f0-f443068b2e57.jpg?width=3000&height=3000",
+                category: "Culture G",
+                scores: { performance: 95, pertinence: 60, reach: 85 },
+                description: "Des réponses courtes et pleines d'esprit aux questions du quotidien. Ce format 'snackable' audio est extrêmement puissant pour la répétition. Il permet de toucher une audience curieuse dans des moments de transition.",
+                tags: ["Culture", "Humour", "Learning"],
+                audience: { age: "18-40 ans", sex: "50% H", csp: "Tous" },
+                channels: ["Podcast"],
+                similar: [{ title: "Choses à Savoir", host: "Podcast" }],
+                safetyIndex: 1
+            },
+            {
+                id: 19,
+                number: "19",
+                title: "Maxisciences",
+                host: "Gentside",
+                imageUrl: "https://artworks.360.audion.fm/41351016-a7ec-41fb-82fa-3febbc44a1f0.jpg?width=3000&height=3000",
+                category: "Science",
+                scores: { performance: 82, pertinence: 70, reach: 65 },
+                description: "De la vulgarisation scientifique fun et accessible sur des sujets insolites. Le contenu est conçu pour être viral et éducatif à la fois. C'est un environnement sûr pour les marques technologiques ou innovantes.",
+                tags: ["Science", "Insolite", "Tech"],
+                audience: { age: "20-35 ans", sex: "70% H", csp: "Geek/Tech" },
+                channels: ["Podcast"],
+                similar: [{ title: "Science & Vie", host: "Mag" }],
+                safetyIndex: 1
+            },
+            {
+                id: 20,
+                number: "20",
+                title: "La chaine du surf",
+                host: "Coach",
+                imageUrl: "https://yt3.ggpht.com/pLO9bsv2QKHbiD4J6uHxl3YXaVFH4EKkSp9nE0g4NSNr7O7t_V6W0NNJXLLO0JBytqHNfCbz9Ec=s800-c-k-c0x00ffffff-no-rj",
+                videoThumbnail: "https://img.youtube.com/vi/vKTsuQl0-Sw/maxresdefault.jpg",
+                videoLink: "https://www.youtube.com/watch?v=vKTsuQl0-Sw",
+                category: "Sport",
+                scores: { performance: 76, pertinence: 85, reach: 15 },
+                description: "De la technique pure pour progresser, basée sur la méthode Malvaux. La cible est composée de pratiquants motivés cherchant activement à s'améliorer. Un contexte d'expert pour les équipements sportifs.",
+                tags: ["Surf", "Océan", "Sport"],
+                audience: { age: "20-40 ans", sex: "70% H", csp: "Sportifs" },
+                channels: ["YouTube"],
+                similar: [{ title: "WSL", host: "Compétition" }],
+                safetyIndex: 2
+            },
+            {
+                id: 21,
+                number: "21",
+                title: "coursdegolf.net",
+                host: "Renaud Poupard",
+                imageUrl: "https://yt3.ggpht.com/ytc/AIdro_na9Veq46HcaEKgH1EFNiB_8MTDYGQjsPseSsT56_bo5yo=s800-c-k-c0x00ffffff-no-rj",
+                category: "Sport",
+                scores: { performance: 78, pertinence: 95, reach: 12 },
+                description: "Une pédagogie golfique axée sur la régularité et la précision du geste. La cible est très majoritairement CSP+ senior avec un très fort pouvoir d'achat. C'est l'emplacement premium par excellence pour le luxe ou la finance.",
+                tags: ["Golf", "Luxe", "CSP++"],
+                audience: { age: "40-65 ans", sex: "80% H", csp: "Dirigeants" },
+                channels: ["YouTube"],
+                similar: [{ title: "Golf Magazine", host: "Presse" }],
+                safetyIndex: 1
+            },
+            // --- MUSIQUE (INTÉGRÉE DANS LE FLUX ET MOODBOARD) ---
+            {
+                id: 100,
+                number: "M1",
+                title: "Bohemian Rhapsody",
+                host: "Queen",
+                imageUrl: "https://i.discogs.com/hj4cMUuf_0C6oKkoblTAgx6UuB_ueko42FojeYnidmc/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTYwODE4/NjUtMTQ2MjUyNjg3/OC03OTk5LmpwZWc.jpeg",
+                category: "Music",
+                scores: { performance: 99, pertinence: 90, reach: 100 },
+                description: "Un classique intemporel du Rock Opéra qui traverse les générations. Sa structure complexe et émotionnelle capte l'attention dès les premières secondes. Une valeur sûre pour toucher un large public.",
+                tags: ["Rock", "Legend", "70s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "The Beatles", host: "Band" }],
+                safetyIndex: 1
+            },
+            {
+                id: 101,
+                number: "M2",
+                title: "Imagine",
+                host: "John Lennon",
+                imageUrl: "https://i.scdn.co/image/ab67616d0000b2738b52c6b9bc4e43d873869699",
+                category: "Music",
+                scores: { performance: 95, pertinence: 98, reach: 99 },
+                description: "L'hymne à la paix universel par excellence, reconnu dans le monde entier. Sa mélodie douce au piano installe immédiatement une ambiance contemplative. Idéal pour des messages institutionnels ou humanistes.",
+                tags: ["Pop", "Peace", "70s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Paul McCartney", host: "Artist" }],
+                safetyIndex: 1
+            },
+            {
+                id: 102,
+                number: "M3",
+                title: "Billie Jean",
+                host: "Michael Jackson",
+                imageUrl: "https://i.scdn.co/image/ab67616d0000b2734121faee8df82c526cbab2be",
+                category: "Music",
+                scores: { performance: 98, pertinence: 85, reach: 100 },
+                description: "Le sommet absolu de la pop et de la dance des années 80. La ligne de basse iconique rend ce titre instantanément reconnaissable et énergisant. Parfait pour dynamiser une campagne grand public.",
+                tags: ["Pop", "Dance", "80s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Prince", host: "Artist" }],
+                safetyIndex: 1
+            },
+            {
+                id: 103,
+                number: "M4",
+                title: "Smells Like Teen Spirit",
+                host: "Nirvana",
+                imageUrl: "https://i.scdn.co/image/ab67616d0000b273e175a19e530c898d167d39bf",
+                category: "Music",
+                scores: { performance: 92, pertinence: 80, reach: 90 },
+                description: "L'hymne grunge qui a marqué toute une génération et redéfini le rock. Son énergie brute et rebelle parle encore aujourd'hui aux jeunes et aux nostalgiques. Un choix audacieux pour une marque qui veut du caractère.",
+                tags: ["Grunge", "Rock", "90s"],
+                audience: { age: "30-50", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Pearl Jam", host: "Band" }],
+                safetyIndex: 2
+            },
+            {
+                id: 104,
+                number: "M5",
+                title: "Like a Rolling Stone",
+                host: "Bob Dylan",
+                imageUrl: "https://i1.sndcdn.com/artworks-wX8wUuYkOIkJ-0-t500x500.jpg",
+                category: "Music",
+                scores: { performance: 88, pertinence: 95, reach: 80 },
+                description: "La révolution folk-rock poétique qui a bousculé les codes musicaux. Les paroles denses et imagées demandent une écoute attentive et intellectuelle. Un classique respecté pour une cible mature et cultivée.",
+                tags: ["Folk", "Rock", "60s"],
+                audience: { age: "40+", sex: "Mixte", csp: "CSP+" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Neil Young", host: "Artist" }],
+                safetyIndex: 1
+            },
+            {
+                id: 105,
+                number: "M6",
+                title: "Respect",
+                host: "Aretha Franklin",
+                imageUrl: "https://npo-artistdb.b-cdn.net/images/b45dc90f-e74b-4940-9b4a-48f1c6dd5351__Respect.jpg?aspect_ratio=501%3A500&width=500&height=500",
+                category: "Music",
+                scores: { performance: 94, pertinence: 92, reach: 85 },
+                description: "L'hymne féministe et soul absolu, porté par une voix légendaire. Le message d'empowerment est clair, puissant et universellement positif. Idéal pour des campagnes axées sur des valeurs sociales fortes.",
+                tags: ["Soul", "R&B", "60s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Otis Redding", host: "Artist" }],
+                safetyIndex: 1
+            },
+            {
+                id: 106,
+                number: "M7",
+                title: "Purple Haze",
+                host: "Jimi Hendrix",
+                imageUrl: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
+                category: "Music",
+                scores: { performance: 89, pertinence: 75, reach: 78 },
+                description: "Le psychédélisme guitare à son apogée, incarnant la liberté et l'expérimentation. Le son saturé et virtuose s'adresse aux amateurs de sensations fortes. Un titre électrique pour des visuels colorés et dynamiques.",
+                tags: ["Rock", "Psych", "60s"],
+                audience: { age: "30+", sex: "Hommes", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Led Zeppelin", host: "Band" }],
+                safetyIndex: 2
+            },
+            {
+                id: 107,
+                number: "M8",
+                title: "What's Going On",
+                host: "Marvin Gaye",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/8/84/MarvinGayeWhat%27sGoingOnalbumcover.jpg",
+                category: "Music",
+                scores: { performance: 93, pertinence: 99, reach: 82 },
+                description: "De la soul consciente et sophistiquée qui invite à la réflexion sociale. La production soignée et la voix suave créent une atmosphère élégante et engagée. Parfait pour une communication RSE ou éthique.",
+                tags: ["Soul", "Social", "70s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Stevie Wonder", host: "Artist" }],
+                safetyIndex: 1
+            },
+            {
+                id: 108,
+                number: "M9",
+                title: "Hotel California",
+                host: "Eagles",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg",
+                category: "Music",
+                scores: { performance: 96, pertinence: 88, reach: 95 },
+                description: "Le slow rock californien par excellence, mystérieux et mélodique. Le solo de guitare final est un monument de la musique rock. Un titre narratif qui emmène l'auditeur en voyage.",
+                tags: ["Rock", "Soft", "70s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Fleetwood Mac", host: "Band" }],
+                safetyIndex: 1
+            },
+            {
+                id: 109,
+                number: "M10",
+                title: "Heroes",
+                host: "David Bowie",
+                imageUrl: "https://m.media-amazon.com/images/I/81VycvvC49L._UF1000,1000_QL80_.jpg",
+                category: "Music",
+                scores: { performance: 91, pertinence: 94, reach: 88 },
+                description: "Un hymne rock berlinois, épique et porteur d'espoir. La montée en puissance du morceau est parfaite pour souligner des moments de réussite ou de dépassement de soi. Un classique motivant et artistique.",
+                tags: ["Rock", "Art", "70s"],
+                audience: { age: "Tous", sex: "Mixte", csp: "Tous" },
+                channels: ["Spotify", "Apple Music", "Deezer"],
+                similar: [{ title: "Iggy Pop", host: "Artist" }],
+                safetyIndex: 1
+            }
+        ];
+
+        // --- MÉLANGE DU TABLEAU (SHUFFLE) ---
+        // Cette fonction mélange les éléments aléatoirement à chaque chargement
+        // pour que la musique soit dispersée parmi les autres contenus.
+        items.sort(() => Math.random() - 0.5);
+
+        let state = { view: 'dashboard', selectedId: null };
+
+        // --- COMPOSANTS UI ---
+
+        function getChannelIcon(channel) {
+            const map = {
+                'Podcast': 'mic',
+                'YouTube': 'youtube',
+                'TikTok': 'smartphone',
+                'Instagram': 'camera',
+                'LinkedIn': 'briefcase',
+                'Web': 'globe',
+                'Spotify': 'music',
+                'Apple Music': 'music',
+                'Deezer': 'music',
+                'Radio': 'radio'
+            };
+            return map[channel] || 'circle';
+        }
+
+        // --- CIRCULAR PROGRESS FUNCTION ---
+        function getCircularProgressHTML(value, label, color = "text-slate-800", size = 60, tooltip = null) {
+            const radius = 24;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (value / 100) * circumference;
+            
+            let tooltipHTML = '';
+            if (tooltip) {
+                tooltipHTML = `
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none shadow-lg">
+                        ${tooltip}
+                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="flex flex-col items-center group relative">
+                    ${tooltipHTML}
+                    <div class="relative w-[${size}px] h-[${size}px]">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 60 60">
+                            <!-- Background Circle -->
+                            <circle cx="30" cy="30" r="${radius}" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-100" />
+                            <!-- Progress Circle -->
+                            <circle cx="30" cy="30" r="${radius}" stroke="currentColor" stroke-width="4" fill="transparent" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" class="${color} transition-all duration-1000 ease-out" stroke-linecap="round" />
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span class="text-[10px] font-bold text-slate-700 font-mono">${value}%</span>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-wider cursor-help ${tooltip ? 'underline decoration-dotted decoration-slate-300 underline-offset-2' : ''}">${label}</span>
+                </div>
+            `;
+        }
+
+        function getSafeIndexWidget(level) {
+            const pct = (level - 1) * 25; 
+            const labels = { 1: "Very Safe", 2: "Safe", 3: "Balanced", 4: "Edgy", 5: "Very Edgy" };
+            const label = labels[level];
+
+            return `
+                <div class="mt-6 pt-6 border-t border-slate-100">
+                    <div class="flex justify-between items-end mb-3">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <i data-lucide="shield" class="w-3 h-3"></i> Safety Index
+                        </span>
+                        <span class="text-[10px] font-bold text-slate-900 border border-slate-900 px-1.5 py-0.5 rounded-sm uppercase tracking-wider bg-white">
+                            ${label}
+                        </span>
+                    </div>
+                    <div class="relative h-10 w-full flex items-center select-none">
+                        <div class="absolute w-full h-2 bg-slate-100 hatch-pattern rounded-full border border-slate-200"></div>
+                        <div class="absolute w-4 h-6 bg-slate-900 border-2 border-white shadow-md z-10 transition-all duration-1000 ease-out" 
+                             style="left: calc(${pct}% - 8px); top: 50%; transform: translateY(-50%); border-radius: 4px;">
+                             <div class="w-1 h-1 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                        </div>
+                        <div class="absolute w-full flex justify-between px-0.5 pointer-events-none">
+                            <div class="h-3 w-px bg-slate-300"></div> <div class="h-2 w-px bg-slate-200"></div> <div class="h-3 w-px bg-slate-300"></div> <div class="h-2 w-px bg-slate-200"></div> <div class="h-3 w-px bg-slate-300"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-1 text-[9px] font-mono text-slate-400 uppercase tracking-tight">
+                        <span>Very Safe</span><span>Very Edgy</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- NEW COMPONENT: MUSIC MOODBOARD ---
+        function getMusicMoodboardHTML() {
+            // Filter specifically music items (IDs 100+)
+            const musicItems = items.filter(item => item.category === 'Music');
+            
+            return `
+                <section class="mb-10 animate-in">
+                     <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-sm shadow-md border border-slate-700">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+                            <div>
+                                <h3 class="text-lg font-bold uppercase tracking-tight flex items-center gap-2 mb-1">
+                                    <i data-lucide="music-2" class="w-5 h-5 text-indigo-400"></i> Thèmes musicaux pour le Streaming
+                                </h3>
+                                <p class="text-sm text-slate-300">Votre campagne pourra être diffusée sur les artistes suivants.</p>
+                            </div>
+                            <!-- Streaming Badges -->
+                            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+                                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest mr-1">Diffusion</span>
+                                <div class="flex items-center gap-3 opacity-90">
+                                    <i data-lucide="cast" class="w-3 h-3 text-green-400"></i>
+                                    <span class="text-xs font-bold">Spotify</span>
+                                    <span class="text-xs font-bold">Apple Music</span>
+                                    <span class="text-xs font-bold">Deezer</span>
+                                    <span class="text-xs font-bold">YouTube</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Scroll Container -->
+                        <div class="relative group">
+                            <div class="flex overflow-x-auto gap-4 pb-4 snap-x hide-scrollbar">
+                                ${musicItems.map(item => `
+                                    <div onclick="openDetail(${item.id})" class="snap-start flex-none w-48 bg-slate-800/50 hover:bg-slate-700/80 rounded-md p-3 cursor-pointer transition-all duration-300 group/card border border-white/5 hover:border-indigo-500/50 hover:-translate-y-1">
+                                        <div class="relative aspect-square mb-3 overflow-hidden rounded-md shadow-lg">
+                                            <img src="${item.imageUrl}" class="w-full h-full object-cover transform group-hover/card:scale-110 transition-transform duration-700" alt="${item.title}">
+                                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center">
+                                                <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center shadow-lg text-white transform scale-50 group-hover/card:scale-100 transition-transform">
+                                                    <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                                </div>
+                                            </div>
+                                            <div class="absolute top-2 right-2">
+                                                <span class="text-[9px] font-bold text-white bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-sm border border-white/10">${item.tags[0]}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-white truncate leading-tight mb-0.5 group-hover/card:text-indigo-300 transition-colors">${item.title}</h4>
+                                            <p class="text-xs text-slate-400 truncate">${item.host}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <!-- Gradient Fade for Scroll indication -->
+                            <div class="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none"></div>
+                        </div>
+                     </div>
+                </section>
+            `;
+        }
+
+        // Vue Dashboard
+        function getDashboardHTML() {
+            // Filter out music items for the main grid display
+            const displayItems = items.filter(item => item.category !== 'Music');
+
+            const cardsHTML = displayItems.map(item => `
+                <div onclick="openDetail(${item.id})" class="bg-white border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all duration-200 p-0 flex flex-col animate-in cursor-pointer group h-full rounded-sm">
+                    <div class="p-5 border-b border-slate-100 flex flex-col relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-slate-50 rounded-bl-full -mr-8 -mt-8 z-0"></div>
+                        
+                        <!-- Header Block: Image + Title + Tags -->
+                        <div class="flex gap-4 z-10 w-full mb-3">
+                            <div class="relative w-14 h-14 flex-shrink-0 shadow-sm self-start">
+                                <!-- REVERTED TO IMAGE ALWAYS ON DASHBOARD -->
+                                <img src="${item.imageUrl}" class="w-full h-full object-cover transition-all duration-300 rounded-sm bg-slate-200" alt="">
+                            </div>
+                            <div class="flex-1 min-w-0 flex flex-col gap-1">
+                                <!-- 1. Title and Number Row -->
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-sm font-bold text-slate-900 leading-tight group-hover:text-indigo-600 truncate pr-2 mb-1">${item.title}</h3>
+                                    <span class="text-xs font-bold text-slate-300 group-hover:text-slate-900 transition-colors flex-shrink-0">#${item.number}</span>
+                                </div>
+
+                                <!-- 2. Tags Row (Category + 1st Tag) -->
+                                <div class="flex flex-wrap gap-1.5 mb-2">
+                                    <span class="inline-block text-[9px] font-bold uppercase tracking-widest text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-sm bg-slate-50 truncate max-w-[80px]">${item.category}</span>
+                                    ${item.tags && item.tags.length > 0 ? `<span class="inline-block text-[9px] font-bold uppercase tracking-widest text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-sm bg-slate-50 truncate max-w-[80px]">${item.tags[0]}</span>` : ''}
+                                </div>
+
+                                <!-- 3. Platforms Row -->
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    ${item.channels.slice(0,2).map(c => `
+                                        <div class="text-[9px] bg-slate-50 px-1.5 py-0.5 rounded-sm text-slate-500 border border-slate-100 flex items-center gap-1">
+                                            <i data-lucide="${getChannelIcon(c)}" class="w-3 h-3"></i> ${c === 'YouTube' ? 'Video' : c}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full Width Description -->
+                        <p class="text-xs text-slate-600 line-clamp-4 leading-relaxed flex-grow z-10">
+                                ${item.description}
+                        </p>
+                    </div>
+
+                    <div class="p-4 border-t border-slate-100">
+                        <!-- CIRCULAR PROGRESS BARS ROW -->
+                        <div class="flex justify-between items-center gap-2 mb-4 px-2">
+                            ${getCircularProgressHTML(item.scores.performance, "Perf.", "text-slate-800", 50)}
+                            ${getCircularProgressHTML(item.scores.pertinence, "Pert.", "text-slate-800", 50)}
+                            ${getCircularProgressHTML(item.scores.reach, "Reach", "text-slate-800", 50, "0% < 100 vues | 100% > 1M vues")}
+                        </div>
+
+                        <div class="flex justify-between items-end mt-2 pt-3 border-t border-slate-50">
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Safety</span>
+                            <div class="flex gap-0.5">
+                                ${Array(5).fill(0).map((_, i) => `
+                                    <div class="w-1.5 h-1.5 rounded-full ${i < item.safetyIndex ? 'bg-slate-800' : 'bg-slate-200'}"></div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="animate-in pb-12">
+                    <header class="mb-8">
+                        <!-- Top Row: Title, KPI, Actions -->
+                        <div class="flex flex-col md:flex-row justify-between items-end md:items-center gap-4 mb-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-tight">Sélection Média</h1>
+                                
+                                <!-- REACH KPI -->
+                                <div class="bg-slate-900 text-white px-4 py-2 rounded-sm shadow-md flex items-center gap-3 w-fit">
+                                    <span class="text-2xl font-bold font-mono leading-none">4.5M</span>
+                                    <div class="flex flex-col leading-none">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Reach</span>
+                                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Estimé</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3 w-full md:w-auto">
+                                 <button class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors rounded-sm shadow-sm">
+                                    Export PDF
+                                 </button>
+                                <button class="flex-1 md:flex-none px-5 py-2.5 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 rounded-sm shadow-md">
+                                    <i data-lucide="check" class="w-3 h-3"></i> Valider Plan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- RECAP CAMPAGNE CLIENT - FULL WIDTH -->
+                        <div class="p-6 bg-indigo-50 border-l-4 border-indigo-900 rounded-sm w-full shadow-sm">
+                            <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-2">
+                                <h2 class="text-sm font-bold text-indigo-900 uppercase tracking-widest flex items-center gap-2">
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i> Brief Client Urgent - AO Belambra
+                                </h2>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 bg-white px-2 py-1 rounded border border-indigo-100">Confidentialité requise</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-indigo-900">
+                                <!-- Col 1: Paramètres -->
+                                <div class="bg-white/50 p-4 rounded-sm border border-indigo-100/50 hover:bg-white/80 transition-colors">
+                                    <h3 class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <i data-lucide="sliders-horizontal" class="w-3 h-3"></i> Paramètres
+                                    </h3>
+                                    <ul class="space-y-2 leading-snug">
+                                        <li class="flex flex-col"><span class="text-xs font-bold text-indigo-300 uppercase">Budget</span> <span class="font-bold">100K€ (2 vagues)</span></li>
+                                        <li class="flex flex-col"><span class="text-xs font-bold text-indigo-300 uppercase">Cible</span> <span class="font-bold">CSP++ (30-50 ans)</span></li>
+                                        <li class="flex flex-col"><span class="text-xs font-bold text-indigo-300 uppercase">Format</span> <span class="font-bold">OPS / Host Reading</span></li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- Col 2: Calendrier -->
+                                <div class="bg-white/50 p-4 rounded-sm border border-indigo-100/50 hover:bg-white/80 transition-colors">
+                                    <h3 class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <i data-lucide="calendar" class="w-3 h-3"></i> Calendrier
+                                    </h3>
+                                    <ul class="space-y-3 leading-snug">
+                                        <li>
+                                            <span class="font-bold block">Vague 1 : Fév à Mai</span>
+                                            <span class="text-xs text-indigo-600 bg-indigo-100 px-1.5 py-0.5 rounded-sm">Prio Fév/Mars</span>
+                                        </li>
+                                        <li>
+                                            <span class="font-bold block">Vague 2 : Sept à Déc</span>
+                                            <span class="text-xs text-indigo-600 bg-indigo-100 px-1.5 py-0.5 rounded-sm">Prio Sept/Oct</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Col 3 & 4: Stratégie & Contraintes (Span 2) -->
+                                <div class="md:col-span-2 bg-white/50 p-4 rounded-sm border border-indigo-100/50 hover:bg-white/80 transition-colors flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <i data-lucide="crosshair" class="w-3 h-3"></i> Stratégie & Objectifs
+                                        </h3>
+                                        <p class="leading-relaxed mb-4 text-sm">
+                                            Privilégier la <strong>qualité du contexte</strong> et l'affinité avec la marque plutôt que le volume d'impressions massif (Quality over Quantity). L'ambition est d'installer Belambra comme la référence premium en capitalisant sur l'engagement fort des communautés de niche et la prescription des hôtes pour maximiser la préférence de marque.
+                                        </p>
+                                    </div>
+                                    <div class="text-xs bg-indigo-100 p-3 rounded text-indigo-800 font-medium border-l-2 border-indigo-400">
+                                        <i data-lucide="alert-triangle" class="w-3 h-3 inline mr-1 -mt-0.5"></i>
+                                        <strong>Point de Vigilance :</strong> L'annonceur est ROIste. Vérifier impérativement l'absorption des Frais Techniques (FT).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i> Inventaire Complet (${displayItems.length})
+                    </h2>
+                    
+                    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr mb-12">
+                        ${cardsHTML}
+                    </section>
+
+                    ${getMusicMoodboardHTML()}
+                </div>
+            `;
+        }
+
+        // Vue Détail
+        function getDetailHTML(item) {
+            return `
+                <div class="animate-in max-w-6xl mx-auto pb-12">
+                    <!-- Fil d'ariane -->
+                    <div class="flex items-center gap-2 mb-8 text-xs font-mono text-slate-400 uppercase">
+                        <span onclick="goBack()" class="cursor-pointer hover:text-slate-900 hover:underline flex items-center gap-1"><i data-lucide="arrow-left" class="w-3 h-3"></i> Dashboard</span>
+                        <span>/</span>
+                        <span class="text-slate-900 font-bold">${item.title}</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        
+                        <!-- Col Gauche -->
+                        <div class="lg:col-span-1 space-y-6">
+                            
+                            <!-- Carte Identité -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
+                                <!-- REVERTED TO IMAGE ALWAYS ON DETAIL TOP LEFT -->
+                                <img src="${item.imageUrl}" class="w-full aspect-square object-cover mb-6 border border-slate-100 rounded-sm shadow-inner" alt="${item.title}">
+                                
+                                <h1 class="text-2xl font-bold text-slate-900 uppercase leading-none mb-2">${item.title}</h1>
+                                <p class="text-sm font-mono text-slate-500 mb-6 flex items-center gap-2">
+                                    <i data-lucide="mic-2" class="w-3 h-3"></i> ${item.host.toUpperCase()}
+                                </p>
+                                
+                                <div class="space-y-4 pt-6 border-t border-slate-100">
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Canaux</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            ${item.channels.map(c => `
+                                                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-2 rounded-sm w-full">
+                                                    <i data-lucide="${getChannelIcon(c)}" class="w-4 h-4 text-slate-800"></i>
+                                                    <span class="text-xs font-bold text-slate-700">${c === 'YouTube' ? 'Video' : c}</span>
+                                                    <div class="ml-auto w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Catégorie</span>
+                                        <span class="block text-sm font-bold text-slate-900">${item.category}</span>
+                                    </div>
+
+                                    ${getSafeIndexWidget(item.safetyIndex)}
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-slate-100">
+                                    <button class="w-full py-3 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors rounded-sm mb-3 shadow-md">
+                                        Ajouter au plan
+                                    </button>
+                                     <button class="w-full py-3 bg-white border border-slate-300 text-slate-900 text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors rounded-sm flex justify-center items-center gap-2">
+                                        <i data-lucide="play" class="w-3 h-3"></i> Écouter extrait
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Similaires -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-3 h-3"></i> Audiences Similaires
+                                </h3>
+                                <div class="space-y-3">
+                                    ${item.similar.map(sim => `
+                                        <div class="flex items-center justify-between p-3 border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer group rounded-sm">
+                                            <div>
+                                                <div class="text-sm font-bold text-slate-800 group-hover:text-indigo-900">${sim.title}</div>
+                                                <div class="text-[10px] text-slate-400 uppercase">${sim.host}</div>
+                                            </div>
+                                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-300 group-hover:text-indigo-900"></i>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col Droite -->
+                        <div class="lg:col-span-2 space-y-6">
+                            
+                            <!-- KPI Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm shadow-sm flex flex-col items-center justify-center">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Performance</div>
+                                    ${getCircularProgressHTML(item.scores.performance, "", "text-slate-900", 80)}
+                                </div>
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm shadow-sm flex flex-col items-center justify-center">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Pertinence</div>
+                                    ${getCircularProgressHTML(item.scores.pertinence, "", "text-slate-900", 80)}
+                                </div>
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm shadow-sm flex flex-col items-center justify-center">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Reach Mensuel</div>
+                                    ${getCircularProgressHTML(item.scores.reach, "", "text-slate-900", 80)}
+                                    <div class="mt-2 text-xs font-mono text-slate-500 font-bold">${item.scores.reach}0K</div>
+                                </div>
+                            </div>
+
+                            <!-- Bloc Audience Profile -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <i data-lucide="users" class="w-4 h-4"></i> Profil d'audience
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Cœur de Cible</div>
+                                        <div class="text-lg font-bold text-slate-900">${item.audience.age}</div>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Répartition Sexe</div>
+                                        <div class="text-lg font-bold text-slate-900">${item.audience.sex}</div>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Typologie</div>
+                                        <div class="text-lg font-bold text-slate-900 truncate">${item.audience.csp}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analyse Stratégique -->
+                            <div class="bg-white border border-slate-200 p-8 rounded-sm shadow-sm">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <i data-lucide="file-chart-column" class="w-4 h-4"></i> Audit & Recommandations
+                                </h3>
+                                <div class="prose prose-sm max-w-none text-slate-600">
+                                    <p class="mb-6 leading-relaxed text-base text-slate-700">
+                                        ${item.description}
+                                    </p>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                                        <div class="bg-slate-50 border-l-2 border-slate-900 p-5">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Contexte d'écoute</p>
+                                            <p class="text-sm text-slate-800">Attention profonde. Faible saturation publicitaire dans ce segment ${item.category}.</p>
+                                        </div>
+                                        <div class="bg-slate-50 border-l-2 border-indigo-900 p-5">
+                                            <p class="text-[10px] font-bold text-indigo-900 uppercase mb-2 tracking-widest">Format Recommandé</p>
+                                            <p class="text-sm font-bold text-slate-900">Host Read 60s / Intégration</p>
+                                            <p class="text-xs text-slate-500 mt-1">Caution d'expert pour maximiser la conversion.</p>
+                                        </div>
+                                    </div>
+
+                                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest mb-2">Mots-Clés Détectés</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        ${item.tags.map(tag => `<span class="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] uppercase font-bold rounded-sm border border-slate-200">${tag}</span>`).join('')}
+                                    </div>
+
+                                    <!-- MODIFIED: Replaced iframe with thumbnail image + link due to persistent restrictions -->
+                                    ${item.videoThumbnail ? `
+                                        <div class="mt-8 pt-6 border-t border-slate-100">
+                                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                <i data-lucide="video" class="w-4 h-4"></i> Extrait Vidéo
+                                            </h4>
+                                            
+                                            <div class="w-full aspect-video rounded-sm overflow-hidden shadow-sm border border-slate-200 relative group cursor-pointer" onclick="window.open('${item.videoLink}', '_blank')">
+                                                <img src="${item.videoThumbnail}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Video Thumbnail">
+                                                <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                    <div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                                        <i data-lucide="play" class="w-5 h-5 text-slate-900 ml-1"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            ${item.videoLink ? `
+                                                <div class="mt-3 text-center">
+                                                    <a href="${item.videoLink}" target="_blank" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center justify-center gap-1">
+                                                        <i data-lucide="external-link" class="w-3 h-3"></i> Regarder sur YouTube
+                                                    </a>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- MOTEUR DE RENDU ---
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+            if (state.view === 'dashboard') app.innerHTML = getDashboardHTML();
+            else if (state.view === 'detail') {
+                const item = items.find(p => p.id === state.selectedId);
+                if (item) app.innerHTML = getDetailHTML(item);
+            }
+            lucide.createIcons();
+            window.scrollTo(0, 0);
+        }
+
+        window.openDetail = function(id) { state.view = 'detail'; state.selectedId = id; render(); };
+        window.goBack = function() { state.view = 'dashboard'; state.selectedId = null; render(); };
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioPlan - Professional Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-bar {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen">
+
+    <!-- Header Navigation -->
+    <nav class="border-b border-slate-200 bg-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-slate-900 tracking-tight text-lg">
+                <div class="w-6 h-6 bg-slate-900 text-white flex items-center justify-center text-xs rounded-sm">AP</div>
+                AUDIOPLAN <span class="text-slate-400 font-normal">| CAMPAIGN MANAGER</span>
+            </div>
+            <div class="text-xs font-mono text-slate-500">
+                SESSION: #8492-AD
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteneur Principal -->
+    <main id="app" class="max-w-7xl mx-auto p-6 lg:p-12">
+        <!-- Injection JS -->
+    </main>
+
+    <!-- Scripts Logique -->
+    <script>
+        // --- DONNÉES ENRICHIES ---
+        const podcasts = [
+            {
+                id: 1,
+                number: "01",
+                title: "Transfert",
+                host: "Slate Audio",
+                imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/7d/45/24/7d4524f1-f633-6535-1ceb-25c1ec067e39/mza_2287600864311144759.jpg/1200x1200bf-60.jpg",
+                category: "Society",
+                scores: { performance: 88, pertinence: 95, reach: 62 },
+                description: "Le format intime par excellence. Les auditeurs sont captifs, créant un environnement de 'Deep Attention'. Idéal pour associer la marque à des valeurs d'empathie.",
+                tags: ["Storytelling", "Intime", "CSP+"],
+                // Nouvelles Données
+                audience: {
+                    age: "25-45 ans",
+                    sex: "65% F / 35% H",
+                    csp: "CSP+ Urbain"
+                },
+                channels: ["Podcast", "Web"],
+                similar: [
+                    { title: "Les Pieds sur Terre", host: "France Culture" },
+                    { title: "Passages", host: "Louie Media" }
+                ]
+            },
+            {
+                id: 2,
+                number: "02",
+                title: "HugoDecrypte",
+                host: "Hugo Travers",
+                imageUrl: "https://pbs.twimg.com/media/E9foLABX0AIC8UZ.jpg",
+                category: "News",
+                scores: { performance: 76, pertinence: 65, reach: 98 },
+                description: "Une puissance de frappe massive sur les 15-34 ans. Le format 'Actus du jour' garantit une récurrence d'écoute quotidienne.",
+                tags: ["Gen Z", "News", "Mass Market"],
+                // Nouvelles Données
+                audience: {
+                    age: "15-34 ans",
+                    sex: "50% F / 50% H",
+                    csp: "Étudiants / Jeunes Actifs"
+                },
+                channels: ["Podcast", "YouTube", "TikTok", "Instagram"],
+                similar: [
+                    { title: "Le Crayon", host: "Media" },
+                    { title: "Brut.", host: "News" }
+                ]
+            },
+            {
+                id: 3,
+                number: "03",
+                title: "Génération Do It Yourself",
+                host: "Mathieu Stefani",
+                imageUrl: "https://i.scdn.co/image/ab6765630000ba8ae1325ea6e500ddcc8ec266e9",
+                category: "Business",
+                scores: { performance: 92, pertinence: 90, reach: 74 },
+                description: "La référence Business/Entrepreneur. L'engagement est maximisé par la durée longue des épisodes et la confiance envers l'hôte.",
+                tags: ["Business", "Decision Makers", "Long-form"],
+                // Nouvelles Données
+                audience: {
+                    age: "30-55 ans",
+                    sex: "20% F / 80% H",
+                    csp: "Cadres Supérieurs / Entrepreneurs"
+                },
+                channels: ["Podcast", "YouTube", "LinkedIn"],
+                similar: [
+                    { title: "Le Panier", host: "E-commerce" },
+                    { title: "Tech 45", host: "Tech" }
+                ]
+            }
+        ];
+
+        let state = { view: 'dashboard', selectedId: null };
+
+        // --- COMPOSANTS UI ---
+
+        function getChannelIcon(channel) {
+            const map = {
+                'Podcast': 'mic',
+                'YouTube': 'youtube',
+                'TikTok': 'smartphone', // Fallback icon
+                'Instagram': 'camera', // Fallback icon
+                'LinkedIn': 'briefcase', // Fallback icon
+                'Web': 'globe'
+            };
+            return map[channel] || 'circle';
+        }
+
+        function getLinearBarHTML(value, label, subLabel) {
+            return `
+                <div class="flex flex-col w-full mb-4 group">
+                    <div class="flex justify-between items-end mb-1">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-800 transition-colors">${label}</span>
+                        <span class="text-sm font-bold text-slate-900 font-mono">${value}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-sm overflow-hidden">
+                        <div class="bg-slate-800 h-full progress-bar rounded-sm" style="width: ${value}%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400 mt-1 truncate">${subLabel}</span>
+                </div>
+            `;
+        }
+
+        // Vue Dashboard
+        function getDashboardHTML() {
+            const statsSection = `
+                <section class="mb-10 animate-in">
+                    <div class="grid grid-cols-1 md:grid-cols-4 border border-slate-200 bg-slate-50 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                        <div class="p-6">
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Impact Prévisionnel</h3>
+                            <p class="text-xs text-slate-400">Index consolidé</p>
+                        </div>
+                        <div class="p-6">
+                            <span class="block text-2xl font-bold text-slate-900 font-mono">85.0</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Performance</span>
+                        </div>
+                        <div class="p-6">
+                            <span class="block text-2xl font-bold text-slate-900 font-mono">83.2</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pertinence</span>
+                        </div>
+                        <div class="p-6 bg-slate-900 text-white flex flex-col justify-center">
+                            <span class="block text-2xl font-bold font-mono">2.4M</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reach Estimé</span>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            const cardsHTML = podcasts.map(podcast => `
+                <div onclick="openDetail(${podcast.id})" class="bg-white border border-slate-200 hover:border-slate-800 transition-colors duration-200 p-0 flex flex-col animate-in cursor-pointer group h-full">
+                    
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-start">
+                        <div class="flex gap-4">
+                            <img src="${podcast.imageUrl}" class="w-16 h-16 object-cover grayscale group-hover:grayscale-0 transition-all duration-300 rounded-none bg-slate-100" alt="">
+                            <div>
+                                <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1 border border-slate-200 px-1.5 py-0.5 rounded-sm">${podcast.category}</span>
+                                <h3 class="text-base font-bold text-slate-900 leading-tight group-hover:underline decoration-1 underline-offset-4">${podcast.title}</h3>
+                                <div class="flex items-center gap-2 mt-2">
+                                    ${podcast.channels.slice(0,3).map(c => `
+                                        <div class="text-[10px] bg-slate-50 px-1.5 py-0.5 rounded-sm text-slate-500 border border-slate-100 flex items-center gap-1">
+                                            <i data-lucide="${getChannelIcon(c)}" class="w-3 h-3"></i> ${c}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-sm font-bold text-slate-200 group-hover:text-slate-900 transition-colors">#${podcast.number}</span>
+                    </div>
+
+                    <div class="p-6 space-y-2">
+                        ${getLinearBarHTML(podcast.scores.performance, "Performance", "Conversion")}
+                        ${getLinearBarHTML(podcast.scores.pertinence, "Pertinence", "Affinité")}
+                         <div class="flex justify-between items-end mt-4 pt-4 border-t border-slate-100">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Reach Vol.</span>
+                            <span class="text-xs font-bold text-slate-900 font-mono">${podcast.scores.reach}00k / mois</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto p-4 bg-slate-50 border-t border-slate-200 text-right">
+                        <span class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center justify-end gap-2 group-hover:translate-x-1 transition-transform">
+                            Fiche Complète <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="animate-in">
+                    <header class="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-tight">Sélection Média</h1>
+                            <p class="text-sm text-slate-500 mt-1">Campagne Q1 2026 - Configuration Audio</p>
+                        </div>
+                        <div class="flex gap-3">
+                             <button class="px-5 py-2.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors rounded-sm">
+                                Export PDF
+                             </button>
+                            <button class="px-5 py-2.5 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors flex items-center gap-2 rounded-sm">
+                                <i data-lucide="check" class="w-3 h-3"></i> Valider Plan
+                            </button>
+                        </div>
+                    </header>
+                    ${statsSection}
+                    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${cardsHTML}
+                    </section>
+                </div>
+            `;
+        }
+
+        // Vue Détail
+        function getDetailHTML(podcast) {
+            return `
+                <div class="animate-in max-w-6xl mx-auto">
+                    <!-- Fil d'ariane -->
+                    <div class="flex items-center gap-2 mb-8 text-xs font-mono text-slate-400 uppercase">
+                        <span onclick="goBack()" class="cursor-pointer hover:text-slate-900 hover:underline">Dashboard</span>
+                        <span>/</span>
+                        <span class="text-slate-900 font-bold">${podcast.title}</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        
+                        <!-- Col Gauche : Identité, Inventaire & Similaires -->
+                        <div class="lg:col-span-1 space-y-6">
+                            
+                            <!-- Carte Identité & Inventaire -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm">
+                                <img src="${podcast.imageUrl}" class="w-full aspect-square object-cover mb-6 border border-slate-100 grayscale hover:grayscale-0 transition-all duration-500 rounded-sm" alt="${podcast.title}">
+                                
+                                <h1 class="text-2xl font-bold text-slate-900 uppercase leading-none mb-2">${podcast.title}</h1>
+                                <p class="text-sm font-mono text-slate-500 mb-6">HOST: ${podcast.host.toUpperCase()}</p>
+                                
+                                <div class="space-y-4 pt-6 border-t border-slate-100">
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Disponibilité Inventaire</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            ${podcast.channels.map(c => `
+                                                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-2 rounded-sm w-full">
+                                                    <i data-lucide="${getChannelIcon(c)}" class="w-4 h-4 text-slate-800"></i>
+                                                    <span class="text-xs font-bold text-slate-700">${c}</span>
+                                                    <div class="ml-auto w-2 h-2 bg-green-500 rounded-full"></div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Catégorie</span>
+                                        <span class="block text-sm font-bold text-slate-900">${podcast.category}</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-slate-100">
+                                    <button class="w-full py-3 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors rounded-sm mb-3">
+                                        Ajouter au plan
+                                    </button>
+                                     <button class="w-full py-3 bg-white border border-slate-300 text-slate-900 text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors rounded-sm flex justify-center items-center gap-2">
+                                        <i data-lucide="play" class="w-3 h-3"></i> Écouter extrait
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Contenus Similaires (Désormais à gauche) -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm">
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-3 h-3"></i> Audiences Similaires
+                                </h3>
+                                <div class="space-y-3">
+                                    ${podcast.similar.map(sim => `
+                                        <div class="flex items-center justify-between p-3 border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer group rounded-sm">
+                                            <div>
+                                                <div class="text-sm font-bold text-slate-800 group-hover:text-indigo-900">${sim.title}</div>
+                                                <div class="text-[10px] text-slate-400 uppercase">${sim.host}</div>
+                                            </div>
+                                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-300 group-hover:text-indigo-900"></i>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col Droite : Data, Audience & Analyse (Maintenant plus large) -->
+                        <div class="lg:col-span-2 space-y-6">
+                            
+                            <!-- KPI Grid -->
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Performance</div>
+                                    <div class="text-3xl font-bold text-slate-900 font-mono mb-1">${podcast.scores.performance}/100</div>
+                                    <div class="w-full bg-slate-100 h-1 rounded-sm"><div class="bg-slate-900 h-1 rounded-sm" style="width: ${podcast.scores.performance}%"></div></div>
+                                </div>
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Pertinence</div>
+                                    <div class="text-3xl font-bold text-slate-900 font-mono mb-1">${podcast.scores.pertinence}/100</div>
+                                    <div class="w-full bg-slate-100 h-1 rounded-sm"><div class="bg-slate-900 h-1 rounded-sm" style="width: ${podcast.scores.pertinence}%"></div></div>
+                                </div>
+                                <div class="bg-white border border-slate-200 p-5 rounded-sm">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Reach Mensuel</div>
+                                    <div class="text-3xl font-bold text-slate-900 font-mono mb-1">${podcast.scores.reach}0K</div>
+                                    <div class="w-full bg-slate-100 h-1 rounded-sm"><div class="bg-slate-900 h-1 rounded-sm" style="width: ${podcast.scores.reach}%"></div></div>
+                                </div>
+                            </div>
+
+                            <!-- Bloc Audience Profile -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-sm">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <i data-lucide="users" class="w-4 h-4"></i> Profil d'audience
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Cœur de Cible</div>
+                                        <div class="text-lg font-bold text-slate-900">${podcast.audience.age}</div>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Répartition Sexe</div>
+                                        <div class="text-lg font-bold text-slate-900">${podcast.audience.sex}</div>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-sm text-center">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Typologie</div>
+                                        <div class="text-lg font-bold text-slate-900">${podcast.audience.csp}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analyse Stratégique (Agrandi et Enrichi) -->
+                            <div class="bg-white border border-slate-200 p-8 rounded-sm">
+                                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <i data-lucide="file-chart-column" class="w-4 h-4"></i> Audit Stratégique & Recommandations
+                                </h3>
+                                <div class="prose prose-sm max-w-none text-slate-600">
+                                    <!-- Description Principale -->
+                                    <p class="mb-6 leading-relaxed text-base text-slate-700">
+                                        ${podcast.description}
+                                    </p>
+                                    
+                                    <!-- Points Clés en Grille -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                                        <div class="bg-slate-50 border-l-2 border-slate-900 p-5">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Contexte d'écoute</p>
+                                            <p class="text-sm text-slate-800">"L'audience consomme ce contenu majoritairement en mobilité (commute) ou lors d'activités domestiques, favorisant une attention 'profonde' et une faible concurrence visuelle."</p>
+                                        </div>
+                                        <div class="bg-slate-50 border-l-2 border-indigo-900 p-5">
+                                            <p class="text-[10px] font-bold text-indigo-900 uppercase mb-2 tracking-widest">Recommandation Format</p>
+                                            <p class="text-sm font-bold text-slate-900">"Host Read 60s - Position Pré-roll"</p>
+                                            <p class="text-xs text-slate-500 mt-1">Pour maximiser le transfert d'affinité hôte/marque.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Paragraphe de conclusion -->
+                                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest mb-2">Synthèse de l'opportunité</h4>
+                                    <p class="leading-relaxed">
+                                        Ce support se positionne comme un vecteur de confiance majeur pour la cible visée. L'analyse sémantique des derniers épisodes montre une forte corrélation avec les thématiques d'innovation, s'alignant avec les valeurs de la campagne. Nous suggérons une activation fil rouge sur 3 mois pour maximiser la mémorisation assistée sans saturation publicitaire.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- MOTEUR DE RENDU ---
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+            if (state.view === 'dashboard') app.innerHTML = getDashboardHTML();
+            else if (state.view === 'detail') {
+                const podcast = podcasts.find(p => p.id === state.selectedId);
+                if (podcast) app.innerHTML = getDetailHTML(podcast);
+            }
+            lucide.createIcons();
+            window.scrollTo(0, 0);
+        }
+
+        window.openDetail = function(id) { state.view = 'detail'; state.selectedId = id; render(); };
+        window.goBack = function() { state.view = 'dashboard'; state.selectedId = null; render(); };
+
+        render();
+    </script>
+</body>
+</html>
