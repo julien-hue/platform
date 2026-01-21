@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioAI - Historique des Versions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-8 text-slate-800">
+
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-8 text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-slate-900 text-white rounded-lg mb-4 shadow-lg">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">AudioAI Retour de brief</h1>
+            <p class="text-slate-500 mt-2">Index des versions de la plateforme (0 à 15)</p>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <ul id="link-list" class="divide-y divide-slate-100">
+                <!-- Les liens seront générés ici -->
+            </ul>
+        </div>
+        
+        <footer class="mt-8 text-center text-xs text-slate-400">
+            <p>Généré pour le suivi de projet AudioAI</p>
+        </footer>
+    </div>
+
+    <script>
+        const baseUrl = "https://julien-hue.github.io/platform/";
+        const list = document.getElementById('link-list');
+
+        // Fonction pour créer un élément de liste
+        function createListItem(fileName, label, isMain = false) {
+            const li = document.createElement('li');
+            li.className = "hover:bg-slate-50 transition-colors group";
+            
+            const a = document.createElement('a');
+            a.href = baseUrl + fileName;
+            a.target = "_blank";
+            a.className = "flex items-center justify-between p-4 block";
+            
+            const content = `
+                <div class="flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full ${isMain ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'} flex items-center justify-center font-mono text-xs font-bold">
+                        ${isMain ? 'V0' : label.replace('Version ', '')}
+                    </div>
+                    <div>
+                        <span class="font-medium text-slate-900 block group-hover:text-indigo-600 transition-colors">${label}</span>
+                        <span class="text-xs text-slate-400 font-mono">${fileName}</span>
+                    </div>
+                </div>
+                <i data-lucide="external-link" class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors"></i>
+            `;
+            
+            a.innerHTML = content;
+            li.appendChild(a);
+            return li;
+        }
+
+        // 1. Ajouter la version principale (index.html)
+        list.appendChild(createListItem("index.html", "Version Principale (Index)", true));
+
+        // 2. Ajouter les versions 1 à 15
+        for (let i = 1; i <= 15; i++) {
+            list.appendChild(createListItem(`index_${i}.html`, `Version ${i}`));
+        }
+
+        // Initialiser les icônes
+        lucide.createIcons();
+    </script>
+</body>
+</html>
