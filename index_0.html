@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioPlan - Campaign Dashboard</title>
+    
+    <!-- Tailwind CSS (via CDN pour un usage immédiat sans build) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons (Iconographie) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Animation fluide pour les jauges */
+        .gauge-circle {
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        /* Animations d'entrée de page */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FC] text-slate-900 min-h-screen">
+
+    <!-- Conteneur Principal (Le contenu change ici dynamiquement) -->
+    <main id="app" class="max-w-7xl mx-auto p-6 lg:p-12">
+        <!-- Le contenu sera injecté ici par JavaScript -->
+    </main>
+
+    <!-- Scripts Logique -->
+    <script>
+        // --- DONNÉES ---
+        const podcasts = [
+            {
+                id: 1,
+                number: "01",
+                title: "Transfert",
+                host: "Slate Audio",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/fr/5/52/Logo_Transfert_%28podcast%29.jpg",
+                category: "Society",
+                scores: { performance: 88, pertinence: 95, reach: 62 },
+                description: "Le format intime par excellence. Les auditeurs sont captifs, créant un environnement de 'Deep Attention'. Idéal pour associer la marque à des valeurs d'empathie et d'humain.",
+                tags: ["Storytelling", "Intime", "CSP+"]
+            },
+            {
+                id: 2,
+                number: "02",
+                title: "HugoDecrypte",
+                host: "Hugo Travers",
+                imageUrl: "https://yt3.googleusercontent.com/ytc/AIdro_k2L0ZgGkX15s-2qR3-4nC6oZ9wXyG5nZ3vV4s=s900-c-k-c0x00ffffff-no-rj",
+                category: "News",
+                scores: { performance: 76, pertinence: 65, reach: 98 },
+                description: "Une puissance de frappe massive sur les 15-34 ans. Le format 'Actus du jour' garantit une récurrence d'écoute quotidienne. Parfait pour un objectif de notoriété rapide.",
+                tags: ["Gen Z", "News", "Mass Market"]
+            },
+            {
+                id: 3,
+                number: "03",
+                title: "Génération Do It Yourself",
+                host: "Mathieu Stefani",
+                imageUrl: "https://gdiy.fr/wp-content/uploads/2020/10/GDIY-Carre-1400x1400.jpg",
+                category: "Business",
+                scores: { performance: 92, pertinence: 90, reach: 74 },
+                description: "La référence Business/Entrepreneur. L'engagement est maximisé par la durée longue des épisodes et la confiance envers l'hôte. Très efficace pour la conversion B2B.",
+                tags: ["Business", "Decision Makers", "Long-form"]
+            }
+        ];
+
+        // --- ÉTAT ---
+        let state = {
+            view: 'dashboard', // 'dashboard' ou 'detail'
+            selectedId: null
+        };
+
+        // --- COMPOSANTS (Générateurs de HTML) ---
+
+        // Générateur de Jauge Circulaire
+        function getKPIGaugeHTML(value, label, subLabel, color, size = "normal", tooltipText = null) {
+            const isLarge = size === "large";
+            const radius = isLarge ? 56 : 36;
+            const strokeWidth = isLarge ? 8 : 6;
+            const circumference = 2 * Math.PI * radius;
+            const strokeDashoffset = circumference - (value / 100) * circumference;
+            
+            // Classes de couleurs
+            let colorClass, bgClass;
+            if (color === 'green') { colorClass = 'text-emerald-500'; bgClass = 'bg-emerald-50'; }
+            else if (color === 'blue') { colorClass = 'text-blue-600'; bgClass = 'bg-blue-50'; }
+            else if (color === 'orange') { colorClass = 'text-orange-500'; bgClass = 'bg-orange-50'; }
+            else { colorClass = 'text-gray-500'; bgClass = 'bg-gray-50'; }
+
+            // Dimensions
+            const containerSize = isLarge ? "w-36 h-36" : "w-24 h-24";
+            const centerSize = isLarge ? "w-24 h-24" : "w-16 h-16";
+            const textSize = isLarge ? "text-3xl" : "text-xl";
+
+            // Tooltip HTML (si présent)
+            let tooltipHTML = '';
+            if (tooltipText) {
+                tooltipHTML = `
+                    <div class="group relative inline-block ml-1 align-middle">
+                        <i data-lucide="help-circle" class="w-${isLarge ? '4' : '3'} h-${isLarge ? '4' : '3'} text-gray-400 cursor-help hover:text-blue-500 transition-colors"></i>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-gray-900 text-white text-xs font-medium p-2.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 text-center leading-relaxed">
+                            ${tooltipText}
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="flex flex-col items-center">
+                  <div class="relative ${containerSize} mb-3">
+                    <svg class="w-full h-full transform -rotate-90">
+                      <circle cx="50%" cy="50%" r="${radius}" stroke="currentColor" stroke-width="${strokeWidth}" fill="transparent" class="text-gray-100" />
+                      <circle cx="50%" cy="50%" r="${radius}" stroke="currentColor" stroke-width="${strokeWidth}" fill="transparent"
+                        stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" stroke-linecap="round"
+                        class="${colorClass} gauge-circle transition-all duration-1000 ease-out" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="flex flex-col items-center justify-center ${centerSize} rounded-full ${bgClass}">
+                           <span class="${textSize} font-bold ${colorClass}">${value}</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="text-center flex flex-col items-center">
+                    <div class="flex items-center justify-center">
+                        <h4 class="${isLarge ? 'text-base' : 'text-xs'} font-bold text-gray-800 uppercase tracking-wider">${label}</h4>
+                        ${tooltipHTML}
+                    </div>
+                    <p class="${isLarge ? 'text-sm' : 'text-[10px]'} text-gray-500 mt-1">${subLabel}</p>
+                  </div>
+                </div>
+            `;
+        }
+
+        // Vue Dashboard
+        function getDashboardHTML() {
+            // Stats globales
+            const statsSection = `
+                <section class="mb-12 animate-in">
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm flex flex-col xl:flex-row justify-between items-center gap-8">
+                        <div class="text-left">
+                            <h3 class="text-lg font-bold text-gray-900">Prévisions d'impact global</h3>
+                            <p class="text-gray-500">Moyenne pondérée sur les 3 supports sélectionnés.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-8 lg:gap-12 justify-center xl:justify-end">
+                            
+                            <!-- Performance -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-3 h-12 bg-emerald-500 rounded-full opacity-80"></div>
+                                <div>
+                                    <span class="block text-3xl font-bold text-gray-900">85/100</span>
+                                    <span class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Performance</span>
+                                </div>
+                            </div>
+
+                            <div class="w-px h-12 bg-gray-100 hidden lg:block"></div>
+
+                            <!-- Pertinence (Nouvel ajout) -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-3 h-12 bg-blue-600 rounded-full opacity-80"></div>
+                                <div>
+                                    <span class="block text-3xl font-bold text-gray-900">83/100</span>
+                                    <span class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Pertinence</span>
+                                </div>
+                            </div>
+
+                            <div class="w-px h-12 bg-gray-100 hidden lg:block"></div>
+
+                            <!-- Reach -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-3 h-12 bg-orange-500 rounded-full opacity-80"></div>
+                                <div>
+                                    <span class="block text-3xl font-bold text-gray-900">2.4M</span>
+                                    <span class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Reach Estimé</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            // Grille des cartes
+            const cardsHTML = podcasts.map(podcast => `
+                <div onclick="openDetail(${podcast.id})" class="bg-white rounded-2xl p-6 shadow-[0_2px_20px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-xl hover:border-blue-100 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-pointer h-full flex flex-col animate-in">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        <div class="flex items-start gap-4">
+                            <img src="${podcast.imageUrl}" alt="${podcast.title}" class="w-20 h-20 rounded-xl object-cover shadow-sm bg-gray-100 group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/80x80?text=${podcast.title[0]}'">
+                            <div>
+                                <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider rounded mb-2">${podcast.category}</span>
+                                <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">${podcast.title}</h3>
+                                <p class="text-sm text-gray-500 font-medium uppercase tracking-wide mt-1">${podcast.host}</p>
+                            </div>
+                        </div>
+                        <span class="text-4xl font-mono text-gray-100 font-bold select-none group-hover:text-blue-50 transition-colors -mt-2">${podcast.number}</span>
+                    </div>
+
+                    <!-- KPIs Mini -->
+                    <div class="grid grid-cols-3 gap-2 mb-8 relative z-10 mt-auto">
+                        ${getKPIGaugeHTML(podcast.scores.performance, "Performance", "Conv", "green")}
+                        ${getKPIGaugeHTML(podcast.scores.pertinence, "Pertinence", "Fit", "blue")}
+                        ${getKPIGaugeHTML(podcast.scores.reach, "Reach", "Vol", "orange")}
+                    </div>
+
+                    <!-- Desc -->
+                    <div class="relative z-10 bg-gray-50 rounded-xl p-4 mb-4 group-hover:bg-blue-50/30 transition-colors">
+                        <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">${podcast.description}</p>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 relative z-10 mb-6">
+                        ${podcast.tags.map(tag => `<span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600">${tag}</span>`).join('')}
+                    </div>
+
+                    <!-- CTA Hidden -->
+                    <div class="absolute bottom-4 right-4 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-sm font-bold">
+                        Voir la fiche <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="animate-in">
+                    <header class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                        <div>
+                            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">Sélection Audion</h1>
+                        </div>
+                        <div class="flex gap-4">
+                             <button class="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm">Exporter PDF</button>
+                            <button class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2">
+                                <i data-lucide="play-circle" class="w-5 h-5"></i> Valider la sélection
+                            </button>
+                        </div>
+                    </header>
+                    ${statsSection}
+                    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
+                        ${cardsHTML}
+                    </section>
+                </div>
+            `;
+        }
+
+        // Vue Détail
+        function getDetailHTML(podcast) {
+            return `
+                <div class="animate-in max-w-5xl mx-auto">
+                    <button onclick="goBack()" class="mb-8 flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors font-medium px-4 py-2 hover:bg-white rounded-lg -ml-4">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i> Retour à la sélection
+                    </button>
+
+                    <div class="bg-white rounded-3xl p-8 lg:p-12 shadow-sm border border-gray-100 relative overflow-hidden">
+                        
+                        <!-- Header Detail -->
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12 relative z-10">
+                            <div class="flex items-center gap-8">
+                                <img src="${podcast.imageUrl}" alt="${podcast.title}" class="w-32 h-32 rounded-2xl object-cover shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300 bg-gray-100" onerror="this.src='https://placehold.co/128x128?text=${podcast.title[0]}'">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wide">${podcast.category}</span>
+                                        <span class="text-gray-400 font-mono">#${podcast.number}</span>
+                                    </div>
+                                    <h1 class="text-4xl font-bold text-gray-900 mb-1">${podcast.title}</h1>
+                                    <p class="text-xl text-gray-500 font-medium">Host: <span class="text-gray-800">${podcast.host}</span></p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <button class="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2">
+                                    <i data-lucide="play-circle" class="w-5 h-5"></i> Écouter un extrait
+                                </button>
+                                <button class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
+                                    Valider ce support
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Big KPIs -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 p-8 bg-gray-50 rounded-2xl border border-gray-100 relative z-10">
+                            ${getKPIGaugeHTML(podcast.scores.performance, "Performance", "Efficacité sur conversion", "green", "large", "L'efficacité du contenu pour servir la campagne.")}
+                            ${getKPIGaugeHTML(podcast.scores.pertinence, "Pertinence", "Alignement marque & brief", "blue", "large", "Le lien sémantique et thématique entre le contenu et le brief.")}
+                            ${getKPIGaugeHTML(podcast.scores.reach, "Reach Global", "Volume d'écoutes mensuel", "orange", "large", "La quantité totale de consommation de ce contenu.")}
+                        </div>
+
+                        <!-- Analysis -->
+                        <div class="grid grid-cols-1 gap-12 relative z-10">
+                            <div class="space-y-8">
+                                <div>
+                                    <h3 class="flex items-center gap-2 text-xl font-bold text-gray-900 mb-4">
+                                        <i data-lucide="info" class="w-6 h-6 text-blue-600"></i> Analyse Contextuelle
+                                    </h3>
+                                    <p class="text-gray-600 leading-relaxed text-lg">${podcast.description}</p>
+                                    <p class="text-gray-600 leading-relaxed text-lg mt-4">
+                                        Ce podcast se distingue par une communauté extrêmement fidèle. L'intégration publicitaire ici ne doit pas être intrusive mais s'intégrer au récit ("Host Read" recommandé).
+                                    </p>
+                                </div>
+                                <div>
+                                    <h3 class="flex items-center gap-2 text-xl font-bold text-gray-900 mb-4">
+                                        <i data-lucide="target" class="w-6 h-6 text-orange-500"></i> Cible & Audience
+                                    </h3>
+                                    <div class="flex flex-wrap gap-3">
+                                        ${podcast.tags.map(tag => `<span class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm">${tag}</span>`).join('')}
+                                        <span class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm">Urbain</span>
+                                        <span class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm">Haut Revenu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decor -->
+                        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-b from-blue-50 to-transparent opacity-50 rounded-bl-full pointer-events-none"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- NAVIGATION & RENDU ---
+        
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // Nettoyer
+
+            if (state.view === 'dashboard') {
+                app.innerHTML = getDashboardHTML();
+            } else if (state.view === 'detail') {
+                const podcast = podcasts.find(p => p.id === state.selectedId);
+                if (podcast) {
+                    app.innerHTML = getDetailHTML(podcast);
+                }
+            }
+
+            // Réinitialiser les icônes Lucide après injection HTML
+            lucide.createIcons();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Fonctions globales exposées pour les onClick
+        window.openDetail = function(id) {
+            state.view = 'detail';
+            state.selectedId = id;
+            render();
+        };
+
+        window.goBack = function() {
+            state.view = 'dashboard';
+            state.selectedId = null;
+            render();
+        };
+
+        // Premier rendu
+        render();
+
+    </script>
+</body>
+</html>

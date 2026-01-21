@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AudioAI - Historique des Versions</title>
+    <title>Audion AI - Historique des Versions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,24 +18,37 @@
             <div class="inline-flex items-center justify-center w-12 h-12 bg-slate-900 text-white rounded-lg mb-4 shadow-lg">
                 <i data-lucide="layers" class="w-6 h-6"></i>
             </div>
-            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Audion AI Retour de brief</h1>
-            <p class="text-slate-500 mt-2">Index des versions de la plateforme (0 à 15)</p>
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Audion AI - Retour de Brief</h1>
+            <p class="text-slate-500 mt-2">Index dynamique du dépôt GitHub (Plus récent en premier)</p>
         </header>
 
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <ul id="link-list" class="divide-y divide-slate-100">
-                <!-- Les liens seront générés ici -->
+            <div id="loading" class="p-8 text-center text-slate-400">
+                <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i>
+                Chargement des versions...
+            </div>
+            <ul id="link-list" class="divide-y divide-slate-100 hidden">
+                <!-- Les liens seront générés ici via l'API GitHub -->
             </ul>
+            <div id="error-message" class="hidden p-4 text-center text-red-500 text-sm">
+                Impossible de charger les fichiers depuis GitHub.
+            </div>
         </div>
         
         <footer class="mt-8 text-center text-xs text-slate-400">
-            <p>Généré pour le suivi de projet AudioAI</p>
+            <p>Données récupérées via GitHub API pour julien-hue/platform</p>
         </footer>
     </div>
 
     <script>
-        const baseUrl = "https://julien-hue.github.io/platform/";
+        const ghUser = "julien-hue";
+        const ghRepo = "platform";
+        const baseUrl = `https://${ghUser}.github.io/${ghRepo}/`;
+        const apiUrl = `https://api.github.com/repos/${ghUser}/${ghRepo}/contents/`;
+
         const list = document.getElementById('link-list');
+        const loading = document.getElementById('loading');
+        const errorMsg = document.getElementById('error-message');
 
         // Fonction pour créer un élément de liste
         function createListItem(fileName, label, isMain = false) {
@@ -49,15 +62,15 @@
             
             const content = `
                 <div class="flex items-center gap-4">
-                    <div class="w-8 h-8 rounded-full ${isMain ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'} flex items-center justify-center font-mono text-xs font-bold">
+                    <div class="w-8 h-8 rounded-full ${isMain ? 'bg-slate-100 text-slate-500' : 'bg-indigo-100 text-indigo-600'} flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
                         ${isMain ? 'V0' : label.replace('Version ', '')}
                     </div>
-                    <div>
-                        <span class="font-medium text-slate-900 block group-hover:text-indigo-600 transition-colors">${label}</span>
-                        <span class="text-xs text-slate-400 font-mono">${fileName}</span>
+                    <div class="min-w-0">
+                        <span class="font-medium text-slate-900 block group-hover:text-indigo-600 transition-colors truncate">${label}</span>
+                        <span class="text-xs text-slate-400 font-mono truncate block">${fileName}</span>
                     </div>
                 </div>
-                <i data-lucide="external-link" class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors"></i>
+                <i data-lucide="external-link" class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors flex-shrink-0 ml-2"></i>
             `;
             
             a.innerHTML = content;
@@ -65,15 +78,59 @@
             return li;
         }
 
-        // 1. Ajouter la version principale (index.html)
-        list.appendChild(createListItem("index.html", "Version Principale (Index)", true));
+        async function fetchVersions() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Erreur réseau');
+                
+                const files = await response.json();
+                
+                // Filtrer uniquement les fichiers html commençant par 'index'
+                const indexFiles = files.filter(file => 
+                    file.name.startsWith('index') && 
+                    file.name.endsWith('.html') &&
+                    file.type === 'file'
+                );
 
-        // 2. Ajouter les versions 1 à 15
-        for (let i = 1; i <= 15; i++) {
-            list.appendChild(createListItem(`index_${i}.html`, `Version ${i}`));
+                // Trier les fichiers : ordre décroissant (le plus grand numéro d'abord)
+                indexFiles.sort((a, b) => {
+                    // Fonction utilitaire pour extraire le numéro
+                    const getNum = (name) => {
+                        if (name === 'index.html') return 0; // On considère index.html comme la version 0 (tout en bas)
+                        const match = name.match(/index_(\d+)\.html/);
+                        return match ? parseInt(match[1], 10) : -1;
+                    };
+                    
+                    // Comparaison pour tri décroissant (b - a)
+                    // Si b est plus grand que a, le résultat est positif, donc b vient avant a
+                    return getNum(b.name) - getNum(a.name);
+                });
+
+                // Générer la liste
+                if (indexFiles.length > 0) {
+                    indexFiles.forEach(file => {
+                        const isMain = file.name === 'index.html';
+                        const label = isMain ? "Version Principale (Index)" : `Version ${file.name.match(/index_(\d+)/)?.[1] || '?'}`;
+                        list.appendChild(createListItem(file.name, label, isMain));
+                    });
+                    
+                    loading.classList.add('hidden');
+                    list.classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    throw new Error('Aucun fichier index trouvé');
+                }
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                loading.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+                errorMsg.textContent = "Impossible de charger la liste depuis GitHub (" + error.message + ")";
+            }
         }
 
-        // Initialiser les icônes
+        // Démarrer le chargement
+        fetchVersions();
         lucide.createIcons();
     </script>
 </body>
