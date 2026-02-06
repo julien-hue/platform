@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI | Agent - Content Universe 3D</title>
+    <!-- Tailwind CSS pour l'UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0b0d17;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI Overlay */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        .glass-panel {
+            background: rgba(23, 25, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pill-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .pill-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .pill-btn:active {
+             background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Styles spécifiques pour les sliders */
+        input[type=range] {
+            -webkit-appearance: none; 
+            width: 100px; 
+            background: transparent; 
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -4px; 
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <!-- MODAL CARD (Hidden by default) -->
+    <div id="card-modal" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] bg-[#0f172a] border border-white/20 rounded-xl shadow-2xl z-50 p-0 overflow-hidden interactive">
+        
+        <!-- Background Concentric Circles -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none z-0 overflow-hidden">
+             <!-- SVG Radar Pattern -->
+             <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" class="text-white w-[600px] h-[600px] animate-[spin_60s_linear_infinite]">
+                <circle cx="100" cy="100" r="99" stroke-width="0.5" stroke-dasharray="4 4"/>
+                <circle cx="100" cy="100" r="79" stroke-width="0.5"/>
+                <circle cx="100" cy="100" r="59" stroke-width="0.5" stroke-dasharray="2 2"/>
+                <circle cx="100" cy="100" r="39" stroke-width="0.5"/>
+                <circle cx="100" cy="100" r="19" stroke-width="0.5"/>
+                <!-- Crosshairs -->
+                <path d="M100 0 L100 200 M0 100 L200 100" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+        </div>
+
+        <!-- Close Button -->
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors z-20 bg-black/20 rounded-full p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        
+        <!-- Content -->
+        <div class="p-6 relative z-10">
+            <div class="flex items-start gap-4 mb-4">
+                <!-- Avatar Image -->
+                <img id="modal-avatar-img" src="" alt="Avatar" class="w-14 h-14 rounded-full object-cover shadow-lg border-2 border-white/10 bg-slate-800">
+                
+                <div class="flex-1">
+                    <h3 id="modal-title" class="text-white font-bold text-base leading-snug line-clamp-3">Nom du Contenu</h3>
+                    <p id="modal-channel" class="text-indigo-400 text-xs font-semibold mt-1">Nom Chaîne</p>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <span id="modal-category" class="inline-block px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide bg-slate-800/80 text-slate-300 border border-slate-700 backdrop-blur-sm">Category</span>
+            </div>
+
+            <!-- Description -->
+            <p id="modal-desc" class="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-3">
+                Description du contenu...
+            </p>
+
+            <!-- Metrics -->
+            <div class="border-t border-white/10 pt-4 flex justify-between items-center">
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-400 mb-0.5">Reach</span>
+                    <span id="modal-reach" class="text-xl font-bold text-white">88%</span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/10"></div>
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-400 mb-0.5">Perf</span>
+                    <span id="modal-perf" class="text-xl font-bold text-green-400">92%</span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/10"></div>
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-400 mb-0.5">Rel.</span>
+                    <span id="modal-rel" class="text-xl font-bold text-white">95</span>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Action -->
+        <div class="bg-slate-900/50 p-3 border-t border-white/5 flex justify-end relative z-10">
+            <button class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 uppercase tracking-wider flex items-center gap-1">
+                View Details <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="ui-layer">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-start w-full">
+            <div class="flex items-center gap-6 interactive">
+                <div class="flex items-center gap-2">
+                    <div class="text-xl font-bold tracking-widest text-white">AUDION AI</div>
+                    <div class="h-4 w-[1px] bg-gray-600 mx-2"></div>
+                    <div class="text-xl font-medium text-white">Agent</div>
+                </div>
+                
+                <button id="reset-btn" class="pill-btn px-6 py-2 rounded-full text-xs font-semibold tracking-wider text-white">
+                    BACK TO MAP
+                </button>
+            </div>
+
+            <!-- Sliders Only -->
+            <div class="flex items-center gap-6 interactive glass-panel rounded-full px-6 py-3">
+                <div class="flex flex-col gap-1">
+                    <div class="flex justify-between text-[10px] uppercase text-gray-400 font-semibold tracking-wider">
+                        <span>Reach</span>
+                        <span id="val-reach">0.8</span>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="0.8" oninput="document.getElementById('val-reach').innerText = this.value">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="flex justify-between text-[10px] uppercase text-gray-400 font-semibold tracking-wider">
+                        <span>Relevance</span>
+                        <span id="val-rel">0.6</span>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="0.6" oninput="document.getElementById('val-rel').innerText = this.value">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="flex justify-between text-[10px] uppercase text-gray-400 font-semibold tracking-wider">
+                        <span>Performance</span>
+                        <span id="val-perf">0.9</span>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="0.9" oninput="document.getElementById('val-perf').innerText = this.value">
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Section -->
+        <div class="flex flex-1 relative">
+            <div class="absolute right-0 top-10 interactive">
+                <div class="glass-panel rounded-xl p-6 w-72 shadow-2xl bg-[#1a1d2d]/90">
+                    <div class="space-y-6 mt-2">
+                        <div>
+                            <div class="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Number of Contents</div>
+                            <div class="text-4xl font-light text-white">800</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Number of Connections</div>
+                            <div class="text-4xl font-light text-white">2400</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Logo -->
+        <div class="interactive">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script 3D -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Données Spécifiques (6 contenus fournis) ---
+        const specificContents = [
+            {
+                channel: "Ecorama",
+                title: "LVMH, Kering, Hermès : le luxe va-t-il continuer de briller en Bourse en 2023 ?",
+                category: "LUXURY GOODS",
+                image: "https://artworks.360.audion.fm/5c3320ed-5932-4418-8f9f-3e204f2059f0.jpg?width=3000&height=3000"
+            },
+            {
+                channel: "120 secondes",
+                title: "Peut-on emporter des médicaments dans l'avion ? L'essentiel en 120 Secondes",
+                category: "AIR TRAVEL",
+                image: "https://artworks.360.audion.fm/60edd034-2573-46b4-bf08-9e1241eeb5e2.jpg?width=3000&height=3000"
+            },
+            {
+                channel: "Feeling Dakar TV",
+                title: "🚨Direct- Parquet Judiciaire et Financier: Pape Malick Ndour devant le Procureur",
+                category: "LOCAL NEWS",
+                image: "https://yt3.ggpht.com/A8UbXChaSiQGhqQ3rn5ZUtwPbrSgFcwb1Wy73ypZTFB-gG5YQpY37PwsgKIyuCsRsjqXcHX9=s800-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                channel: "Le Top Ten de l'Actu",
+                title: "Les États-Unis infligent une amende de 1,5 million de dollars à Emirates",
+                category: "AIR TRAVEL",
+                image: "https://artworks.360.audion.fm/77fbea23-9ee3-4d54-a24c-e8f25720d0de.jpg?width=3000&height=3000"
+            },
+            {
+                channel: "AlloCiné",
+                title: "Mission Impossible 7 : que vaut le nouveau film de la franchise avec Tom Cruise ?",
+                category: "MOVIES",
+                image: "https://artworks.360.audion.fm/ea3447e8-9ed3-4641-b32f-9420cce99893.jpg?width=3000&height=3000"
+            },
+            {
+                channel: "Sans limites TV",
+                title: "Bonne nouvelle: L’initiateur «Sonko moy sama carte moy Sonko» déballe tout",
+                category: "LOCAL NEWS",
+                image: "https://yt3.ggpht.com/ytc/AIdro_kCX6gPCrdSV5q-Kgugek2Sdf188RNzGHe9SmEYPMiOjQ=s800-c-k-c0x00ffffff-no-rj"
+            }
+        ];
+
+        // --- Configuration ---
+        // Catégories adaptées aux contenus + fillers
+        const config = {
+            particleCount: 800, 
+            clusterCount: 7, 
+            rotationSpeed: 0.0005,
+            colors: [
+                0xff5e57, // LUXURY
+                0x0fbcf9, // AIR TRAVEL
+                0xffdd59, // LOCAL NEWS
+                0x8e44ad, // MOVIES
+                0xd2dae2, // STOCKS
+                0x05c46b, // VACATION
+                0xe67e22  // SHORT STAYS
+            ],
+            categories: [
+                "LUXURY GOODS", 
+                "AIR TRAVEL", 
+                "LOCAL NEWS", 
+                "MOVIES", 
+                "STOCKS & BONDS", 
+                "VACATION RENTAL", 
+                "SHORT STAYS"
+            ]
+        };
+        
+        const channelNames = ["Trash", "Mcfly et Carlito", "Jo & Tips", "Numerama"]; // Fallback
+        
+        const loremText = "Découvrez comment cette tendance émergente redéfinit les attentes des consommateurs. Une analyse approfondie basée sur des données récentes et des interactions sociales, mettant en lumière des opportunités uniques pour votre marque dans ce secteur en pleine évolution.";
+
+        // --- Scène & Caméra ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0b0d17); 
+        scene.fog = new THREE.FogExp2(0x0b0d17, 0.005); 
+
+        const INITIAL_CAM_POS = new THREE.Vector3(80, 60, 110);
+        const INITIAL_TARGET = new THREE.Vector3(0, 0, 0);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.copy(INITIAL_CAM_POS);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.3;
+        controls.enableZoom = false; 
+        controls.target.copy(INITIAL_TARGET);
+
+        // --- INTERACTION / RAYCASTER ---
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+        const clickableObjects = []; 
+
+        const modal = document.getElementById('card-modal');
+        const closeModal = document.getElementById('close-modal');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('modal-enter');
+            controls.autoRotate = true; 
+        }
+
+        closeModal.addEventListener('click', hideModal);
+        resetBtn.addEventListener('click', () => {
+            camera.position.copy(INITIAL_CAM_POS);
+            controls.target.copy(INITIAL_TARGET);
+            hideModal();
+        });
+
+        window.addEventListener('click', (event) => {
+            pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(pointer, camera);
+
+            const intersects = raycaster.intersectObjects(clickableObjects);
+
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                const data = object.userData;
+                
+                controls.autoRotate = false;
+
+                // Populate Modal
+                document.getElementById('modal-title').innerText = data.title;
+                document.getElementById('modal-channel').innerText = data.channel;
+                document.getElementById('modal-category').innerText = data.category;
+                document.getElementById('modal-desc').innerText = data.description;
+                document.getElementById('modal-reach').innerText = Math.round(data.reach * 100) + "%";
+                document.getElementById('modal-perf').innerText = Math.round(data.perf * 100) + "%";
+                
+                // Image Avatar
+                const avatarImg = document.getElementById('modal-avatar-img');
+                if (data.image) {
+                    avatarImg.src = data.image;
+                    avatarImg.style.display = 'block';
+                } else {
+                    avatarImg.src = "https://via.placeholder.com/150"; // Fallback
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('modal-enter');
+            }
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(pointer, camera);
+            const intersects = raycaster.intersectObjects(clickableObjects);
+            
+            if (intersects.length > 0) {
+                container.style.cursor = 'pointer';
+            } else {
+                container.style.cursor = 'default';
+            }
+        });
+
+
+        // --- 1. LE BRIEF CENTRAL ---
+        function createCentralBrief() {
+            const geometry = new THREE.SphereGeometry(2, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const sphere = new THREE.Mesh(geometry, material);
+            
+            const haloGeo = new THREE.SphereGeometry(3.5, 32, 32);
+            const haloMat = new THREE.MeshBasicMaterial({ 
+                color: 0x4f46e5, 
+                transparent: true, 
+                opacity: 0.3,
+                side: THREE.BackSide
+            });
+            const halo = new THREE.Mesh(haloGeo, haloMat);
+            sphere.add(halo);
+
+            scene.add(sphere);
+            createLabel("Aéroport de Marseille", new THREE.Vector3(0, 6, 0), 50, "#ffffff");
+            return halo;
+        }
+        const briefHalo = createCentralBrief();
+
+        // --- 2. DONNÉES & CLUSTERS ---
+        const positions = [];
+        const customColors = [];
+        const sizes = [];
+        const alphas = [];
+        const radialLinePositions = [];
+        const radialLineColors = [];
+        
+        // Helper to get specific content for a category
+        const getSpecificContent = (categoryName) => {
+             // Find all contents matching this category
+             const matches = specificContents.filter(c => c.category === categoryName);
+             if (matches.length === 0) return null;
+             // Pick one randomly or sequentially (using random here for simplicity)
+             return matches[Math.floor(Math.random() * matches.length)];
+        };
+
+        for (let i = 0; i < config.clusterCount; i++) {
+            const clusterAngleBase = (i / config.clusterCount) * Math.PI * 2;
+            const colorObj = new THREE.Color(config.colors[i]);
+            const particlesInCluster = Math.floor(config.particleCount / config.clusterCount);
+
+            const catRadius = 100;
+            const catX = Math.cos(clusterAngleBase) * catRadius;
+            const catZ = Math.sin(clusterAngleBase) * catRadius;
+            createLabel(config.categories[i], new THREE.Vector3(catX, 15, catZ), 40, "#a5b4fc");
+
+            // Check if we have specific content for this cluster
+            const starContent = getSpecificContent(config.categories[i]);
+
+            for (let j = 0; j < particlesInCluster; j++) {
+                const reach = 0.2 + Math.random() * 0.8;
+                const performance = 0.1 + Math.random() * 0.9;
+                
+                let distance = 15 + Math.random() * 100;
+                
+                // Positionnement STAR
+                if (j === 0 && starContent) distance = 40 + Math.random() * 20;
+
+                const angleSpread = 0.8; 
+                const angle = clusterAngleBase + (Math.random() - 0.5) * angleSpread;
+                const heightSpread = distance * 0.5; 
+                const y = (Math.random() - 0.5) * heightSpread;
+                const x = Math.cos(angle) * distance;
+                const z = Math.sin(angle) * distance;
+
+                positions.push(x, y, z);
+                
+                const brightColor = colorObj.clone();
+                if (performance > 0.8) brightColor.offsetHSL(0, 0, 0.2); 
+                customColors.push(brightColor.r, brightColor.g, brightColor.b);
+
+                sizes.push(8.0 * reach);
+                alphas.push(performance);
+
+                radialLinePositions.push(0, 0, 0);
+                radialLinePositions.push(x, y, z);
+                const lineAlpha = performance * 0.15; 
+                radialLineColors.push(colorObj.r, colorObj.g, colorObj.b, lineAlpha);
+                radialLineColors.push(colorObj.r, colorObj.g, colorObj.b, lineAlpha);
+                
+                // --- INTERACTIF : POINT STAR (si contenu dispo) ---
+                if (j === 0 && starContent) {
+                     const hitGeometry = new THREE.SphereGeometry(3, 16, 16);
+                     const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
+                     const hitSphere = new THREE.Mesh(hitGeometry, hitMaterial);
+                     hitSphere.position.set(x, y, z);
+                     
+                     // Data Injection
+                     hitSphere.userData = {
+                         title: starContent.title,
+                         channel: starContent.channel,
+                         category: config.categories[i],
+                         image: starContent.image,
+                         reach: reach,
+                         perf: performance,
+                         color: colorObj,
+                         description: loremText
+                     };
+                     
+                     scene.add(hitSphere);
+                     clickableObjects.push(hitSphere);
+
+                     const starGeo = new THREE.SphereGeometry(1.5, 16, 16);
+                     const starMat = new THREE.MeshBasicMaterial({ 
+                         color: colorObj, 
+                         transparent: true, 
+                         opacity: 0.8
+                     });
+                     const starMesh = new THREE.Mesh(starGeo, starMat);
+                     starMesh.position.set(x, y, z);
+                     scene.add(starMesh);
+                     
+                     const ringGeo = new THREE.RingGeometry(2, 2.5, 32);
+                     const ringMat = new THREE.MeshBasicMaterial({ 
+                         color: 0xffffff, 
+                         transparent: true, 
+                         opacity: 0.4,
+                         side: THREE.DoubleSide
+                     });
+                     const ring = new THREE.Mesh(ringGeo, ringMat);
+                     ring.position.set(x, y, z);
+                     ring.lookAt(camera.position); 
+                     hitSphere.userData.ring = ring; 
+                     scene.add(ring);
+                }
+            }
+        }
+
+        // --- SHADER MATERIAL ---
+        const shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                scale: { value: 300.0 }
+            },
+            vertexShader: `
+                uniform float scale;
+                attribute float size;
+                attribute float alpha;
+                attribute vec3 customColor;
+                varying vec3 vColor;
+                varying float vAlpha;
+                void main() {
+                    vColor = customColor;
+                    vAlpha = alpha;
+                    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                    gl_PointSize = size * ( scale / - mvPosition.z );
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                varying float vAlpha;
+                void main() {
+                    if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) ) > 0.475 ) discard;
+                    gl_FragColor = vec4( vColor, vAlpha );
+                }
+            `,
+            transparent: true,
+            depthTest: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('customColor', new THREE.Float32BufferAttribute(customColors, 3));
+        geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+        geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+
+        const pointCloud = new THREE.Points(geometry, shaderMaterial);
+        scene.add(pointCloud);
+
+        // --- Rendu des Lignes Radiales ---
+        const radialGeo = new THREE.BufferGeometry();
+        radialGeo.setAttribute('position', new THREE.Float32BufferAttribute(radialLinePositions, 3));
+        const simpleLineColors = [];
+        for(let k=0; k<radialLineColors.length/4; k++) {
+            simpleLineColors.push(radialLineColors[k*4], radialLineColors[k*4+1], radialLineColors[k*4+2]);
+        }
+        radialGeo.setAttribute('color', new THREE.Float32BufferAttribute(simpleLineColors, 3));
+        
+        const radialMat = new THREE.LineBasicMaterial({
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.06, 
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const radialLines = new THREE.LineSegments(radialGeo, radialMat);
+        scene.add(radialLines);
+
+        // --- Lignes Web ---
+        const webPositions = [];
+        const webColors = [];
+        const pCount = positions.length / 3;
+        
+        for (let i = 0; i < pCount; i++) {
+            if (Math.random() > 0.85) continue; 
+            const x1 = positions[i * 3];
+            const y1 = positions[i * 3 + 1];
+            const z1 = positions[i * 3 + 2];
+            const colR = customColors[i*3];
+            const colG = customColors[i*3+1];
+            const colB = customColors[i*3+2];
+
+            let connections = 0;
+            for (let j = i + 1; j < Math.min(i + 50, pCount); j++) {
+                if (connections > 1) break;
+                const x2 = positions[j * 3];
+                const y2 = positions[j * 3 + 1];
+                const z2 = positions[j * 3 + 2];
+                const distSq = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2;
+
+                if (distSq < 150) { 
+                    webPositions.push(x1, y1, z1);
+                    webPositions.push(x2, y2, z2);
+                    webColors.push(colR, colG, colB);
+                    webColors.push(customColors[j*3], customColors[j*3+1], customColors[j*3+2]);
+                    connections++;
+                }
+            }
+        }
+        const webGeo = new THREE.BufferGeometry();
+        webGeo.setAttribute('position', new THREE.Float32BufferAttribute(webPositions, 3));
+        webGeo.setAttribute('color', new THREE.Float32BufferAttribute(webColors, 3));
+        const webMat = new THREE.LineBasicMaterial({
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.04, 
+            blending: THREE.AdditiveBlending
+        });
+        scene.add(new THREE.LineSegments(webGeo, webMat));
+
+        function createLabel(text, position, fontSize = 40, color = "white") {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1024; 
+            canvas.height = 128; 
+            ctx.font = `Bold ${fontSize}px Inter, sans-serif`;
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            if (color === "white") {
+                ctx.shadowColor = "rgba(0,0,0,0.8)";
+                ctx.shadowBlur = 4;
+            }
+            ctx.fillText(text, 512, 70);
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.9, depthTest: false });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(position);
+            const scale = fontSize === 40 ? 30 : (fontSize > 40 ? 50 : 15);
+            sprite.scale.set(scale, scale * 0.125, 1); 
+            scene.add(sprite);
+        }
+
+        // --- ANIMATION ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            const time = Date.now() * 0.001;
+            briefHalo.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
+
+            clickableObjects.forEach(obj => {
+                if(obj.userData.ring) {
+                    obj.userData.ring.lookAt(camera.position);
+                    const scale = 1 + Math.sin(time * 3) * 0.2;
+                    obj.userData.ring.scale.setScalar(scale);
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
