@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI - Dashboard Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .waveform-bar {
+            transition: height 0.1s ease-in-out;
+        }
+
+        @keyframes loading-progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-progress {
+            animation: loading-progress 2s linear infinite;
+        }
+
+        .new-row-flash {
+            animation: flash 1s ease-out;
+        }
+        @keyframes flash {
+            0% { background-color: rgba(59, 130, 246, 0.2); }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 pb-32">
+
+    <!-- NAVIGATION SUPÉRIEURE -->
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-6">
+        <a href="#" class="inline-flex items-center gap-2 text-blue-600 text-xs font-black uppercase tracking-widest hover:translate-x-1 transition-transform group">
+            <i data-lucide="list-filter" class="w-4 h-4"></i>
+            Voir les contenus par catégorie
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+    </div>
+
+    <!-- EN-TÊTE -->
+    <header class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight flex items-center gap-2 italic">
+                <i data-lucide="activity" class="text-blue-600 w-8 h-8"></i>
+                Dashboard <span class="text-blue-600">Insights</span>
+            </h1>
+            <p class="text-slate-500 mt-1 font-medium italic">Inventaire IA d'Audion suivi en temps réel</p>
+        </div>
+        
+        <div class="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+            <button onclick="switchTab('daily')" id="btn-daily" class="tab-btn px-4 py-2 text-sm font-medium rounded-md capitalize bg-blue-600 text-white shadow-sm">Daily</button>
+            <button onclick="switchTab('weekly')" id="btn-weekly" class="tab-btn px-4 py-2 text-sm font-medium rounded-md capitalize text-slate-500 hover:bg-slate-100">Weekly</button>
+            <button onclick="switchTab('monthly')" id="btn-monthly" class="tab-btn px-4 py-2 text-sm font-medium rounded-md capitalize text-slate-500 hover:bg-slate-100">Monthly</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 space-y-6">
+        
+        <!-- CARTES KPI -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="database" class="w-5 h-5 text-slate-600"></i></div>
+                    <span id="trend-total" class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">+24%</span>
+                </div>
+                <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Indexé</h3>
+                <div id="kpi-total" class="text-2xl font-bold mt-1 tracking-tight">5,842</div>
+                <p class="text-xs text-slate-400 mt-2 italic">Contenus analysés sur cette période</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="clock" class="w-5 h-5 text-slate-600"></i></div>
+                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">+15%</span>
+                </div>
+                <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Heures Transcrites</h3>
+                <div id="kpi-hours" class="text-2xl font-bold mt-1 tracking-tight">184 hrs</div>
+                <p class="text-xs text-slate-400 mt-2 italic">Volume de parole traité par l'IA</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="zap" class="w-5 h-5 text-slate-600"></i></div>
+                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">+22%</span>
+                </div>
+                <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Nouveaux Contenus</h3>
+                <div id="kpi-new" class="text-2xl font-bold mt-1 tracking-tight">542</div>
+                <p class="text-xs text-slate-400 mt-2 italic">Indexés depuis les 4 plateformes</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5 text-slate-600"></i></div>
+                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">+1%</span>
+                </div>
+                <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Score Brand Safety</h3>
+                <div id="kpi-safety" class="text-2xl font-bold mt-1 tracking-tight">82%</div>
+                <p class="text-xs text-slate-400 mt-2 italic">Moyenne de sécurité pour les annonceurs</p>
+            </div>
+        </div>
+
+        <!-- GRAPHIQUES -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-blue-500"></i>
+                    Tendances d'Indexation <span id="trend-label" class="text-slate-400 font-normal">(Daily)</span>
+                </h2>
+                <div class="h-[300px] relative">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 text-purple-500"></i>
+                    Répartition Live <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-auto flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span> Indexation Active
+                    </span>
+                </h2>
+                <div class="h-[300px] relative">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLUX TEMPS RÉEL -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </div>
+                    <h2 class="text-lg font-bold italic">Flux Live de Transcription IA</h2>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-xs uppercase text-slate-400 bg-slate-50/50">
+                            <th class="px-6 py-4 font-semibold">Source / Titre</th>
+                            <th class="px-6 py-4 font-semibold">Catégorie</th>
+                            <th class="px-6 py-4 font-semibold">Format</th>
+                            <th class="px-6 py-4 font-semibold">Statut IA</th>
+                            <th class="px-6 py-4 font-semibold">Indexé</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-table-body" class="divide-y divide-slate-100">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BANNIÈRE BRANDING -->
+        <div class="bg-gradient-to-br from-blue-700 via-indigo-900 to-slate-900 p-8 rounded-2xl text-white shadow-xl relative overflow-hidden group">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl group-hover:bg-blue-400/20 transition-all duration-1000"></div>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+                <div class="max-w-2xl text-center md:text-left">
+                    <h2 class="text-3xl font-black mb-3 flex items-center justify-center md:justify-start gap-3 tracking-tight">
+                        <i data-lucide="zap" class="w-8 h-8 text-yellow-400 fill-yellow-400"></i>
+                        Audion Semantic Engine
+                    </h2>
+                    <p id="banner-text" class="text-blue-100 text-lg leading-relaxed italic">
+                        Inventaire : <span class="text-white font-bold underline decoration-blue-400 underline-offset-4">Pic d'intérêt pour "IA" détecté</span> sur l'ensemble des sources.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <span class="px-6 py-2 bg-white/10 backdrop-blur-md rounded-lg text-xs font-black border border-white/20 tracking-widest shadow-lg">TEMPS RÉEL</span>
+                    <span class="px-6 py-2 bg-white/10 backdrop-blur-md rounded-lg text-xs font-black border border-white/20 tracking-widest shadow-lg">IA-POWERED</span>
+                    <span class="px-6 py-2 bg-white/10 backdrop-blur-md rounded-lg text-xs font-black border border-white/20 tracking-widest shadow-lg">SEMANTIQUE</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BARRE DE TRACKING FIXE -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 p-4 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center gap-6 flex-1 w-full md:w-auto">
+                <div class="flex flex-col gap-1 min-w-[160px]">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-blue-500">Analyse Audio en Cours</span>
+                    </div>
+                    <div id="waveform-container" class="flex items-end gap-[2px] h-10 w-full overflow-hidden">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-8 border-l border-slate-200 pl-8">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3"></i> Safety</span>
+                        <span id="live-safety" class="text-sm font-black text-emerald-500">98.4%</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Sentiment</span>
+                        <span id="live-sentiment" class="text-sm font-black text-blue-500">Positif</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1"><i data-lucide="list-filter" class="w-3 h-3"></i> Catégorie</span>
+                        <span id="live-category" class="text-sm font-black text-slate-800 tracking-tight italic">Arts & Ent.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-3">
+                <div class="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden relative border">
+                    <div class="h-full bg-blue-600 w-full animate-progress"></div>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Traitement IA</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const DATA = {
+            daily: {
+                total: "5,842", hours: "184 hrs", new: "542", safety: "82%", trend: "+24%",
+                trendLabels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+                videoTrend: [400, 800, 1200, 900, 1500, 1100, 600],
+                audioTrend: [200, 450, 800, 600, 950, 700, 400],
+                catNames: ['Arts', 'Société', 'News', 'Jeux', 'Finance', 'Santé', 'Sport'],
+                catCounts: [2450, 1100, 850, 400, 320, 280, 200],
+                max: 4000,
+                banner: "Pic d'intérêt pour l'IA détecté"
+            },
+            weekly: {
+                total: "42,910", hours: "1,420 hrs", new: "6,120", safety: "80%", trend: "+18%",
+                trendLabels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                videoTrend: [4200, 3800, 5100, 4800, 6200, 5800, 7100],
+                audioTrend: [2400, 2800, 3200, 3900, 4100, 4800, 5200],
+                catNames: ['Arts', 'Société', 'News', 'Jeux', 'Finance', 'Santé', 'Sport'],
+                catCounts: [18400, 8200, 6500, 3100, 2400, 1800, 1200],
+                max: 30000,
+                banner: "Croissance constante en Finance"
+            },
+            monthly: {
+                total: "1,248,392", hours: "42.5k hrs", new: "158,402", safety: "78%", trend: "+12%",
+                trendLabels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+                videoTrend: [28000, 32000, 41000, 38000],
+                audioTrend: [15000, 18000, 22000, 25000],
+                catNames: ['Arts', 'Société', 'News', 'Jeux', 'Finance', 'Santé', 'Sport'],
+                catCounts: [554054, 212899, 167401, 83251, 34382, 25558, 55338],
+                max: 800000,
+                banner: "Dominance globale Arts & Spectacles"
+            }
+        };
+
+        const platforms = ["YouTube", "Spotify", "Apple Podcasts", "Deezer"];
+        const commonCats = ["Technologie", "Arts & Ent.", "Finance", "News", "Jeux", "Santé"];
+
+        let trendChart, radarChart;
+        let currentActiveTab = 'daily';
+
+        function initCharts() {
+            const ctxTrend = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: DATA.daily.trendLabels,
+                    datasets: [
+                        { label: 'Vidéo', data: DATA.daily.videoTrend, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.05)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 0 },
+                        { label: 'Audio', data: DATA.daily.audioTrend, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.05)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 0 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+            });
+
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: DATA.daily.catNames,
+                    datasets: [{ 
+                        data: [...DATA.daily.catCounts], 
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', 
+                        borderColor: '#3b82f6', 
+                        borderWidth: 2,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: {
+                        duration: 600,
+                        easing: 'easeOutBack'
+                    },
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        r: { 
+                            grid: { color: '#f1f5f9' }, 
+                            pointLabels: { font: { size: 10, weight: 'bold' } }, 
+                            ticks: { display: false },
+                            suggestedMin: 0,
+                            suggestedMax: DATA.daily.max
+                        } 
+                    } 
+                }
+            });
+        }
+
+        // Animation "Live" AGRESSIVE : Santé (index 5) et Sport (index 6) explosent
+        function animateRadarPoints() {
+            if (!radarChart) return;
+            
+            const baseData = DATA[currentActiveTab].catCounts;
+            const animatedData = baseData.map((val, index) => {
+                // Santé et Sport : on applique un facteur multiplicateur très visible
+                if (index === 5 || index === 6) {
+                    // Les points vont osciller largement vers le haut pour montrer la croissance
+                    const boost = 0.2 + (Math.random() * 0.5); // Entre +20% et +70%
+                    return val * (1 + boost);
+                }
+                // Les autres bougent normalement pour le réalisme (+/- 8%)
+                const jitter = (Math.random() - 0.5) * 0.16;
+                return val * (1 + jitter);
+            });
+
+            radarChart.data.datasets[0].data = animatedData;
+            radarChart.update('none'); // Update immédiat pour plus de nervosité
+        }
+
+        function switchTab(tab) {
+            currentActiveTab = tab;
+            const data = DATA[tab];
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-500', 'hover:bg-slate-100');
+            });
+            document.getElementById(`btn-${tab}`).classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+            document.getElementById(`btn-${tab}`).classList.remove('text-slate-500', 'hover:bg-slate-100');
+
+            document.getElementById('kpi-total').innerText = data.total;
+            document.getElementById('kpi-hours').innerText = data.hours;
+            document.getElementById('kpi-new').innerText = data.new;
+            document.getElementById('kpi-safety').innerText = data.safety;
+            document.getElementById('trend-total').innerText = data.trend;
+            document.getElementById('trend-label').innerText = `(${tab.charAt(0).toUpperCase() + tab.slice(1)})`;
+            
+            // Update radar scale max
+            radarChart.options.scales.r.suggestedMax = data.max;
+
+            trendChart.data.labels = data.trendLabels;
+            trendChart.data.datasets[0].data = data.videoTrend;
+            trendChart.data.datasets[1].data = data.audioTrend;
+            trendChart.update();
+
+            radarChart.data.labels = data.catNames;
+            radarChart.data.datasets[0].data = [...data.catCounts];
+            radarChart.update();
+        }
+
+        function addLiveRow() {
+            const tableBody = document.getElementById('live-table-body');
+            const platform = platforms[Math.floor(Math.random() * platforms.length)];
+            const category = commonCats[Math.floor(Math.random() * commonCats.length)];
+            const type = platform === "YouTube" ? "Vidéo" : "Audio";
+            const icon = type === "Vidéo" ? "video" : "mic";
+            const iconColor = type === "Vidéo" ? "text-rose-500" : "text-blue-500";
+            
+            const tr = document.createElement('tr');
+            tr.className = "new-row-flash";
+            tr.innerHTML = `
+                <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-sm text-slate-800 tracking-tight">Analyse IA : ${category}</span>
+                        <span class="text-xs text-slate-400 font-medium">${platform}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded-md text-slate-600 uppercase tracking-tighter">${category}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-1.5 text-slate-500">
+                        <i data-lucide="${icon}" class="w-3.5 h-3.5 ${iconColor}"></i>
+                        <span class="text-xs font-medium">${type}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                        <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Prêt</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-xs font-medium text-slate-400 italic">À l'instant</td>
+            `;
+
+            tableBody.prepend(tr);
+            if (tableBody.children.length > 6) tableBody.lastElementChild.remove();
+            lucide.createIcons();
+
+            document.getElementById('live-safety').innerText = (95 + Math.random() * 5).toFixed(1) + '%';
+            document.getElementById('live-sentiment').innerText = Math.random() > 0.5 ? 'Positif' : 'Neutre';
+            document.getElementById('live-category').innerText = category;
+        }
+
+        function updateWaveform() {
+            const container = document.getElementById('waveform-container');
+            if (container.children.length === 0) {
+                for (let i = 0; i < 40; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = "waveform-bar bg-blue-500/60 rounded-full w-1.5";
+                    bar.style.height = (20 + Math.random() * 80) + "%";
+                    container.appendChild(bar);
+                }
+            } else {
+                for (let i = 0; i < container.children.length; i++) {
+                    container.children[i].style.height = (10 + Math.random() * 90) + "%";
+                }
+            }
+        }
+
+        window.onload = () => {
+            initCharts();
+            for(let i=0; i<5; i++) addLiveRow();
+            setInterval(addLiveRow, 2500);
+            setInterval(updateWaveform, 100); // Waveform plus fluide
+            
+            // Animation NERVEUSE : toutes les 800ms
+            setInterval(animateRadarPoints, 800);
+        };
+    </script>
+</body>
+</html>
