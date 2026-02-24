@@ -106,29 +106,85 @@
                     </div>
                 </section>
 
-                <!-- Country -->
+                <!-- Country & Language -->
+                <div class="grid grid-cols-2 gap-3">
+                    <section>
+                        <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Country</label>
+                        <div class="relative">
+                            <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                <option>Italy</option>
+                                <option>France</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </section>
+                    <section>
+                        <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Langue</label>
+                        <div class="relative">
+                            <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                <option>Italien</option>
+                                <option>Anglais</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAUX D'ENGAGEMENT (SLIDER) -->
                 <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Country</label>
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="sidebar-item uppercase font-bold tracking-wider block">Engagement</label>
+                        <span id="engagementValue" class="text-[10px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Min: 2%</span>
+                    </div>
+                    <div class="px-1">
+                        <input type="range" min="0" max="15" step="0.5" value="2" 
+                               class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                               oninput="document.getElementById('engagementValue').innerText = 'Min: ' + this.value + '%'">
+                        <div class="flex justify-between text-[10px] text-gray-400 mt-2">
+                            <span>0%</span>
+                            <span>15%+</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CROISSANCE / TENDANCE -->
+                <section>
+                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Croissance (30j)</label>
                     <div class="relative">
-                        <select class="w-full border border-gray-200 rounded-md p-2 text-sm appearance-none bg-white">
-                            <option>Italy</option>
-                            <option>France</option>
-                            <option>Spain</option>
+                        <select class="w-full border border-gray-200 rounded-md p-2 text-sm appearance-none bg-white font-medium">
+                            <option>Toutes les tendances</option>
+                            <option class="text-green-600">🚀 Rising Stars (>20%)</option>
+                            <option class="text-blue-600">📈 Stable Growth (5-20%)</option>
+                            <option>☁️ Mature / Established</option>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
                     </div>
                 </section>
 
-                <!-- Category -->
+                <!-- FRÉQUENCE -->
                 <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Category</label>
-                    <div class="relative">
-                        <select class="w-full border border-gray-200 rounded-md p-2 text-sm appearance-none bg-white">
-                            <option>All categories</option>
-                            <option>Entertainment</option>
-                            <option>Music</option>
+                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Fréquence de publication</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="py-2 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors">Quotidien</button>
+                        <button class="py-2 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors">Hebdo</button>
+                    </div>
+                </section>
+
+                <!-- DÉMOGRAPHIE -->
+                <section>
+                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Audience cible</label>
+                    <div class="space-y-3">
+                        <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                            <option>Tranche d'âge (Majoritaire)</option>
+                            <option>13-17 ans</option>
+                            <option>18-24 ans</option>
+                            <option>25-34 ans</option>
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
+                        <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
+                            <button class="flex-1 py-2 text-[10px] font-bold bg-black text-white">Tous</button>
+                            <button class="flex-1 py-2 text-[10px] text-gray-500 hover:bg-gray-50">Hommes</button>
+                            <button class="flex-1 py-2 text-[10px] text-gray-500 hover:bg-gray-50">Femmes</button>
+                        </div>
                     </div>
                 </section>
 
@@ -151,11 +207,11 @@
 
                 <!-- Made for Kids -->
                 <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Made for Kids</label>
+                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Contenu Enfants</label>
                     <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
-                        <button class="flex-1 py-2 text-xs font-bold bg-black text-white">Any</button>
-                        <button class="flex-1 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">Only</button>
-                        <button class="flex-1 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">Exclude</button>
+                        <button class="flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Any</button>
+                        <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Only</button>
+                        <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Exclude</button>
                     </div>
                 </section>
             </div>
@@ -241,7 +297,6 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        <!-- Row 1 -->
                         <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors">
                             <td class="py-4 text-gray-400">1</td>
                             <td class="py-4">
@@ -256,7 +311,6 @@
                             <td class="py-4 text-right font-medium">24.9B</td>
                             <td class="py-4 text-right text-gray-400">1.9K</td>
                         </tr>
-                        <!-- Row 2 -->
                         <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors">
                             <td class="py-4 text-gray-400">2</td>
                             <td class="py-4">
@@ -271,7 +325,6 @@
                             <td class="py-4 text-right font-medium">11.5B</td>
                             <td class="py-4 text-right text-gray-400">3.4K</td>
                         </tr>
-                        <!-- Row 3 -->
                         <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors">
                             <td class="py-4 text-gray-400">3</td>
                             <td class="py-4">
@@ -285,36 +338,6 @@
                             <td class="py-4 text-right font-medium">5.2M</td>
                             <td class="py-4 text-right font-medium">8.4B</td>
                             <td class="py-4 text-right text-gray-400">10.4K</td>
-                        </tr>
-                        <!-- Row 4 -->
-                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors">
-                            <td class="py-4 text-gray-400">4</td>
-                            <td class="py-4">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
-                                        <img src="https://i.pravatar.cc/32?u=rai" alt="">
-                                    </div>
-                                    <span class="font-bold">Rai</span>
-                                </div>
-                            </td>
-                            <td class="py-4 text-right font-medium">6.5M</td>
-                            <td class="py-4 text-right font-medium">6.7B</td>
-                            <td class="py-4 text-right text-gray-400">99.4K</td>
-                        </tr>
-                        <!-- Row 5 -->
-                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors">
-                            <td class="py-4 text-gray-400">5</td>
-                            <td class="py-4">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
-                                        <img src="https://i.pravatar.cc/32?u=ipantellas" alt="">
-                                    </div>
-                                    <span class="font-bold">iPantellas</span>
-                                </div>
-                            </td>
-                            <td class="py-4 text-right font-medium">7M</td>
-                            <td class="py-4 text-right font-medium">5.2B</td>
-                            <td class="py-4 text-right text-gray-400">1.8K</td>
                         </tr>
                     </tbody>
                 </table>
