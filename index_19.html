@@ -1,1 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beedee - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+        .sidebar-item {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .stat-card {
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-bottom-color: #1a1a1a;
+            background-color: #f9f9f9;
+        }
+        /* Custom scrollbar for sidebar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
 
+        /* Custom Range Slider Styling */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #000000;
+            cursor: pointer;
+            margin-top: -6px; 
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header / Navigation -->
+    <header class="flex items-center justify-between px-6 py-3 border-b border-gray-100 sticky top-0 bg-white z-50">
+        <div class="flex items-center space-x-8">
+            <h1 class="text-2xl font-bold tracking-tight">Beedee</h1>
+            <nav class="hidden lg:flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#" class="hover:text-black">Audion BI <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></a>
+                <a href="#" class="text-black border-b-2 border-black pb-1">Explorer <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></a>
+                <a href="#" class="hover:text-black">Draft Proposal</a>
+                <a href="#" class="hover:text-black">Audience Targeting</a>
+                <a href="#" class="hover:text-black">AI Search</a>
+                <a href="#" class="hover:text-black">Search</a>
+                <a href="#" class="hover:text-black">Presentation Builder</a>
+                <a href="#" class="hover:text-black">Add Content</a>
+                <a href="#" class="hover:text-black">Monitoring</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <img src="https://i.pravatar.cc/32?u=julien" alt="Profile" class="w-8 h-8 rounded-full border border-gray-200">
+                <span class="text-sm font-medium">Julien Rialan</span>
+            </div>
+            <button class="text-gray-400 hover:text-black">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 border-r border-gray-100 p-6 flex-shrink-0 bg-gray-50/30 overflow-y-auto sidebar-scroll">
+            <div class="space-y-8">
+                
+                <!-- ========================================== -->
+                <!-- GROUPE : CONTEXTE                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Contexte</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Mots-clés -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Mots-clés</label>
+                            <div class="relative">
+                                <input type="text" placeholder="Rechercher parmi les contenus" class="filter-trigger w-full border border-gray-200 rounded-md py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-gray-400"></i>
+                            </div>
+                        </section>
+
+                        <!-- Platform -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Platform</label>
+                            <div class="flex p-1 bg-white border border-gray-200 rounded-md filter-group">
+                                <button class="filter-btn flex-1 py-1 text-xs font-bold bg-black text-white rounded shadow-sm">YouTube</button>
+                                <button class="filter-btn flex-1 py-1 text-xs font-medium text-gray-500 hover:text-black">Podcasts</button>
+                            </div>
+                        </section>
+
+                        <!-- Category -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Catégories</label>
+                            <div class="relative">
+                                <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                    <option>Toutes les catégories</option>
+                                    <option>Entertainment</option>
+                                    <option>Music</option>
+                                    <option>Gaming</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- GROUPE : CONTENUS                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Contenus</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Country & Language -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <section>
+                                <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Pays</label>
+                                <div class="relative">
+                                    <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Italy</option>
+                                        <option>France</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </section>
+                            <section>
+                                <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Langue</label>
+                                <div class="relative">
+                                    <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Italien</option>
+                                        <option>Anglais</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Croissance -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Croissance (30j)</label>
+                            <div class="relative">
+                                <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white font-medium">
+                                    <option>Toutes les tendances</option>
+                                    <option class="text-green-600">🚀 Rising Stars (>20%)</option>
+                                    <option class="text-blue-600">📈 Stable Growth (5-20%)</option>
+                                    <option>☁️ Mature / Established</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
+
+                        <!-- Fréquence de publication -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Fréquence</label>
+                            <div class="grid grid-cols-2 gap-2 filter-group">
+                                <button class="filter-btn py-1.5 text-[10px] font-bold bg-black text-white rounded">Quotidien</button>
+                                <button class="filter-btn py-1.5 text-[10px] border border-gray-200 rounded text-gray-500 bg-white">Hebdo</button>
+                            </div>
+                        </section>
+
+                        <!-- Durée moyenne (Slider) -->
+                        <section>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="sidebar-item uppercase font-bold tracking-wider block text-[10px]">Durée moy.</label>
+                                <span id="durationValue" class="text-[9px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Max: 30m</span>
+                            </div>
+                            <div class="px-1">
+                                <input type="range" min="1" max="60" value="30" 
+                                       class="filter-trigger w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                       oninput="document.getElementById('durationValue').innerText = 'Max: ' + this.value + (this.value == 60 ? '+m' : 'm')">
+                                <div class="flex justify-between text-[9px] text-gray-400 mt-1">
+                                    <span>1m</span>
+                                    <span>60m+</span>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- GROUPE : AUDIENCE                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Audience</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Catégorie Socio-pro (NOUVEAU) -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Catégorie Socio-pro</label>
+                            <div class="relative">
+                                <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                    <option>Toutes les CSP</option>
+                                    <option>CSP+ (Cadres, Professions int.)</option>
+                                    <option>Employés / Ouvriers</option>
+                                    <option>Étudiants</option>
+                                    <option>Inactifs / Retraités</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
+
+                        <!-- Âge et Sexe -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Âge & Sexe maj.</label>
+                            <div class="space-y-2">
+                                <div class="relative">
+                                    <select class="filter-trigger w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Toutes tranches d'âge</option>
+                                        <option>-18 ans</option>
+                                        <option>18-25</option>
+                                        <option>25-35</option>
+                                        <option>35-50</option>
+                                        <option>50-65</option>
+                                        <option>65+</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                                <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white filter-group">
+                                    <button class="filter-btn flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Tous</button>
+                                    <button class="filter-btn flex-1 py-1.5 text-[10px] text-gray-500 border-l border-r border-gray-100">Hommes</button>
+                                    <button class="filter-btn flex-1 py-1.5 text-[10px] text-gray-500">Femmes</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Engagement (Slider) -->
+                        <section>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="sidebar-item uppercase font-bold tracking-wider block text-[10px]">Engagement</label>
+                                <span id="engagementValue" class="text-[9px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Min: 2%</span>
+                            </div>
+                            <div class="px-1">
+                                <input type="range" min="0" max="15" step="0.5" value="2" 
+                                       class="filter-trigger w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                       oninput="document.getElementById('engagementValue').innerText = 'Min: ' + this.value + '%'">
+                                <div class="flex justify-between text-[9px] text-gray-400 mt-1">
+                                    <span>0%</span>
+                                    <span>15%+</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Contenu Enfants -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Contenu Enfants</label>
+                            <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white filter-group">
+                                <button class="filter-btn flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Any</button>
+                                <button class="filter-btn flex-1 py-1.5 text-[10px] text-gray-500 border-l border-r border-gray-100">Only</button>
+                                <button class="filter-btn flex-1 py-1.5 text-[10px] text-gray-500">Exclude</button>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            
+            <!-- Controls Bar -->
+            <div class="px-8 pt-6 flex justify-end items-center">
+                <div class="flex items-center space-x-2 text-xs">
+                    <span class="text-gray-400">Sort by</span>
+                    <div class="flex border border-gray-200 rounded overflow-hidden">
+                        <button class="px-3 py-1 bg-black text-white font-bold">Views</button>
+                        <button class="px-3 py-1 bg-white text-gray-500 hover:text-black">Subscribers</button>
+                        <button class="px-3 py-1 bg-white text-gray-500 hover:text-black border-l border-gray-200">Videos</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BARRE DE STATISTIQUES (KPIs) -->
+            <div class="px-8 py-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white">
+                    
+                    <!-- Total Duration -->
+                    <div class="stat-card p-5 border border-gray-100 rounded-lg flex flex-col shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400">Total Duration</span>
+                            <i class="fa-regular fa-clock text-gray-300 text-sm"></i>
+                        </div>
+                        <div class="flex items-baseline space-x-2">
+                            <span id="kpi-duration" class="text-2xl font-black text-black">12.4K</span>
+                            <span class="text-sm font-medium text-gray-400">hours</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-[10px] text-green-500 font-bold">
+                            <i class="fa-solid fa-arrow-up mr-1"></i> Sélection Dynamique
+                        </div>
+                    </div>
+
+                    <!-- Total Contents -->
+                    <div class="stat-card p-5 border border-gray-100 rounded-lg flex flex-col shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400">Total Contents</span>
+                            <i class="fa-solid fa-clapperboard text-gray-300 text-sm"></i>
+                        </div>
+                        <div class="flex items-baseline space-x-2">
+                            <span id="kpi-contents" class="text-2xl font-black text-black">166.4K</span>
+                            <span class="text-sm font-medium text-gray-400">videos</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-[10px] text-gray-400">
+                            Across 1,240 channels
+                        </div>
+                    </div>
+
+                    <!-- Total Views -->
+                    <div class="stat-card p-5 border border-gray-100 rounded-lg flex flex-col shadow-sm">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400">Total Views</span>
+                            <i class="fa-solid fa-chart-line text-gray-300 text-sm"></i>
+                        </div>
+                        <div class="flex items-baseline space-x-2">
+                            <span id="kpi-views" class="text-2xl font-black text-black">83.4B</span>
+                            <span class="text-sm font-medium text-gray-400">views</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-[10px] text-gray-400">
+                            Avg. 501M views / channel
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="px-8 pb-12">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-[11px] text-gray-400 uppercase tracking-wider font-bold border-b border-gray-100">
+                            <th class="py-4 font-normal w-12 text-center">#</th>
+                            <th class="py-4 font-normal">Name</th>
+                            <th class="py-4 font-normal text-right w-32">Subscribers</th>
+                            <th class="py-4 font-normal text-right w-32">Views</th>
+                            <th class="py-4 font-normal text-right w-32">Videos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="creators-table-body" class="text-sm">
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">1</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=lionfield" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Lionfield</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">15.8M</td>
+                            <td class="py-4 text-right font-medium">24.9B</td>
+                            <td class="py-4 text-right text-gray-400">1.9K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">2</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=mecontrote" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Me contro Te</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">7.3M</td>
+                            <td class="py-4 text-right font-medium">11.5B</td>
+                            <td class="py-4 text-right text-gray-400">3.4K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">3</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=lyon" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">WhenGamersFail ► Lyon</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">5.2M</td>
+                            <td class="py-4 text-right font-medium">8.4B</td>
+                            <td class="py-4 text-right text-gray-400">10.4K</td>
+                        </tr>
+                        <!-- Ajout des 7 nouveaux créateurs -->
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">4</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=rai" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Rai</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">6.5M</td>
+                            <td class="py-4 text-right font-medium">6.7B</td>
+                            <td class="py-4 text-right text-gray-400">99.4K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">5</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=ipantellas" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">iPantellas</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">7.0M</td>
+                            <td class="py-4 text-right font-medium">5.2B</td>
+                            <td class="py-4 text-right text-gray-400">1.8K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">6</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=khaby" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Khaby. Lame</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">12.6M</td>
+                            <td class="py-4 text-right font-medium">4.6B</td>
+                            <td class="py-4 text-right text-gray-400">313</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">7</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                        <img src="https://i.pravatar.cc/32?u=seriea" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Serie A</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">10.1M</td>
+                            <td class="py-4 text-right font-medium">4.6B</td>
+                            <td class="py-4 text-right text-gray-400">32.1K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">8</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=favij" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">FavijTV</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">6.7M</td>
+                            <td class="py-4 text-right font-medium">4.4B</td>
+                            <td class="py-4 text-right text-gray-400">3.4K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">9</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=masha" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Masha e Orso</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">6.9M</td>
+                            <td class="py-4 text-right font-medium">3.6B</td>
+                            <td class="py-4 text-right text-gray-400">2K</td>
+                        </tr>
+                        <tr class="group hover:bg-gray-50 border-b border-gray-50 transition-colors bg-white">
+                            <td class="py-4 text-gray-400 font-bold text-center rank-index">10</td>
+                            <td class="py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="https://i.pravatar.cc/32?u=gabby" alt="">
+                                    </div>
+                                    <span class="font-bold text-black">Gabby16bit</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-right font-medium">3.5M</td>
+                            <td class="py-4 text-right font-medium">3.4B</td>
+                            <td class="py-4 text-right text-gray-400">3.9K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT DE DEMO: Rend les filtres interactifs en mélangeant l'ordre et en ajustant les KPIs -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tbody = document.getElementById('creators-table-body');
+            const kpiDuration = document.getElementById('kpi-duration');
+            const kpiContents = document.getElementById('kpi-contents');
+            const kpiViews = document.getElementById('kpi-views');
+
+            // Valeurs de base (avant modification aléatoire)
+            const baseDuration = 12.4; 
+            const baseContents = 166.4;
+            const baseViews = 83.4;
+
+            // Fonction déclenchée à chaque clic / modification de filtre
+            function simulateFilterAction() {
+                // 1. Mélanger l'ordre des créateurs (Simule un tri par affinité)
+                let rows = Array.from(tbody.querySelectorAll('tr'));
+                rows.sort(() => Math.random() - 0.5); // Mélange aléatoire
+                
+                rows.forEach((row, index) => {
+                    // Mettre à jour le numéro de rang pour qu'il reste de 1 à 10
+                    row.querySelector('.rank-index').textContent = index + 1;
+                    // Ajouter un petit effet de "flash" visuel
+                    row.style.opacity = '0.5';
+                    tbody.appendChild(row);
+                    setTimeout(() => row.style.opacity = '1', 50 * index);
+                });
+
+                // 2. Faire évoluer légèrement les KPIs (Variation de +/- 20%)
+                const variation = () => 0.8 + Math.random() * 0.4;
+                
+                kpiDuration.textContent = (baseDuration * variation()).toFixed(1) + 'K';
+                kpiContents.textContent = (baseContents * variation()).toFixed(1) + 'K';
+                kpiViews.textContent = (baseViews * variation()).toFixed(1) + 'B';
+            }
+
+            // Attacher l'événement sur tous les champs de saisie, selects et range sliders
+            document.querySelectorAll('.filter-trigger').forEach(el => {
+                el.addEventListener('input', simulateFilterAction);
+                if(el.tagName.toLowerCase() === 'select') {
+                    el.addEventListener('change', simulateFilterAction);
+                }
+            });
+
+            // Attacher l'événement sur les groupes de boutons stylisés
+            document.querySelectorAll('.filter-group').forEach(group => {
+                const buttons = group.querySelectorAll('.filter-btn');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Gestion visuelle : on "éteint" tous les boutons frères
+                        buttons.forEach(b => {
+                            b.classList.remove('bg-black', 'text-white', 'font-bold');
+                            b.classList.add('text-gray-500');
+                            if(!b.classList.contains('border-l')) { // garder le fond transparent/blanc sauf si bordure spéciale
+                                b.style.backgroundColor = 'transparent'; 
+                            }
+                        });
+                        // On "allume" le bouton cliqué
+                        this.classList.remove('text-gray-500');
+                        this.classList.add('bg-black', 'text-white', 'font-bold');
+                        this.style.backgroundColor = '#000000';
+                        
+                        // Déclenchement de l'action de démo
+                        simulateFilterAction();
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
