@@ -88,132 +88,196 @@
         <aside class="w-64 border-r border-gray-100 p-6 flex-shrink-0 bg-gray-50/30 overflow-y-auto sidebar-scroll">
             <div class="space-y-8">
                 
-                <!-- RECHERCHE PAR MOTS CLÉS -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Mots-clés</label>
-                    <div class="relative">
-                        <input type="text" placeholder="Rechercher un contenu..." class="w-full border border-gray-200 rounded-md py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-gray-400"></i>
-                    </div>
-                </section>
+                <!-- ========================================== -->
+                <!-- GROUPE : FILTRE CONTEXTE                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Contexte</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Mots-clés -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Mots-clés</label>
+                            <div class="relative">
+                                <input type="text" placeholder="Rechercher parmi les contenus" class="w-full border border-gray-200 rounded-md py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-gray-400"></i>
+                            </div>
+                        </section>
 
-                <!-- Platform -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Platform</label>
-                    <div class="flex p-1 bg-white border border-gray-200 rounded-md">
-                        <button class="flex-1 py-1.5 text-xs font-bold bg-black text-white rounded shadow-sm">YouTube</button>
-                        <button class="flex-1 py-1.5 text-xs font-medium text-gray-500 hover:text-black">Podcasts</button>
-                    </div>
-                </section>
+                        <!-- Platform -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Platform</label>
+                            <div class="flex p-1 bg-white border border-gray-200 rounded-md">
+                                <button class="flex-1 py-1 text-xs font-bold bg-black text-white rounded shadow-sm">YouTube</button>
+                                <button class="flex-1 py-1 text-xs font-medium text-gray-500 hover:text-black">Podcasts</button>
+                            </div>
+                        </section>
 
-                <!-- Country & Language -->
-                <div class="grid grid-cols-2 gap-3">
-                    <section>
-                        <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Country</label>
-                        <div class="relative">
-                            <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
-                                <option>Italy</option>
-                                <option>France</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
-                        </div>
-                    </section>
-                    <section>
-                        <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Langue</label>
-                        <div class="relative">
-                            <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
-                                <option>Italien</option>
-                                <option>Anglais</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
-                        </div>
-                    </section>
+                        <!-- Category -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Catégories</label>
+                            <div class="relative">
+                                <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                    <option>Toutes les catégories</option>
+                                    <option>Entertainment</option>
+                                    <option>Music</option>
+                                    <option>Gaming</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
+
+                    </div>
                 </div>
 
-                <!-- TAUX D'ENGAGEMENT (SLIDER) -->
-                <section>
-                    <div class="flex justify-between items-center mb-4">
-                        <label class="sidebar-item uppercase font-bold tracking-wider block">Engagement</label>
-                        <span id="engagementValue" class="text-[10px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Min: 2%</span>
-                    </div>
-                    <div class="px-1">
-                        <input type="range" min="0" max="15" step="0.5" value="2" 
-                               class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
-                               oninput="document.getElementById('engagementValue').innerText = 'Min: ' + this.value + '%'">
-                        <div class="flex justify-between text-[10px] text-gray-400 mt-2">
-                            <span>0%</span>
-                            <span>15%+</span>
+                <!-- ========================================== -->
+                <!-- GROUPE : FILTRE CONTENUS                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Contenus</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Country & Language -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <section>
+                                <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Pays</label>
+                                <div class="relative">
+                                    <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Italy</option>
+                                        <option>France</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </section>
+                            <section>
+                                <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Langue</label>
+                                <div class="relative">
+                                    <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Italien</option>
+                                        <option>Anglais</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                            </section>
                         </div>
-                    </div>
-                </section>
 
-                <!-- CROISSANCE / TENDANCE -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Croissance (30j)</label>
-                    <div class="relative">
-                        <select class="w-full border border-gray-200 rounded-md p-2 text-sm appearance-none bg-white font-medium">
-                            <option>Toutes les tendances</option>
-                            <option class="text-green-600">🚀 Rising Stars (>20%)</option>
-                            <option class="text-blue-600">📈 Stable Growth (5-20%)</option>
-                            <option>☁️ Mature / Established</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
-                    </div>
-                </section>
+                        <!-- Croissance -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Croissance (30j)</label>
+                            <div class="relative">
+                                <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white font-medium">
+                                    <option>Toutes les tendances</option>
+                                    <option class="text-green-600">🚀 Rising Stars (>20%)</option>
+                                    <option class="text-blue-600">📈 Stable Growth (5-20%)</option>
+                                    <option>☁️ Mature / Established</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
 
-                <!-- FRÉQUENCE -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Fréquence de publication</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button class="py-2 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors">Quotidien</button>
-                        <button class="py-2 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors">Hebdo</button>
-                    </div>
-                </section>
+                        <!-- Fréquence de publication -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Fréquence</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="py-1.5 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors bg-white">Quotidien</button>
+                                <button class="py-1.5 text-[10px] border border-gray-200 rounded hover:bg-black hover:text-white transition-colors bg-white">Hebdo</button>
+                            </div>
+                        </section>
 
-                <!-- DÉMOGRAPHIE -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block">Audience cible</label>
-                    <div class="space-y-3">
-                        <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
-                            <option>Tranche d'âge (Majoritaire)</option>
-                            <option>13-17 ans</option>
-                            <option>18-24 ans</option>
-                            <option>25-34 ans</option>
-                        </select>
-                        <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
-                            <button class="flex-1 py-2 text-[10px] font-bold bg-black text-white">Tous</button>
-                            <button class="flex-1 py-2 text-[10px] text-gray-500 hover:bg-gray-50">Hommes</button>
-                            <button class="flex-1 py-2 text-[10px] text-gray-500 hover:bg-gray-50">Femmes</button>
-                        </div>
-                    </div>
-                </section>
+                        <!-- Durée moyenne (Slider) -->
+                        <section>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="sidebar-item uppercase font-bold tracking-wider block text-[10px]">Durée moy.</label>
+                                <span id="durationValue" class="text-[9px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Max: 30m</span>
+                            </div>
+                            <div class="px-1">
+                                <input type="range" min="1" max="60" value="30" 
+                                       class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                       oninput="document.getElementById('durationValue').innerText = 'Max: ' + this.value + (this.value == 60 ? '+m' : 'm')">
+                                <div class="flex justify-between text-[9px] text-gray-400 mt-1">
+                                    <span>1m</span>
+                                    <span>60m+</span>
+                                </div>
+                            </div>
+                        </section>
 
-                <!-- DURÉE MOYENNE (SLIDER) -->
-                <section>
-                    <div class="flex justify-between items-center mb-4">
-                        <label class="sidebar-item uppercase font-bold tracking-wider block">Durée moyenne</label>
-                        <span id="durationValue" class="text-[10px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Max: 30 min</span>
                     </div>
-                    <div class="px-1">
-                        <input type="range" min="1" max="60" value="30" 
-                               class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
-                               oninput="document.getElementById('durationValue').innerText = 'Max: ' + this.value + (this.value == 60 ? '+ min' : ' min')">
-                        <div class="flex justify-between text-[10px] text-gray-400 mt-2">
-                            <span>1 min</span>
-                            <span>60+ min</span>
-                        </div>
-                    </div>
-                </section>
+                </div>
 
-                <!-- Made for Kids -->
-                <section>
-                    <label class="sidebar-item uppercase font-bold tracking-wider mb-3 block text-[10px]">Contenu Enfants</label>
-                    <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
-                        <button class="flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Any</button>
-                        <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Only</button>
-                        <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Exclude</button>
+                <!-- ========================================== -->
+                <!-- GROUPE : FILTRE AUDIENCE                   -->
+                <!-- ========================================== -->
+                <div>
+                    <h3 class="text-xs font-black text-black uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Audience</h3>
+                    <div class="space-y-5">
+                        
+                        <!-- Catégorie Socio-pro (NOUVEAU) -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Catégorie Socio-pro</label>
+                            <div class="relative">
+                                <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                    <option>Toutes les CSP</option>
+                                    <option>CSP+ (Cadres, Professions int.)</option>
+                                    <option>Employés / Ouvriers</option>
+                                    <option>Étudiants</option>
+                                    <option>Inactifs / Retraités</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </section>
+
+                        <!-- Âge et Sexe -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Âge & Sexe maj.</label>
+                            <div class="space-y-2">
+                                <div class="relative">
+                                    <select class="w-full border border-gray-200 rounded-md p-2 text-xs appearance-none bg-white">
+                                        <option>Toutes tranches d'âge</option>
+                                        <option>13-17 ans</option>
+                                        <option>18-24 ans</option>
+                                        <option>25-34 ans</option>
+                                        <option>35+ ans</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-2 top-3 text-[8px] text-gray-400 pointer-events-none"></i>
+                                </div>
+                                <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
+                                    <button class="flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Tous</button>
+                                    <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50 border-l border-r border-gray-100">Hommes</button>
+                                    <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Femmes</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Engagement (Slider) -->
+                        <section>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="sidebar-item uppercase font-bold tracking-wider block text-[10px]">Engagement</label>
+                                <span id="engagementValue" class="text-[9px] font-bold bg-black text-white px-2 py-0.5 rounded-full">Min: 2%</span>
+                            </div>
+                            <div class="px-1">
+                                <input type="range" min="0" max="15" step="0.5" value="2" 
+                                       class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                                       oninput="document.getElementById('engagementValue').innerText = 'Min: ' + this.value + '%'">
+                                <div class="flex justify-between text-[9px] text-gray-400 mt-1">
+                                    <span>0%</span>
+                                    <span>15%+</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Contenu Enfants -->
+                        <section>
+                            <label class="sidebar-item uppercase font-bold tracking-wider mb-2 block text-[10px]">Contenu Enfants</label>
+                            <div class="flex border border-gray-200 rounded-md overflow-hidden bg-white">
+                                <button class="flex-1 py-1.5 text-[10px] font-bold bg-black text-white">Any</button>
+                                <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50 border-l border-r border-gray-100">Only</button>
+                                <button class="flex-1 py-1.5 text-[10px] text-gray-500 hover:bg-gray-50">Exclude</button>
+                            </div>
+                        </section>
+
                     </div>
-                </section>
+                </div>
+
             </div>
         </aside>
 
