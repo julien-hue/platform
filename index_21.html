@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioTech - Plateforme Agentique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .message-enter { animation: slideIn 0.3s ease-out forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+        .pulse-dot { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+        
+        /* Rail active states */
+        .rail-item { transition: all 0.2s; }
+        .rail-item.active { background-color: #eef2ff; color: #4f46e5; border-right: 3px solid #4f46e5; }
+        .rail-item:not(.active):hover { background-color: #f9fafb; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden text-gray-800">
+
+    <!-- Rail (Sidebar gauche) - Les 4 Agents -->
+    <nav class="w-64 bg-white border-r border-gray-200 flex flex-col z-20 shadow-sm flex-shrink-0">
+        <div class="p-6 border-b border-gray-100">
+            <h1 class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-900">
+                <i class="fa-solid fa-wave-square text-indigo-600"></i> AudioAgents
+            </h1>
+        </div>
+        
+        <div class="flex-1 py-4 flex flex-col gap-1">
+            <div class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Vos Agents</div>
+            
+            <button onclick="switchAgent('qualification')" id="nav-qualification" class="rail-item active flex items-center gap-3 px-6 py-3 text-left w-full text-sm font-medium text-gray-600">
+                <i class="fa-solid fa-clipboard-check w-5 text-center"></i>
+                Qualification
+            </button>
+            
+            <button onclick="switchAgent('indexation')" id="nav-indexation" class="rail-item flex items-center gap-3 px-6 py-3 text-left w-full text-sm font-medium text-gray-600">
+                <i class="fa-solid fa-database w-5 text-center"></i>
+                Indexation
+            </button>
+            
+            <button onclick="switchAgent('competition')" id="nav-competition" class="rail-item flex items-center gap-3 px-6 py-3 text-left w-full text-sm font-medium text-gray-600">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                Compétition
+            </button>
+            
+            <button onclick="switchAgent('creation')" id="nav-creation" class="rail-item flex items-center gap-3 px-6 py-3 text-left w-full text-sm font-medium text-gray-600">
+                <i class="fa-solid fa-wand-magic-sparkles w-5 text-center"></i>
+                Création DCO
+            </button>
+        </div>
+
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-600">JD</div>
+                <div class="text-sm font-medium text-gray-700">Jane Doe</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Zone Centrale : Chat Agentique -->
+    <main class="flex-1 flex flex-col relative bg-gray-50 border-r border-gray-200">
+        
+        <!-- Header Agent actif -->
+        <header class="bg-white border-b border-gray-200 p-4 flex items-center justify-between shadow-sm z-10">
+            <div class="flex items-center gap-3">
+                <div id="header-icon" class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div>
+                    <h2 id="header-title" class="font-semibold text-gray-800">Agent de Qualification</h2>
+                    <p id="header-desc" class="text-xs text-gray-500">Scoring, brand safety et curation du contenu audio.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full" id="global-status-indicator">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span> Prêt
+            </div>
+        </header>
+
+        <!-- Historique du chat -->
+        <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 pb-32">
+            <!-- Injecté via JS -->
+        </div>
+
+        <!-- Indicateur de statut flottant -->
+        <div id="floating-status" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-lg border border-gray-100 flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+            <div class="flex gap-1">
+                <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full pulse-dot" style="animation-delay: 0s"></span>
+                <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full pulse-dot" style="animation-delay: 0.2s"></span>
+                <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full pulse-dot" style="animation-delay: 0.4s"></span>
+            </div>
+            <span id="floating-status-text" class="text-sm font-medium text-gray-600">L'agent travaille...</span>
+        </div>
+
+        <!-- Zone de saisie -->
+        <div class="absolute bottom-0 w-full bg-white border-t border-gray-200 pt-4 pb-4 px-6">
+            <form id="chat-form" class="relative group">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Demandez à l'agent d'exécuter une tâche..." 
+                    class="w-full bg-gray-50 border border-gray-300 rounded-xl pl-4 pr-12 py-3.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm"
+                    autocomplete="off"
+                >
+                <button type="submit" class="absolute right-2 top-2 bottom-2 w-10 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center" id="submit-btn">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Panneau Droit : Trace d'exécution (La "Pensée" de l'Agent) -->
+    <aside class="w-80 bg-white flex flex-col shadow-sm z-10 flex-shrink-0">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-semibold text-gray-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-microchip text-gray-400"></i> Trace d'exécution
+            </h3>
+        </div>
+        <div class="p-4 flex-1 overflow-y-auto">
+            <div id="agent-trace-list" class="space-y-3">
+                <div class="text-xs text-gray-400 italic text-center py-8">
+                    Les actions en arrière-plan de l'agent apparaîtront ici.
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        // Configuration des Agents
+        const agents = {
+            qualification: {
+                title: "Agent de Qualification",
+                desc: "Scoring, brand safety et curation du contenu audio.",
+                icon: "fa-clipboard-check",
+                color: "indigo",
+                welcomeMessage: "Je suis prêt à qualifier votre inventaire audio. Au lieu de chercher dans l'explorateur classique, demandez-moi directement ce que vous voulez filtrer ou approuver.",
+                suggestion: "Trouve les podcasts tech émergents avec un fort taux d'engagement (>70%) et un score Brand Safety optimal."
+            },
+            indexation: {
+                title: "Agent d'Indexation",
+                desc: "Gestion des sources de données et rafraîchissement.",
+                icon: "fa-database",
+                color: "emerald",
+                welcomeMessage: "Je gère l'ingestion des flux audio. Fini les formulaires de configuration complexes, dites-moi simplement quelle source ajouter ou modifier.",
+                suggestion: "Ajoute le flux RSS de 'Radio Nova' et configure une synchronisation toutes les heures avec extraction des métadonnées."
+            },
+            competition: {
+                title: "Agent de Compétition",
+                desc: "Analyse des créatives concurrentes et pression pub.",
+                icon: "fa-chart-line",
+                color: "amber",
+                welcomeMessage: "Je surveille le marché. Je peux générer des rapports dynamiques sur la pression publicitaire ou isoler les meilleures créatives audio de vos concurrents.",
+                suggestion: "Analyse la pression pub du secteur Automobile ce mois-ci et sors-moi la créative la plus diffusée de Renault."
+            },
+            creation: {
+                title: "Agent de Création DCO",
+                desc: "Génération dynamique de campagnes audio personnalisées.",
+                icon: "fa-wand-magic-sparkles",
+                color: "purple",
+                welcomeMessage: "Je conçois des campagnes audio dynamiques (DCO). Décrivez votre cible et votre produit, je m'occupe des scripts, de la synthèse vocale et des règles de diffusion.",
+                suggestion: "Génère une campagne DCO pour Uber Eats : crée une variation pour la pluie avec un ton réconfortant, et une pour le soleil avec un ton énergique."
+            }
+        };
+
+        let currentAgentId = 'qualification';
+        let isProcessing = false;
+
+        // DOM Elements
+        const chatContainer = document.getElementById('chat-container');
+        const traceList = document.getElementById('agent-trace-list');
+        const userInput = document.getElementById('user-input');
+        const headerTitle = document.getElementById('header-title');
+        const headerDesc = document.getElementById('header-desc');
+        const headerIcon = document.getElementById('header-icon');
+
+        // Initialisation
+        window.onload = () => {
+            renderWelcomeMessage();
+        };
+
+        // Changer d'agent via le menu de gauche
+        function switchAgent(agentId) {
+            if(isProcessing) return;
+            
+            // UI Updates
+            document.querySelectorAll('.rail-item').forEach(el => {
+                el.classList.remove('active');
+                el.style.backgroundColor = '';
+                el.style.color = '';
+                el.style.borderRight = '';
+            });
+            
+            const activeBtn = document.getElementById(`nav-${agentId}`);
+            activeBtn.classList.add('active');
+            
+            const agent = agents[agentId];
+            
+            // Update Header
+            headerTitle.textContent = agent.title;
+            headerDesc.textContent = agent.desc;
+            headerIcon.className = `w-10 h-10 rounded-xl bg-${agent.color}-100 text-${agent.color}-600 flex items-center justify-center`;
+            headerIcon.innerHTML = `<i class="fa-solid ${agent.icon}"></i>`;
+            
+            // Change Active color for the active rail item based on agent color
+            const colors = {
+                'indigo': '#4f46e5', 'emerald': '#10b981', 'amber': '#f59e0b', 'purple': '#8b5cf6'
+            };
+            const bgColors = {
+                'indigo': '#eef2ff', 'emerald': '#ecfdf5', 'amber': '#fffbeb', 'purple': '#f5f3ff'
+            };
+            activeBtn.style.color = colors[agent.color];
+            activeBtn.style.borderRight = `3px solid ${colors[agent.color]}`;
+            activeBtn.style.backgroundColor = bgColors[agent.color];
+
+            currentAgentId = agentId;
+            chatContainer.innerHTML = '';
+            traceList.innerHTML = `<div class="text-xs text-gray-400 italic text-center py-8">Changement de contexte vers l'agent ${agent.title}...</div>`;
+            
+            renderWelcomeMessage();
+        }
+
+        // Message de bienvenue générique pour l'agent sélectionné
+        function renderWelcomeMessage() {
+            const agent = agents[currentAgentId];
+            const html = `
+                <div class="flex gap-4 message-enter">
+                    <div class="w-8 h-8 rounded-full bg-${agent.color}-100 text-${agent.color}-600 flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fa-solid ${agent.icon} text-sm"></i>
+                    </div>
+                    <div class="flex flex-col gap-2 max-w-2xl">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-sm leading-relaxed">
+                            ${agent.welcomeMessage}
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <button onclick="fillAndSubmit('${agent.suggestion.replace(/'/g, "\\'")}')" class="text-left text-xs bg-${agent.color}-50 hover:bg-${agent.color}-100 text-${agent.color}-700 border border-${agent.color}-200 px-3 py-2 rounded-lg transition-colors shadow-sm">
+                                <i class="fa-solid fa-lightbulb mr-1"></i> "${agent.suggestion}"
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Remplir l'input et soumettre automatiquement (pour la démo)
+        window.fillAndSubmit = function(text) {
+            userInput.value = text;
+            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+        }
+
+        // Gestion de la soumission du formulaire
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (isProcessing) return;
+            
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendUserMessage(text);
+            userInput.value = '';
+            traceList.innerHTML = ''; // Reset trace
+            
+            // Router la requête vers le bon scénario d'agent
+            switch(currentAgentId) {
+                case 'qualification': await runQualificationScenario(); break;
+                case 'indexation': await runIndexationScenario(); break;
+                case 'competition': await runCompetitionScenario(); break;
+                case 'creation': await runCreationScenario(); break;
+            }
+        });
+
+        function appendUserMessage(text) {
+            const html = `
+                <div class="flex gap-4 justify-end message-enter w-full">
+                    <div class="bg-gray-800 text-white p-3.5 rounded-xl rounded-tr-sm shadow-sm max-w-2xl text-sm">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function appendAgentComponent(htmlContent, colorClass = 'indigo') {
+            const agent = agents[currentAgentId];
+            const html = `
+                <div class="flex gap-4 message-enter w-full">
+                    <div class="w-8 h-8 rounded-full bg-${agent.color}-100 text-${agent.color}-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                        <i class="fa-solid ${agent.icon} text-sm"></i>
+                    </div>
+                    <div class="flex flex-col gap-2 max-w-2xl w-full">
+                        ${htmlContent}
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        // --- Système de Trace (Panneau Droit) ---
+        function setWorking(isWorking, statusText = '') {
+            isProcessing = isWorking;
+            document.getElementById('submit-btn').disabled = isWorking;
+            const floatStatus = document.getElementById('floating-status');
+            
+            if (isWorking) {
+                document.getElementById('global-status-indicator').innerHTML = `<span class="w-2 h-2 rounded-full bg-yellow-500 pulse-dot"></span> Traitement`;
+                document.getElementById('floating-status-text').textContent = statusText;
+                floatStatus.classList.remove('opacity-0', 'translate-y-4');
+                floatStatus.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                document.getElementById('global-status-indicator').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Prêt`;
+                floatStatus.classList.remove('opacity-100', 'translate-y-0');
+                floatStatus.classList.add('opacity-0', 'translate-y-4');
+            }
+        }
+
+        function addTraceStep(icon, title, details) {
+            const stepId = 'trace-' + Date.now();
+            const color = agents[currentAgentId].color;
+            const html = `
+                <div id="${stepId}" class="p-3 border border-gray-100 rounded-lg bg-white text-xs transition-colors duration-300 shadow-sm relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-${color}-500"></div>
+                    <div class="flex items-center justify-between mb-1 pl-2">
+                        <div class="flex items-center gap-2 font-semibold text-gray-700">
+                            <i class="${icon} text-gray-400 w-4 text-center"></i>
+                            <span>${title}</span>
+                        </div>
+                        <div class="step-status"><i class="fa-solid fa-circle-notch fa-spin text-${color}-500"></i></div>
+                    </div>
+                    <div class="text-gray-500 pl-8 mt-1 font-mono text-[10px] bg-gray-50 p-1.5 rounded">${details}</div>
+                </div>
+            `;
+            traceList.insertAdjacentHTML('beforeend', html);
+            traceList.parentElement.scrollTop = traceList.parentElement.scrollHeight;
+            return stepId;
+        }
+
+        function updateTraceSuccess(stepId) {
+            const el = document.getElementById(stepId);
+            if(el) {
+                el.querySelector('.step-status').innerHTML = '<i class="fa-solid fa-check text-green-500"></i>';
+                el.classList.add('bg-green-50/30');
+            }
+        }
+
+        // ==========================================
+        // SCÉNARIOS AGENTIQUES SPÉCIFIQUES
+        // ==========================================
+
+        // 1. SCÉNARIO QUALIFICATION
+        async function runQualificationScenario() {
+            setWorking(true, 'Filtrage de l\'inventaire...');
+            
+            let t1 = addTraceStep('fa-solid fa-database', 'Recherche Sémantique', 'SELECT * FROM inventory WHERE category="Tech" AND release_date > NOW() - 30d');
+            await delay(1000); updateTraceSuccess(t1);
+            
+            setWorking(true, 'Analyse NLP en cours...');
+            let t2 = addTraceStep('fa-solid fa-shield-halved', 'Analyse Brand Safety', 'Call AI Model: transcript_analysis. Évaluation GARM categories.');
+            await delay(1200); updateTraceSuccess(t2);
+
+            let t3 = addTraceStep('fa-solid fa-calculator', 'Calcul des Scores', 'Engagement Score: (Listen Through Rate * 0.6) + (Completion Rate * 0.4)');
+            await delay(800); updateTraceSuccess(t3);
+
+            const widget = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-sm mb-2">
+                    J'ai scanné 450 nouveaux épisodes. Voici les 2 meilleurs résultats qui correspondent parfaitement à vos critères (Tech + Engagement Fort + Brand Safe).
+                </div>
+                <!-- WIDGET QUALIF -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm w-full max-w-md">
+                    <div class="p-4 space-y-3">
+                        <!-- Résultat 1 -->
+                        <div class="border border-indigo-100 bg-indigo-50/30 p-3 rounded-lg flex flex-col gap-3">
+                            <div class="flex justify-between items-start">
+                                <div class="flex gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=AI&background=4f46e5&color=fff&rounded=true" class="w-10 h-10 rounded-lg shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-sm">Le Code a Changé</h4>
+                                        <div class="text-xs text-gray-500 mt-0.5">Épisode : Le futur des LLMs</div>
+                                    </div>
+                                </div>
+                                <div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Score: 92/100</div>
+                            </div>
+                            <div class="flex gap-2 text-[10px] uppercase font-semibold">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded flex items-center gap-1"><i class="fa-solid fa-fire"></i> Eng: 78%</span>
+                                <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> Safe</span>
+                            </div>
+                            <button onclick="this.innerHTML='<i class=\\'fa-solid fa-check mr-1\\'></i> Approuvé pour le catalogue'; this.classList.replace('bg-indigo-600', 'bg-green-600')" class="w-full bg-indigo-600 text-white py-1.5 rounded text-xs font-medium hover:bg-indigo-700 transition-colors">
+                                Ajouter au ciblage Premium
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            appendAgentComponent(widget);
+            setWorking(false);
+        }
+
+        // 2. SCÉNARIO INDEXATION
+        async function runIndexationScenario() {
+            setWorking(true, 'Test du point d\'accès RSS...');
+            
+            let t1 = addTraceStep('fa-solid fa-satellite-dish', 'Fetch Source', 'GET https://rss.radionova.fr/feed.xml - Status: 200 OK');
+            await delay(1200); updateTraceSuccess(t1);
+            
+            setWorking(true, 'Mapping des métadonnées...');
+            let t2 = addTraceStep('fa-solid fa-code-branch', 'Auto-Mapping', 'Extraction XML: <title>, <enclosure url>, <itunes:duration> -> Mapped to DB Schema');
+            await delay(1500); updateTraceSuccess(t2);
+
+            let t3 = addTraceStep('fa-solid fa-clock', 'Planification Cron', 'Setup EventBridge rule: rate(1 hour)');
+            await delay(500); updateTraceSuccess(t3);
+
+            const widget = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-sm mb-2">
+                    Le flux RSS de Radio Nova a été analysé avec succès. J'ai automatiquement mappé les champs audio. Souhaitez-vous activer la synchronisation horaire ?
+                </div>
+                <!-- WIDGET INDEXATION -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm w-full max-w-md">
+                    <div class="bg-emerald-600 p-3 flex items-center gap-3 text-white">
+                        <i class="fa-solid fa-rss text-xl opacity-80"></i>
+                        <div>
+                            <div class="font-bold text-sm">Radio Nova - Flux Principal</div>
+                            <div class="text-[10px] text-emerald-100 font-mono">240 épisodes détectés</div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between relative mb-4">
+                            <!-- Diagram -->
+                            <div class="z-10 flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-globe"></i></div><span class="text-[10px] font-bold text-gray-500">RSS XML</span></div>
+                            <div class="flex-1 border-t-2 border-dashed border-emerald-300 absolute w-full top-4 left-0 z-0"></div>
+                            <div class="z-10 flex flex-col items-center gap-1 bg-white px-2"><div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-microchip"></i></div><span class="text-[10px] font-bold text-gray-500">Parser IA</span></div>
+                            <div class="z-10 flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-database"></i></div><span class="text-[10px] font-bold text-gray-500">Audio DB</span></div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg flex justify-between items-center border border-gray-100">
+                            <div>
+                                <div class="text-xs font-bold text-gray-700">Fréquence de Sync.</div>
+                                <div class="text-[10px] text-gray-500">Toutes les 60 minutes</div>
+                            </div>
+                            <!-- Toggle Button -->
+                            <button onclick="this.classList.toggle('bg-emerald-500'); this.classList.toggle('bg-gray-300'); this.querySelector('div').classList.toggle('translate-x-4')" class="w-10 h-6 rounded-full bg-gray-300 transition-colors relative">
+                                <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform transform"></div>
+                            </button>
+                        </div>
+                        <button class="w-full mt-3 bg-white border border-emerald-500 text-emerald-600 py-2 rounded-lg text-xs font-semibold hover:bg-emerald-50 transition-colors">
+                            Forcer la première ingestion
+                        </button>
+                    </div>
+                </div>
+            `;
+            appendAgentComponent(widget);
+            setWorking(false);
+        }
+
+        // 3. SCÉNARIO COMPÉTITION
+        async function runCompetitionScenario() {
+            setWorking(true, 'Agrégation des logs de diffusion...');
+            
+            let t1 = addTraceStep('fa-solid fa-chart-pie', 'Data Mining', 'Aggregate ad logs WHERE industry="Automotive" AND date >= "2024-03-01" GROUP BY advertiser');
+            await delay(1200); updateTraceSuccess(t1);
+            
+            setWorking(true, 'Reconnaissance Audio (ACR)...');
+            let t2 = addTraceStep('fa-solid fa-fingerprint', 'Audio Fingerprinting', 'Identify most played creative ID for "Renault". Match found: RNL-SPRING-24');
+            await delay(1500); updateTraceSuccess(t2);
+
+            const widget = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-sm mb-2">
+                    Voici l'analyse. Renault domine la pression publicitaire ce mois-ci (+42% de part de voix vs Peugeot). J'ai isolé leur créative la plus diffusée pour que vous puissiez l'écouter.
+                </div>
+                <!-- WIDGET COMPETITION -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm w-full max-w-md">
+                    <div class="p-4 border-b border-gray-100">
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Part de voix - Secteur Auto</div>
+                        <div class="space-y-2">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold text-gray-700">Renault</span><span class="text-amber-600 font-bold">45%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-amber-500 h-1.5 rounded-full" style="width: 45%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold text-gray-700">Peugeot</span><span class="text-gray-500">28%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-gray-400 h-1.5 rounded-full" style="width: 28%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50/30 p-4">
+                        <div class="text-xs font-bold text-gray-800 mb-2">Créative la plus diffusée (Renault)</div>
+                        <div class="bg-white border border-amber-200 p-3 rounded-lg flex items-center gap-3 shadow-sm">
+                            <button onclick="this.innerHTML='<i class=\\'fa-solid fa-pause\\'></i>'; this.classList.toggle('text-amber-600')" class="w-10 h-10 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center flex-shrink-0 hover:bg-amber-200 transition-colors">
+                                <i class="fa-solid fa-play ml-0.5"></i>
+                            </button>
+                            <div class="flex-1">
+                                <div class="text-xs font-bold text-gray-800">Campagne "Spring Électrique"</div>
+                                <div class="text-[10px] text-gray-500 flex gap-2 mt-1">
+                                    <span><i class="fa-solid fa-clock"></i> 20s</span>
+                                    <span><i class="fa-solid fa-broadcast-tower"></i> 1.2M impressions</span>
+                                </div>
+                            </div>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2021_Text.svg/512px-Renault_2021_Text.svg.png" class="h-4 opacity-50">
+                        </div>
+                    </div>
+                </div>
+            `;
+            appendAgentComponent(widget);
+            setWorking(false);
+        }
+
+        // 4. SCÉNARIO CRÉATION DCO
+        async function runCreationScenario() {
+            setWorking(true, 'Génération des scripts via LLM...');
+            
+            let t1 = addTraceStep('fa-solid fa-pen-nib', 'Copywriting IA', 'Génération Script A (Contexte: Pluie) & Script B (Contexte: Soleil) pour Uber Eats');
+            await delay(1500); updateTraceSuccess(t1);
+            
+            setWorking(true, 'Synthèse Vocale (TTS)...');
+            let t2 = addTraceStep('fa-solid fa-wave-square', 'Audio Generation', 'Call Text-to-Speech API. Voice: "Thomas (Energetic/Warm)". Adding background music & SFX.');
+            await delay(2000); updateTraceSuccess(t2);
+
+            let t3 = addTraceStep('fa-solid fa-code-merge', 'Configuration DCO', 'Création des règles de ciblage météo via API DSP.');
+            await delay(800); updateTraceSuccess(t3);
+
+            const widget = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-sm mb-2">
+                    La campagne DCO est prête ! J'ai généré les assets audio de synthèse et configuré les règles météo (Weather Sync). Voici les variations pour validation :
+                </div>
+                <!-- WIDGET CREATION DCO -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm w-full max-w-lg">
+                    <div class="bg-purple-600 p-3 flex justify-between items-center text-white">
+                        <div class="font-bold text-sm"><i class="fa-solid fa-burger mr-2"></i> Uber Eats - Campagne Météo</div>
+                        <span class="text-[10px] bg-purple-800 px-2 py-1 rounded">2 Variations Audio</span>
+                    </div>
+                    
+                    <div class="p-4 space-y-4">
+                        <!-- Variation Pluie -->
+                        <div class="border border-purple-100 bg-gray-50 rounded-lg p-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2 text-xs font-bold text-gray-700">
+                                    <i class="fa-solid fa-cloud-rain text-blue-500"></i> Règle : S'il pleut
+                                </div>
+                                <span class="text-[10px] text-gray-400">Généré par IA (Voix: Thomas)</span>
+                            </div>
+                            <div class="text-[11px] text-gray-600 italic mb-2 px-2 border-l-2 border-purple-300">
+                                "Il pleut des cordes ? Restez au sec. Votre burger préféré est livré chez vous en 20 minutes avec Uber Eats."
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 hover:bg-purple-200">
+                                    <i class="fa-solid fa-play ml-0.5 text-xs"></i>
+                                </button>
+                                <div class="flex-1 bg-white border border-gray-200 rounded flex items-center px-2">
+                                    <!-- Fake audio waveform -->
+                                    <div class="w-full h-4 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxwYXRoIGQ9Ik0wLDUwIFExMCwxMCAyMCw1MCBUMDAsNTAgVDYwLDUwIFQ4MCw1MCBUMTAwLDUwIiBzdHJva2U9IiM4YjVjZjYiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==')] bg-repeat-x bg-center opacity-50"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Variation Soleil -->
+                        <div class="border border-purple-100 bg-gray-50 rounded-lg p-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2 text-xs font-bold text-gray-700">
+                                    <i class="fa-solid fa-sun text-yellow-500"></i> Règle : S'il fait beau
+                                </div>
+                                <span class="text-[10px] text-gray-400">Généré par IA (Voix: Thomas)</span>
+                            </div>
+                            <div class="text-[11px] text-gray-600 italic mb-2 px-2 border-l-2 border-yellow-300">
+                                "Profitez du soleil dans le parc ! On s'occupe du pique-nique. Commandez Uber Eats et faites-vous livrer sur place."
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 hover:bg-purple-200">
+                                    <i class="fa-solid fa-play ml-0.5 text-xs"></i>
+                                </button>
+                                <div class="flex-1 bg-white border border-gray-200 rounded flex items-center px-2">
+                                    <div class="w-full h-4 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxwYXRoIGQ9Ik0wLDUwIFExMCw4MCAyMCw1MCBUNDAsNTAgVDYwLDUwIFQ4MCw1MCBUMTAwLDUwIiBzdHJva2U9IiM4YjVjZjYiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==')] bg-repeat-x bg-center opacity-50"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 bg-purple-50 border-t border-purple-100 flex justify-end gap-2">
+                        <button class="px-3 py-1.5 text-xs text-purple-700 bg-white border border-purple-200 rounded font-medium hover:bg-purple-100">Éditer les règles</button>
+                        <button onclick="this.innerHTML='<i class=\\'fa-solid fa-rocket mr-1\\'></i> Campagne Déployée !'; this.classList.replace('bg-purple-600', 'bg-green-600')" class="px-4 py-1.5 text-xs text-white bg-purple-600 rounded font-bold hover:bg-purple-700 shadow-sm transition-colors">Déployer sur le DSP</button>
+                    </div>
+                </div>
+            `;
+            appendAgentComponent(widget);
+            setWorking(false);
+        }
+
+    </script>
+</body>
+</html>
