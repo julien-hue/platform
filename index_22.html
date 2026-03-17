@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beedee - Explorer (Hybrid AI)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Scrollbar styling for a cleaner look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Animation for the AI gradient text */
+        .ai-text-gradient {
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ai-border-gradient {
+            border: 1px solid transparent;
+            background: linear-gradient(white, white) padding-box, 
+                        linear-gradient(90deg, #6366f1, #a855f7) border-box;
+        }
+        
+        /* Table row hover effect for AI actions */
+        .table-row:hover .ai-action-btn { opacity: 1; transform: scale(1); }
+        .ai-action-btn { opacity: 0; transform: scale(0.95); transition: all 0.2s ease; }
+    </style>
+</head>
+<body class="h-screen flex flex-col bg-white text-gray-800 overflow-hidden">
+
+    <!-- TOP NAVIGATION -->
+    <header class="h-14 border-b border-gray-200 flex items-center justify-between px-4 flex-shrink-0 bg-white z-20 relative shadow-sm">
+        <div class="flex items-center gap-6">
+            <div class="font-bold text-xl tracking-tight text-gray-900">Beedee</div>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+                <a href="#" class="hover:text-gray-900 flex items-center gap-1">Audion BI <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i></a>
+                <a href="#" class="text-gray-900 border-b-2 border-gray-900 py-4">Explorer</a>
+                <a href="#" class="hover:text-gray-900 flex items-center gap-1">Inventory <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i></a>
+                <a href="#" class="hover:text-gray-900">Proposal</a>
+            </nav>
+        </div>
+
+        <!-- AMÉLIORATION 1 : NLP Search Bar -->
+        <div class="flex-1 max-w-2xl px-4 relative group">
+            <div class="absolute inset-y-0 left-7 flex items-center pointer-events-none">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-500"></i>
+            </div>
+            <input type="text" 
+                   class="w-full bg-indigo-50/50 border border-indigo-100 text-sm rounded-lg pl-10 pr-12 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder-gray-400"
+                   placeholder="Demandez à l'IA de filtrer (ex: 'Montre moi les chaînes éducatives avec >5% d'engagement')">
+            <div class="absolute inset-y-0 right-7 flex items-center">
+                <kbd class="hidden sm:inline-block border border-gray-200 rounded px-1.5 text-[10px] font-sans font-medium text-gray-400 bg-white">⌘K</kbd>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-sm font-medium text-gray-600">
+            <a href="#" class="hover:text-gray-900 flex items-center gap-1">Backoffice <i class="fa-solid fa-chevron-down text-[10px]"></i></a>
+            <a href="#" class="hover:text-gray-900 flex items-center gap-1">Archives <i class="fa-solid fa-chevron-down text-[10px]"></i></a>
+            <div class="flex items-center gap-2 pl-2 border-l border-gray-200">
+                <img src="https://ui-avatars.com/api/?name=Julien+Rialan&background=f3f4f6" alt="User" class="w-7 h-7 rounded-full">
+                <span class="text-sm">Julien Rialan</span>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-gear"></i></button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT LAYOUT -->
+    <div class="flex-1 flex overflow-hidden bg-gray-50/30">
+        
+        <!-- STATIC LEFT SIDEBAR (FILTERS) -->
+        <aside class="w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 flex flex-col">
+            <div class="p-4 space-y-6">
+                <!-- Platform -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-2">Platform</label>
+                    <div class="flex rounded-md shadow-sm border border-gray-200 p-0.5 bg-gray-50">
+                        <button class="flex-1 bg-gray-900 text-white text-sm font-medium py-1.5 rounded shadow-sm">YouTube</button>
+                        <button class="flex-1 text-gray-600 hover:text-gray-900 text-sm font-medium py-1.5 rounded transition-colors">Podcasts</button>
+                    </div>
+                </div>
+
+                <!-- Country -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-2">Country</label>
+                    <div class="relative">
+                        <select class="w-full appearance-none bg-white border border-gray-200 text-sm rounded-md py-2 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>All countries</option>
+                            <option>India</option>
+                            <option>France</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-2">Category</label>
+                    <div class="relative">
+                        <select class="w-full appearance-none bg-white border border-gray-200 text-sm rounded-md py-2 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>Jobs & Education</option>
+                            <option>Entertainment</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Made for Kids -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-2">Made for Kids</label>
+                    <div class="flex rounded-md shadow-sm border border-gray-200 p-0.5 bg-gray-50">
+                        <button class="flex-1 bg-gray-900 text-white text-sm font-medium py-1 rounded shadow-sm">Any</button>
+                        <button class="flex-1 text-gray-600 hover:text-gray-900 text-sm font-medium py-1 rounded transition-colors">Only</button>
+                        <button class="flex-1 text-gray-600 hover:text-gray-900 text-sm font-medium py-1 rounded transition-colors">Exclude</button>
+                    </div>
+                </div>
+
+                <!-- Engagement Rate -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-semibold text-gray-500">Engagement Rate (min.)</label>
+                        <span class="text-xs font-medium text-gray-400">Off</span>
+                    </div>
+                    <div class="w-full h-1 bg-gray-200 rounded-full relative">
+                        <div class="absolute w-4 h-4 bg-white border-2 border-gray-300 rounded-full -top-1.5 left-0 shadow cursor-pointer"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+                        <span>0%</span>
+                        <span>7%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Status Indicator in sidebar -->
+            <div class="mt-auto p-4 border-t border-gray-100 bg-gray-50">
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                    </span>
+                    Base de données synchronisée
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER CONTENT (STATIC DATA + AI INSIGHTS) -->
+        <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
+            <div class="flex-1 overflow-y-auto p-6">
+                
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
+                            <i class="fa-regular fa-eye"></i> Views
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900">150B</div>
+                        <div class="text-xs text-gray-400 mt-1">across 5M videos</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
+                            <i class="fa-solid fa-border-all"></i> Content
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900">5M</div>
+                        <div class="text-xs text-gray-400 mt-1">across 2.4K channels</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
+                            <i class="fa-regular fa-clock"></i> Duration
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900">192 years</div>
+                    </div>
+                </div>
+
+                <!-- AMÉLIORATION 2 : Contextual Insights Banner -->
+                <div class="ai-border-gradient rounded-xl p-4 mb-6 shadow-sm flex gap-4 items-start bg-indigo-50/30">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600 mt-0.5">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                            <span class="ai-text-gradient">AI Insight</span> basé sur vos filtres (Jobs & Education)
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1 leading-relaxed">
+                            Le top 3 des chaînes génère 45% de l'engagement total de cette catégorie. <strong class="text-gray-800">Rojgar with Ankit</strong> offre le meilleur ratio (5.4% d'engagement pour 4.1B de vues), idéal pour une campagne de volume ciblée.
+                        </p>
+                        <div class="mt-2 flex gap-2">
+                            <button class="text-xs bg-white border border-indigo-200 text-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-50 transition-colors shadow-sm font-medium">Générer un Proposal PDF</button>
+                            <button class="text-xs bg-transparent border border-gray-200 text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors font-medium">Voir l'analyse d'audience</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden bg-white">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                            <tr>
+                                <th class="px-4 py-3 w-10 text-center">#</th>
+                                <th class="px-4 py-3">Name</th>
+                                <th class="px-4 py-3 text-right">Subscribers <i class="fa-solid fa-arrow-down-wide-short ml-1"></i></th>
+                                <th class="px-4 py-3 text-right">Views</th>
+                                <th class="px-4 py-3 text-right">Videos</th>
+                                <th class="px-4 py-3 text-right">Engagement rate</th>
+                                <!-- Nouvelle colonne pour les actions IA -->
+                                <th class="px-4 py-3 text-center w-24"><i class="fa-solid fa-robot text-indigo-400" title="Actions IA"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-gray-700">
+                            <!-- Row 1 -->
+                            <tr class="table-row hover:bg-gray-50 transition-colors group">
+                                <td class="px-4 py-3 text-center text-gray-400 text-xs">1</td>
+                                <td class="px-4 py-3 flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=DS&background=f0fdf4&color=16a34a" class="w-6 h-6 rounded-full border border-gray-200">
+                                    <span class="font-medium text-gray-900">Dear Sir</span>
+                                </td>
+                                <td class="px-4 py-3 text-right">22M</td>
+                                <td class="px-4 py-3 text-right">2.2B</td>
+                                <td class="px-4 py-3 text-right">1.3K</td>
+                                <td class="px-4 py-3 text-right font-medium">4.6%</td>
+                                <td class="px-4 py-3 text-center">
+                                    <!-- AMÉLIORATION 3 : Micro-Agentic Action Button -->
+                                    <button class="ai-action-btn text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium flex items-center gap-1 mx-auto border border-indigo-100" onclick="triggerAgentAction('Dear Sir')">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyser
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 2 -->
+                            <tr class="table-row hover:bg-gray-50 transition-colors group">
+                                <td class="px-4 py-3 text-center text-gray-400 text-xs">2</td>
+                                <td class="px-4 py-3 flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=RA&background=eff6ff&color=2563eb" class="w-6 h-6 rounded-full border border-gray-200">
+                                    <span class="font-medium text-gray-900">Rojgar with Ankit</span>
+                                </td>
+                                <td class="px-4 py-3 text-right">18M</td>
+                                <td class="px-4 py-3 text-right">4.1B</td>
+                                <td class="px-4 py-3 text-right">33K</td>
+                                <td class="px-4 py-3 text-right font-medium">5.4%</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button class="ai-action-btn text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium flex items-center gap-1 mx-auto border border-indigo-100">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyser
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 3 -->
+                            <tr class="table-row hover:bg-gray-50 transition-colors group">
+                                <td class="px-4 py-3 text-center text-gray-400 text-xs">3</td>
+                                <td class="px-4 py-3 flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=V5&background=fffbeb&color=d97706" class="w-6 h-6 rounded-full border border-gray-200">
+                                    <span class="font-medium text-gray-900">V5 Family Show</span>
+                                </td>
+                                <td class="px-4 py-3 text-right">16M</td>
+                                <td class="px-4 py-3 text-right">19B</td>
+                                <td class="px-4 py-3 text-right">1.3K</td>
+                                <td class="px-4 py-3 text-right text-red-500 font-medium">0.4%</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button class="ai-action-btn text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium flex items-center gap-1 mx-auto border border-indigo-100">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyser
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 4 -->
+                            <tr class="table-row hover:bg-gray-50 transition-colors group">
+                                <td class="px-4 py-3 text-center text-gray-400 text-xs">4</td>
+                                <td class="px-4 py-3 flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=SM&background=f0fdf4&color=16a34a" class="w-6 h-6 rounded-full border border-gray-200">
+                                    <span class="font-medium text-gray-900">SSC MAKER</span>
+                                </td>
+                                <td class="px-4 py-3 text-right">15M</td>
+                                <td class="px-4 py-3 text-right">880M</td>
+                                <td class="px-4 py-3 text-right">18K</td>
+                                <td class="px-4 py-3 text-right font-medium">4.7%</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button class="ai-action-btn text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium flex items-center gap-1 mx-auto border border-indigo-100">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyser
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 5 -->
+                            <tr class="table-row hover:bg-gray-50 transition-colors group border-b-transparent">
+                                <td class="px-4 py-3 text-center text-gray-400 text-xs">5</td>
+                                <td class="px-4 py-3 flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=MB&background=f8fafc&color=475569" class="w-6 h-6 rounded-full border border-gray-200">
+                                    <span class="font-medium text-gray-900">Magnet Brains</span>
+                                </td>
+                                <td class="px-4 py-3 text-right">14M</td>
+                                <td class="px-4 py-3 text-right">3.7B</td>
+                                <td class="px-4 py-3 text-right">60K</td>
+                                <td class="px-4 py-3 text-right font-medium">2.5%</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button class="ai-action-btn text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded text-xs font-medium flex items-center gap-1 mx-auto border border-indigo-100">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyser
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination Footer -->
+                <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                    <div>Showing 1-50</div>
+                    <div class="flex items-center gap-2">
+                        <select class="bg-white border border-gray-200 rounded px-2 py-1"><option>50</option></select>
+                        <button class="bg-white border border-gray-200 rounded px-3 py-1 text-gray-400 cursor-not-allowed"><i class="fa-solid fa-chevron-left text-[10px] mr-1"></i> Previous</button>
+                        <span>Page 1</span>
+                        <button class="bg-white border border-gray-200 rounded px-3 py-1 hover:bg-gray-50 text-gray-700">Next <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- AMÉLIORATION 4 : Context-Aware Copilot Sidebar -->
+        <aside class="w-[320px] bg-white border-l border-gray-200 flex flex-col flex-shrink-0 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10" id="copilot-panel">
+            <!-- Header Copilot -->
+            <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs shadow-sm">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <span class="font-bold text-sm text-gray-800">Copilot</span>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600" title="Fermer le panneau"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50" id="chat-container">
+                <!-- Message Agent contextuel -->
+                <div class="flex gap-3">
+                    <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-[10px] mt-1">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <div class="bg-white border border-gray-200 p-3 rounded-xl rounded-tl-sm text-xs text-gray-700 shadow-sm">
+                        Je vois que vous analysez les chaînes <strong>YouTube "Jobs & Education"</strong>. 
+                        Comment puis-je vous aider sur cette sélection ?
+                        <div class="mt-2 space-y-1">
+                            <button class="block w-full text-left px-2 py-1.5 bg-gray-50 hover:bg-gray-100 rounded text-indigo-600 transition-colors border border-gray-100">Trouver des audiences similaires</button>
+                            <button class="block w-full text-left px-2 py-1.5 bg-gray-50 hover:bg-gray-100 rounded text-indigo-600 transition-colors border border-gray-100">Vérifier la Brand Safety du Top 5</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 bg-white border-t border-gray-100">
+                <form id="copilot-form" class="relative" onsubmit="event.preventDefault(); submitCopilot();">
+                    <input type="text" id="copilot-input" class="w-full bg-gray-100 border-transparent focus:bg-white focus:border-indigo-500 text-xs rounded-xl pl-3 pr-10 py-3 transition-all" placeholder="Poser une question sur ces données...">
+                    <button type="submit" class="absolute right-2 top-1.5 bottom-1.5 w-8 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Script de simulation visuelle pour la démo -->
+    <script>
+        function triggerAgentAction(channelName) {
+            const chatContainer = document.getElementById('chat-container');
+            
+            // Ajouter message user (invisible, juste pour simuler le comportement)
+            
+            // Simuler la réponse de l'agent avec un composant UI généré (Amélioration 5)
+            const botMsg = `
+                <div class="flex gap-3 animate-[slideIn_0.3s_ease-out]">
+                    <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-[10px] mt-1">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="w-full">
+                        <div class="text-[10px] text-gray-400 mb-1 ml-1"><i class="fa-solid fa-bolt text-yellow-500 mr-1"></i> Action : Résumé de profil</div>
+                        <div class="bg-white border border-gray-200 p-3 rounded-xl rounded-tl-sm text-xs text-gray-700 shadow-sm w-full">
+                            <strong>${channelName}</strong> est une chaîne éducative indienne majeure. <br><br>
+                            <div class="grid grid-cols-2 gap-2 my-2 text-center">
+                                <div class="bg-green-50 text-green-700 p-1.5 rounded font-medium border border-green-100"><i class="fa-solid fa-shield-check"></i> Safe (99%)</div>
+                                <div class="bg-blue-50 text-blue-700 p-1.5 rounded font-medium border border-blue-100"><i class="fa-solid fa-arrow-trend-up"></i> Croissance</div>
+                            </div>
+                            Le contenu est principalement axé sur la préparation aux examens compétitifs. Audience très fidèle (rétention > 60%).
+                            <button class="mt-2 w-full bg-indigo-50 text-indigo-600 py-1.5 rounded font-medium hover:bg-indigo-100 border border-indigo-100">Ajouter au Media Plan</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', botMsg);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function submitCopilot() {
+            const input = document.getElementById('copilot-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            const chatContainer = document.getElementById('chat-container');
+            
+            // Message User
+            const userMsg = `
+                <div class="flex gap-3 justify-end animate-[slideIn_0.3s_ease-out]">
+                    <div class="bg-indigo-600 text-white p-2.5 rounded-xl rounded-tr-sm text-xs shadow-sm max-w-[85%]">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', userMsg);
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Simuler la réflexion
+            setTimeout(() => {
+                const botMsg = `
+                    <div class="flex gap-3 animate-[slideIn_0.3s_ease-out]">
+                        <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-[10px] mt-1">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white border border-gray-200 p-3 rounded-xl rounded-tl-sm text-xs text-gray-700 shadow-sm">
+                            En croisant les données du tableau avec nos historiques, les chaînes de ce type ont un CPM moyen de <strong>2.45€</strong>. Souhaitez-vous que j'isole les chaînes sous ce CPM ?
+                        </div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', botMsg);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
