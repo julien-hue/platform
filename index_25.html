@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI - Agentic Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0a0a0a',
+                        darkSidebar: '#111318',
+                        darkCard: '#1a1d24',
+                        darkBorder: '#1f222b',
+                        darkHover: '#1f222b'
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, div, span, button, select, input { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        
+        /* Custom scrollbars */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #374151; border-radius: 20px; }
+        html:not(.dark) .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; }
+
+        /* Range Slider Styling */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #3b82f6; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px; }
+        html:not(.dark) input[type=range]::-webkit-slider-runnable-track { background: #e5e7eb; }
+
+        /* Benchmark Bar Pattern */
+        .bg-stripes {
+            background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+        }
+        html:not(.dark) .bg-stripes {
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05) 75%, transparent 75%, transparent);
+        }
+
+        /* View transition helper */
+        .view-section { display: none; height: 100%; width: 100%; flex-direction: column; }
+        .view-section.active { display: flex; }
+        
+        /* Audio Waveform mock */
+        .wave-bar { width: 3px; background-color: currentColor; border-radius: 2px; opacity: 0.7; }
+        .wave-bar:nth-child(even) { height: 60%; }
+        .wave-bar:nth-child(3n) { height: 100%; }
+        .wave-bar:nth-child(5n) { height: 30%; }
+        .wave-bar:nth-child(7n) { height: 80%; }
+        .wave-bar:nth-child(11n) { height: 40%; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-darkBg text-gray-900 dark:text-white h-screen w-full flex overflow-hidden font-sans">
+
+    <!-- SIDEBAR PRINCIPALE (Persistante) -->
+    <div class="w-72 flex flex-col border-r border-gray-200 dark:border-darkBorder bg-white dark:bg-darkSidebar z-20 shrink-0">
+        <!-- Header Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <i data-lucide="mic-2" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Audion AI</h1>
+                <p class="text-[10px] font-bold text-blue-500 tracking-wider">AGENTIC PLATFORM</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 px-4 py-4 overflow-y-auto custom-scroll" id="sidebar-nav">
+            
+            <div class="mb-10">
+                <button onclick="switchView('cockpit')" id="nav-cockpit" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group active-nav bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-bold text-sm">Cockpit Global</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-blue-500 status-dot animate-pulse-fast shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                </button>
+            </div>
+
+            <div class="text-[10px] font-extrabold text-gray-400 dark:text-gray-500 tracking-widest mb-5 px-3 uppercase">AGENTS SPÉCIALISÉS</div>
+            <div class="space-y-4">
+                <button onclick="switchView('indexation')" id="nav-indexation" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group inactive-nav hover:bg-gray-100 dark:hover:bg-darkHover text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="database" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-medium text-sm">Indexation</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                </button>
+                <button onclick="switchView('qualification')" id="nav-qualification" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group inactive-nav hover:bg-gray-100 dark:hover:bg-darkHover text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-medium text-sm">Qualification</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                </button>
+                <button onclick="switchView('competition')" id="nav-competition" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group inactive-nav hover:bg-gray-100 dark:hover:bg-darkHover text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="target" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-medium text-sm">Competition Analysis</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                </button>
+                <button onclick="switchView('creation')" id="nav-creation" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group inactive-nav hover:bg-gray-100 dark:hover:bg-darkHover text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="music" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-medium text-sm">Creation</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                </button>
+                <button onclick="switchView('performance')" id="nav-performance" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group inactive-nav hover:bg-gray-100 dark:hover:bg-darkHover text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 group-hover:text-blue-400 transition-colors"></i><span class="font-medium text-sm">Performance</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- User Profile & Theme -->
+        <div class="p-4 border-t border-gray-200 dark:border-darkBorder">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#15181e]">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-slate-700 text-white flex items-center justify-center text-sm font-bold">JD</div>
+                    <div class="text-left">
+                        <p class="text-sm font-bold leading-none dark:text-white text-gray-900">Jean Dupont</p>
+                        <p class="text-xs text-gray-500 mt-1">Directeur Media</p>
+                    </div>
+                </div>
+                <button class="theme-toggle-btn p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-darkHover text-gray-500 dark:text-gray-400">
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER (Contient les différentes vues) -->
+    <div class="flex-1 min-w-0 relative h-full bg-white dark:bg-darkBg">
+
+        <!-- ========================================== -->
+        <!-- VUE : COCKPIT GLOBAL                       -->
+        <!-- ========================================== -->
+        <div id="view-cockpit" class="view-section active">
+            <div class="h-16 flex items-center justify-between px-8 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-500 dark:text-gray-400 text-sm">Projet Actif :</span>
+                    <span class="font-semibold text-sm">Campagne Luxe Audio Q3</span>
+                </div>
+            </div>
+            <div class="flex-1 p-8 overflow-y-auto custom-scroll">
+                <div class="max-w-5xl mx-auto">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold mb-2">Supervision Globale</h2>
+                        <p class="text-gray-500 dark:text-gray-400">Visualisez en temps réel l'activité de vos agents et validez leurs opérations.</p>
+                    </div>
+
+                    <h3 class="text-sm font-bold text-gray-400 tracking-wider mb-4">REQUÊTES EN ATTENTE DE VALIDATION</h3>
+                    <div id="action-queue-container" class="grid gap-4 mb-10">
+                        <!-- Tâches injectées par JS -->
+                    </div>
+
+                    <h3 class="text-sm font-bold text-gray-400 tracking-wider mb-4">ACTIVITÉ DES AGENTS EN COURS</h3>
+                    <div id="activity-overview-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Cartes de statut injectées par JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VUE : INDEXATION                           -->
+        <!-- ========================================== -->
+        <div id="view-indexation" class="view-section">
+            <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg shrink-0 gap-4">
+                <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                    <i data-lucide="database" class="w-4 h-4 animate-pulse-fast"></i><span class="font-bold text-sm tracking-wide">AGENT ACTIF</span>
+                </div>
+                <h2 class="font-bold text-lg">Supervision Indexation</h2>
+            </div>
+            <div class="flex-1 p-8 overflow-y-auto custom-scroll bg-gray-50/50 dark:bg-transparent">
+                <div class="max-w-6xl mx-auto space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm flex flex-col justify-center">
+                            <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                                <i data-lucide="hard-drive" class="w-5 h-5"></i><h3 class="text-sm font-bold tracking-wider">VOLUME TOTAL INDEXÉ</h3>
+                            </div>
+                            <div class="text-5xl font-extrabold text-gray-900 dark:text-white mb-2" id="total-indexed">42,850</div>
+                            <p class="text-sm text-green-500 font-medium flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> +1,204 aujourd'hui
+                            </p>
+                        </div>
+                        <div class="lg:col-span-2 p-6 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-6">RÉPARTITION PAR CANAL</h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center"><i data-lucide="youtube" class="w-5 h-5"></i></div>
+                                            <div>
+                                                <span class="font-bold text-gray-900 dark:text-white block leading-none">YouTube</span>
+                                                <span class="text-xs text-gray-500">845 Chaînes suivies</span>
+                                            </div>
+                                        </div>
+                                        <span class="font-bold text-gray-900 dark:text-white text-lg">28,400 <span class="text-xs text-gray-500 font-normal">vidéos</span></span>
+                                    </div>
+                                    <div class="w-full h-3 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden"><div class="h-full bg-red-500 rounded-full" style="width: 66%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center"><i data-lucide="podcast" class="w-5 h-5"></i></div>
+                                            <div>
+                                                <span class="font-bold text-gray-900 dark:text-white block leading-none">Podcasts (RMC, RTL...)</span>
+                                                <span class="text-xs text-gray-500">120 Émissions suivies</span>
+                                            </div>
+                                        </div>
+                                        <span class="font-bold text-gray-900 dark:text-white text-lg">14,450 <span class="text-xs text-gray-500 font-normal">épisodes</span></span>
+                                    </div>
+                                    <div class="w-full h-3 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden"><div class="h-full bg-purple-500 rounded-full" style="width: 34%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- API Status & Terminal -->
+                    <h3 class="text-sm font-bold text-gray-400 tracking-wider pt-4">ÉTAT DES CONNEXIONS SOURCES & SSP</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="api-status-container"></div>
+                    <h3 class="text-sm font-bold text-gray-400 tracking-wider pt-4">FLUX D'INGESTION EN TEMPS RÉEL</h3>
+                    <div class="rounded-2xl bg-[#0d1117] border border-gray-800 overflow-hidden shadow-inner flex flex-col h-64">
+                        <div class="px-4 py-2 border-b border-gray-800 bg-[#161b22] flex justify-between items-center">
+                            <div class="flex items-center gap-2"><i data-lucide="terminal" class="w-4 h-4 text-gray-400"></i><span class="text-xs font-mono text-gray-400">agent-indexation.log</span></div>
+                        </div>
+                        <div id="terminal-logs" class="p-4 font-mono text-xs space-y-2 overflow-y-auto custom-scroll flex-1 text-gray-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VUE : QUALIFICATION                        -->
+        <!-- ========================================== -->
+        <div id="view-qualification" class="view-section">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg z-10 shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                        <i data-lucide="shield-check" class="w-4 h-4 animate-pulse-fast"></i><span class="font-bold text-sm tracking-wide">AGENT ACTIF</span>
+                    </div>
+                    <h2 class="font-bold text-lg">Qualification des Inventaires</h2>
+                </div>
+                <div class="relative hidden md:block">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Rechercher pour modérer..." class="pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-[#15181e] focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-gray-900 dark:text-white">
+                </div>
+            </div>
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Filtres -->
+                <div class="w-64 border-r border-gray-200 dark:border-darkBorder bg-white/50 dark:bg-darkBg/50 overflow-y-auto custom-scroll p-5 shrink-0">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-2 block">PLATEFORME</label>
+                            <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-[#15181e] border border-gray-200 dark:border-darkBorder">
+                                <button class="flex-1 py-1.5 text-sm font-semibold rounded-md bg-white dark:bg-darkCard shadow-sm text-gray-900 dark:text-white">YouTube</button>
+                                <button class="flex-1 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-900 dark:hover:text-white">Podcasts</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-2 block">RISQUE BRAND SAFETY</label>
+                            <select class="w-full pl-3 pr-8 py-2 text-sm rounded-lg border border-gray-200 dark:border-darkBorder bg-white dark:bg-darkCard focus:ring-blue-500 text-gray-900 dark:text-white">
+                                <option>Tous les niveaux</option><option>Faible risque</option><option>Risque Modéré</option><option>Haut risque</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-2 block">MADE FOR KIDS</label>
+                            <div class="flex rounded-lg border border-gray-200 dark:border-darkBorder overflow-hidden text-sm">
+                                <button class="flex-1 py-1.5 bg-gray-800 text-white dark:bg-gray-200 dark:text-gray-900 font-semibold">Any</button>
+                                <button class="flex-1 py-1.5 bg-white dark:bg-darkCard text-gray-600 dark:text-gray-400 hover:bg-gray-50 border-x border-gray-200 dark:border-darkBorder">Only</button>
+                                <button class="flex-1 py-1.5 bg-white dark:bg-darkCard text-gray-600 dark:text-gray-400 hover:bg-gray-50">Exclude</button>
+                            </div>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-gray-200 dark:border-darkBorder">
+                            <button class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="filter" class="w-4 h-4"></i> Filtrer l'inventaire
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Data Table Qualification -->
+                <div class="flex-1 flex flex-col overflow-y-auto custom-scroll bg-gray-50/50 dark:bg-darkBg relative">
+                    <div class="p-6 max-w-7xl mx-auto w-full space-y-6">
+                        
+                        <!-- KPIs -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                                <div class="text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4"></i><h3 class="text-xs font-bold tracking-wider">CANAUX VALIDÉS</h3></div>
+                                <div class="text-3xl font-bold text-gray-900 dark:text-white">142K</div><div class="text-xs text-gray-500 mt-1">Brand Safety: 99%+</div>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                                <div class="text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="alert-triangle" class="w-4 h-4 text-yellow-500"></i><h3 class="text-xs font-bold tracking-wider">EN REVUE (IA)</h3></div>
+                                <div class="text-3xl font-bold text-gray-900 dark:text-white">12K</div><div class="text-xs text-gray-500 mt-1">Analyse contextuelle en cours</div>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                                <div class="text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i><h3 class="text-xs font-bold tracking-wider">EXCLUS (BLACKLIST)</h3></div>
+                                <div class="text-3xl font-bold text-gray-900 dark:text-white">16K</div><div class="text-xs text-gray-500 mt-1">Ne respecte pas les critères</div>
+                            </div>
+                        </div>
+
+                        <!-- Tableau -->
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-[#15181e] border-b border-gray-200 dark:border-darkBorder">
+                                    <tr>
+                                        <th class="px-6 py-4 font-bold">#</th><th class="px-6 py-4 font-bold">Nom de la chaîne</th>
+                                        <th class="px-6 py-4 font-bold">Abonnés</th><th class="px-6 py-4 font-bold">Vues</th>
+                                        <th class="px-6 py-4 font-bold text-center">Brand Safety Score</th><th class="px-6 py-4 font-bold text-right">Statut Modération</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-darkBorder" id="qualification-table-body">
+                                    <!-- Rempli en JS -->
+                                </tbody>
+                            </table>
+                            <div class="px-6 py-4 border-t border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-[#15181e] flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Affichage 1-50 sur 170,000+</span>
+                                <div class="flex gap-1">
+                                    <button class="px-3 py-1 rounded border border-gray-200 dark:border-darkBorder bg-white dark:bg-darkCard text-sm"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                    <span class="px-3 py-1 text-sm font-medium">Page 1</span>
+                                    <button class="px-3 py-1 rounded border border-gray-200 dark:border-darkBorder bg-white dark:bg-darkCard text-sm"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VUE : COMPETITION ANALYSIS                 -->
+        <!-- ========================================== -->
+        <div id="view-competition" class="view-section">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg z-10 shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                        <i data-lucide="target" class="w-4 h-4 animate-pulse-fast"></i><span class="font-bold text-sm tracking-wide">AGENT ACTIF</span>
+                    </div>
+                    <h2 class="font-bold text-lg">Competition Analysis</h2>
+                </div>
+                
+                <!-- AI Prompt Search Bar -->
+                <div class="hidden md:flex items-center gap-2 bg-indigo-50/50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/30 rounded-xl px-4 py-2 w-[550px] shadow-sm">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+                    <input type="text" value="Analyse la marque Renault et ses concurrents sur le dernier mois" class="bg-transparent border-none focus:outline-none text-sm font-semibold text-indigo-900 dark:text-indigo-200 w-full" readonly>
+                    <div class="flex gap-1 shrink-0">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500">⌘</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500">K</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scroll bg-white dark:bg-darkBg p-8">
+                <div class="max-w-5xl mx-auto">
+                    
+                    <!-- Brand Header -->
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl flex items-center justify-center shadow-sm overflow-hidden p-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Renault_2021_Text.svg/1024px-Renault_2021_Text.svg.png" alt="Renault" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Renault</h1>
+                                <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                    <span class="bg-gray-100 dark:bg-gray-800 px-2 py-1.5 rounded-md font-bold text-gray-700 dark:text-gray-300">Secteur: Automobile</span>
+                                    <span class="flex items-center gap-1.5 font-medium"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Derniers 30 jours</span>
+                                    <span class="flex items-center gap-1.5 font-medium"><i data-lucide="globe" class="w-3.5 h-3.5"></i> France</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-lg text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-darkHover transition-colors shadow-sm">
+                            <i data-lucide="pie-chart" class="w-4 h-4 text-gray-400"></i> Rapport PDF
+                        </button>
+                    </div>
+
+                    <!-- Executive Summary -->
+                    <div class="bg-indigo-50/50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl p-6 mb-8 shadow-sm">
+                        <h3 class="text-xs font-extrabold text-indigo-700 dark:text-indigo-400 tracking-widest uppercase mb-3">Executive Summary</h3>
+                        <p class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
+                            Renault maintient la plus forte <strong class="text-gray-900 dark:text-white">pression publicitaire (38%)</strong> du secteur ce mois-ci, principalement poussée par la campagne "Spring Électrique". Cependant, <strong class="text-blue-600 dark:text-blue-400">Peugeot</strong> gagne du terrain (+12% vs mois dernier) avec une stratégie audio digitale très agressive ciblant les jeunes urbains (podcasts tech & lifestyle). L'IA suggère d'augmenter la fréquence sur ces segments pour contrer la part de voix de Peugeot.
+                        </p>
+                    </div>
+
+                    <!-- Section Split : SOV + Créations -->
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        
+                        <!-- SOV Card -->
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-2xl p-6 shadow-sm flex-1">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-xs font-extrabold text-gray-400 dark:text-gray-500 tracking-widest uppercase">Pression Pub & Part de Voix (SOV)</h3>
+                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                            </div>
+                            <div id="competition-sov-container" class="space-y-6">
+                                <!-- Rempli par JS -->
+                            </div>
+                        </div>
+
+                        <!-- Creatives Card -->
+                        <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-2xl p-6 shadow-sm w-full lg:w-1/3 flex flex-col">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xs font-extrabold text-gray-400 dark:text-gray-500 tracking-widest uppercase">Créations Récentes</h3>
+                                <button class="text-blue-600 hover:text-blue-700 dark:text-blue-400 text-xs font-bold">Voir tout</button>
+                            </div>
+                            <div id="competition-creatives-container" class="space-y-4 flex-1">
+                                <!-- Rempli par JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VUE : CREATION (DCO / AUDIO PLAYER)        -->
+        <!-- ========================================== -->
+        <div id="view-creation" class="view-section">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg z-10 shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                        <i data-lucide="music" class="w-4 h-4 animate-pulse-fast"></i><span class="font-bold text-sm tracking-wide">AGENT ACTIF</span>
+                    </div>
+                    <h2 class="font-bold text-lg">Création Audio Dynamique (DCO)</h2>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto bg-gray-50/50 dark:bg-[#0b0f19] text-gray-900 dark:text-gray-300 flex flex-col custom-scroll relative transition-colors">
+                
+                <!-- TOP : Visuel Timeline / Flowchart -->
+                <div class="py-16 px-8 flex justify-center items-start border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center max-w-5xl w-full justify-between relative">
+                        <!-- Ligne de connexion de fond -->
+                        <div class="absolute top-8 left-10 right-10 h-0.5 bg-gray-200 dark:bg-gray-800 -z-10"></div>
+
+                        <!-- Node 1: Intro (Fixe) -->
+                        <div class="flex flex-col items-center gap-3 w-40 text-center bg-gray-50/50 dark:bg-[#0b0f19] z-0">
+                            <div class="w-16 h-16 rounded-full bg-white dark:bg-[#131b2f] border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 shadow-sm">
+                                <i data-lucide="audio-lines" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm">Intro</h4>
+                                <p class="text-xs text-gray-500 mt-1 italic leading-tight">"Alerte générale ! La raclette c'est..."</p>
+                            </div>
+                        </div>
+
+                        <!-- Node 2: Variable 1 (J-14) -->
+                        <div class="flex flex-col items-center gap-2 w-40 bg-gray-50/50 dark:bg-[#0b0f19] z-0">
+                            <div class="w-32 bg-white dark:bg-[#131b2f] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                                <div class="py-3 text-center text-gray-900 dark:text-white font-semibold text-sm border-b border-gray-100 dark:border-gray-800">J-14</div>
+                                <div class="py-3 text-center text-gray-400 dark:text-gray-600 font-medium text-sm">J-7</div>
+                            </div>
+                        </div>
+
+                        <!-- Node 3: Produit (Fixe) -->
+                        <div class="flex flex-col items-center gap-3 w-40 text-center bg-gray-50/50 dark:bg-[#0b0f19] z-0">
+                            <div class="w-16 h-16 rounded-full bg-white dark:bg-[#131b2f] border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 shadow-sm">
+                                <i data-lucide="audio-lines" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm">Produit</h4>
+                                <p class="text-xs text-gray-500 mt-1 italic leading-tight">"alors préparez vos pinces à merguez.."</p>
+                            </div>
+                        </div>
+
+                        <!-- Node 4: Variable 2 (Ville) -->
+                        <div class="flex flex-col items-center gap-2 w-40 bg-gray-50/50 dark:bg-[#0b0f19] z-0">
+                            <div class="w-32 bg-white dark:bg-[#131b2f] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                                <div class="py-3 text-center text-gray-900 dark:text-white font-semibold text-sm border-b border-gray-100 dark:border-gray-800">Paris</div>
+                                <div class="py-3 text-center text-gray-400 dark:text-gray-600 font-medium text-sm">Marseille</div>
+                            </div>
+                        </div>
+
+                        <!-- Node 5: Outro (Fixe) -->
+                        <div class="flex flex-col items-center gap-3 w-40 text-center bg-gray-50/50 dark:bg-[#0b0f19] z-0">
+                            <div class="w-16 h-16 rounded-full bg-white dark:bg-[#131b2f] border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 shadow-sm">
+                                <i data-lucide="audio-lines" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm">Outro</h4>
+                                <p class="text-xs text-gray-500 mt-1 italic leading-tight">"Aldi, le vrai goût des beaux jours..."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MIDDLE : Script Editor -->
+                <div class="flex-1 px-8 py-10 bg-white dark:bg-[#101524]">
+                    <div class="max-w-4xl mx-auto flex gap-4">
+                        <div class="w-1 bg-gray-200 dark:bg-white shrink-0 rounded-full"></div> <!-- Ligne indicateur à gauche -->
+                        <div class="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                            Alerte générale ! La raclette c'est fini, on sort les grilles et on fait chauffer la braise. Saucisses, frites, grillades, le grand festin n'attend plus que vous chez Aldi. 
+                            <span class="bg-blue-50 dark:bg-gray-700/80 text-blue-700 dark:text-white px-1.5 py-0.5 rounded ml-1 font-semibold border border-blue-200 dark:border-gray-600 transition-colors">Le 15 mars approche à toute vitesse,</span> 
+                            alors préparez vos pinces à merguez et foncez faire le plein 
+                            <span class="bg-blue-50 dark:bg-gray-700/80 text-blue-700 dark:text-white px-1.5 py-0.5 rounded ml-1 font-semibold border border-blue-200 dark:border-gray-600 transition-colors">dans votre magasin de Paris, juste avant d'investir les parcs.</span> 
+                            Aldi, le vrai goût des beaux jours sans griller votre budget. Allez, on allume le feu !
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM : Audio Player -->
+                <div class="h-28 bg-white dark:bg-[#0b0f19] border-t border-gray-200 dark:border-gray-800 px-8 flex items-center justify-center shrink-0">
+                    <div class="max-w-4xl w-full flex items-center gap-8">
+                        <!-- Play Btn -->
+                        <button class="w-14 h-14 rounded-full bg-blue-600 dark:bg-[#f1ebd9] flex items-center justify-center text-white dark:text-black hover:scale-105 transition-transform shrink-0 shadow-lg shadow-blue-500/20 dark:shadow-none">
+                            <i data-lucide="play" class="w-6 h-6 ml-1 fill-white dark:fill-black"></i>
+                        </button>
+
+                        <!-- Waveform Mock -->
+                        <div class="flex-1 flex items-center h-10 gap-1">
+                            <script>
+                                // Génération de 80 barres pour simuler une waveform réaliste
+                                for(let i=0; i<80; i++) {
+                                    // Rendre la première moitié plus brillante pour simuler l'avancement
+                                    let activeClass = i < 30 ? 'text-blue-500 dark:text-gray-400' : 'text-gray-200 dark:text-gray-700';
+                                    document.write(`<div class="wave-bar ${activeClass}"></div>`);
+                                }
+                            </script>
+                        </div>
+
+                        <!-- Time & Download -->
+                        <div class="flex items-center gap-6 shrink-0">
+                            <span class="font-mono text-sm tracking-widest text-gray-500 dark:text-gray-400">0:00 / 0:34</span>
+                            <button class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-[#1a233a] flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VUE : PERFORMANCE                          -->
+        <!-- ========================================== -->
+        <div id="view-performance" class="view-section">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkBg z-10 shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                        <i data-lucide="bar-chart-2" class="w-4 h-4 animate-pulse-fast"></i><span class="font-bold text-sm tracking-wide">AGENT ACTIF</span>
+                    </div>
+                    <h2 class="font-bold text-lg">Analyse & Benchmarks</h2>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scroll bg-gray-50/50 dark:bg-darkBg relative">
+                <div id="ai-banner" class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-md">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-white/20 rounded-lg"><i data-lucide="zap" class="w-5 h-5 text-yellow-300 animate-pulse"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm flex items-center gap-2">Analyse de l'Agent Performance <span class="bg-white/20 px-2 py-0.5 rounded text-xs font-medium">Alerte</span></h4>
+                            <p class="text-sm text-blue-100 mt-0.5">La campagne "Portes Ouvertes" sous-performe face à la moyenne du secteur (-6.6 pts de LTR). Je recommande de réallouer 15% du budget ciblage large vers des segments affinitaires.</p>
+                        </div>
+                    </div>
+                    <button onclick="applyRecommendation()" class="px-4 py-2 rounded-lg text-sm font-bold bg-white text-blue-600 hover:bg-gray-100 transition-colors shadow-lg">Valider l'optimisation</button>
+                </div>
+                
+                <div class="p-6 max-w-7xl mx-auto space-y-6">
+                    
+                    <!-- Global KPIs -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <div class="text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2"><i data-lucide="headphones" class="w-4 h-4"></i><h3 class="text-xs font-bold tracking-wider">IMPRESSIONS</h3></div>
+                            <div class="text-3xl font-extrabold text-gray-900 dark:text-white">1.8M</div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <div class="flex justify-between items-start mb-2"><div class="text-gray-500 dark:text-gray-400 flex items-center gap-2"><i data-lucide="bar-chart" class="w-4 h-4"></i><h3 class="text-xs font-bold tracking-wider">LTR MOYEN</h3></div><span class="text-xs font-bold text-green-500 flex items-center gap-1"><i data-lucide="arrow-up-right" class="w-3 h-3"></i> 4.2%</span></div>
+                            <div class="text-3xl font-extrabold text-gray-900 dark:text-white">88.5%</div>
+                            <div class="text-[11px] text-gray-500 mt-1">vs Moy. Secteur: 84.3%</div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <div class="flex justify-between items-start mb-2"><div class="text-gray-500 dark:text-gray-400 flex items-center gap-2"><i data-lucide="mouse-pointer-click" class="w-4 h-4"></i><h3 class="text-xs font-bold tracking-wider">CTR MOYEN</h3></div><span class="text-xs font-bold text-red-500 flex items-center gap-1"><i data-lucide="arrow-down-right" class="w-3 h-3"></i> 0.3%</span></div>
+                            <div class="text-3xl font-extrabold text-gray-900 dark:text-white">1.2%</div>
+                            <div class="text-[11px] text-gray-500 mt-1">vs Moy. Secteur: 1.5%</div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <div class="flex justify-between items-start mb-2"><div class="text-gray-500 dark:text-gray-400 flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4"></i><h3 class="text-xs font-bold tracking-wider">CPE MOYEN</h3></div><span class="text-xs font-bold text-green-500 flex items-center gap-1"><i data-lucide="arrow-down-right" class="w-3 h-3"></i> 0.02€</span></div>
+                            <div class="text-3xl font-extrabold text-gray-900 dark:text-white">0.08€</div>
+                            <div class="text-[11px] text-gray-500 mt-1">vs Moy. Secteur: 0.10€</div>
+                        </div>
+                    </div>
+
+                    <!-- Liste des Campagnes vs Benchmark -->
+                    <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="p-6 border-b border-gray-200 dark:border-darkBorder flex justify-between items-center bg-gray-50/50 dark:bg-[#15181e]/50">
+                            <div>
+                                <h3 class="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-widest mb-1">Performances des campagnes vs Concurrents Directs</h3>
+                                <p class="text-xs text-gray-500">Comparaison de l'engagement publicitaire avec le modèle concurrent équivalent le plus performant.</p>
+                            </div>
+                            <button class="px-4 py-2 bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder rounded-lg text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-darkHover transition-colors shadow-sm flex items-center gap-2">
+                                <i data-lucide="download" class="w-4 h-4"></i> Exporter XLS
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-[#15181e] border-b border-gray-200 dark:border-darkBorder">
+                                    <tr>
+                                        <th class="px-6 py-4 font-bold">Campagne (Active)</th>
+                                        <th class="px-6 py-4 font-bold">Benchmark (Concurrent IA)</th>
+                                        <th class="px-6 py-4 font-bold">Listen-Through (LTR)</th>
+                                        <th class="px-6 py-4 font-bold">Click-Through (CTR)</th>
+                                        <th class="px-6 py-4 font-bold text-right">Analyse & Actions IA</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-darkBorder" id="performance-campaigns-body">
+                                    <!-- Rempli par JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGIQUE JAVASCRIPT GLOBALE & SPECIFIQUE -->
+    <script>
+        // --- 1. GESTION DE LA NAVIGATION (SPA) ---
+        function switchView(viewId) {
+            // Cacher toutes les sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Afficher la section demandée
+            document.getElementById('view-' + viewId).classList.add('active');
+
+            // Mettre à jour les boutons de la sidebar proprement (classList.remove/add au lieu de className pur)
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-nav', 'bg-blue-50', 'dark:bg-blue-500/10', 'text-blue-600', 'dark:text-blue-400');
+                btn.classList.add('inactive-nav', 'hover:bg-gray-100', 'dark:hover:bg-darkHover', 'text-gray-600', 'dark:text-gray-400');
+                
+                // Gérer le gras du texte
+                const span = btn.querySelector('span:not(.status-dot)');
+                if(span) { span.classList.remove('font-bold'); span.classList.add('font-medium'); }
+
+                const dot = btn.querySelector('.status-dot');
+                if(dot) dot.className = 'w-2 h-2 rounded-full bg-green-500 status-dot transition-all'; // Reset au vert statique
+            });
+
+            // Activer le bouton cliqué
+            const activeBtn = document.getElementById('nav-' + viewId);
+            activeBtn.classList.remove('inactive-nav', 'hover:bg-gray-100', 'dark:hover:bg-darkHover', 'text-gray-600', 'dark:text-gray-400');
+            activeBtn.classList.add('active-nav', 'bg-blue-50', 'dark:bg-blue-500/10', 'text-blue-600', 'dark:text-blue-400');
+            
+            // Mettre le texte en gras pour le bouton actif
+            const activeSpan = activeBtn.querySelector('span:not(.status-dot)');
+            if(activeSpan) { activeSpan.classList.remove('font-medium'); activeSpan.classList.add('font-bold'); }
+
+            // Le point vert devient bleu et pulse quand actif
+            const activeDot = activeBtn.querySelector('.status-dot');
+            if(activeDot) {
+                activeDot.className = 'w-2 h-2 rounded-full bg-blue-500 status-dot transition-all animate-pulse-fast shadow-[0_0_8px_rgba(59,130,246,0.6)]';
+            }
+
+            lucide.createIcons();
+        }
+
+        // --- 2. GESTION DU THEME (Unité) ---
+        document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        });
+
+        // --- 3. LOGIQUE COCKPIT GLOBAL ---
+        let cockpitAgents = [
+            { id: 'c-indexation', name: 'Indexation', icon: 'database', state: 'processing', progress: 65, detail: 'Traitement en cours...', actionRequired: false },
+            { id: 'c-qualif', name: 'Qualification', icon: 'shield-check', state: 'alert', progress: 100, detail: '12K requêtes en revue', actionRequired: true },
+            { id: 'c-creation', name: 'Creation', icon: 'music', state: 'waiting', progress: 40, detail: 'Variables DCO à valider', actionRequired: true }
+        ];
+
+        const getStatusStyles = (state) => {
+            switch(state) {
+                case 'processing': return { text: 'text-blue-500', bg: 'bg-blue-500/10', icon: 'loader', bar: 'bg-blue-500' };
+                case 'alert': return { text: 'text-red-500', bg: 'bg-red-500/10', icon: 'alert-triangle', bar: 'bg-red-500' };
+                case 'done': return { text: 'text-green-500', bg: 'bg-green-500/10', icon: 'check-circle-2', bar: 'bg-green-500' };
+                case 'waiting': return { text: 'text-yellow-500', bg: 'bg-yellow-500/10', icon: 'clock', bar: 'bg-yellow-500' };
+                default: return { text: 'text-gray-400', bg: 'bg-gray-100 dark:bg-gray-800', icon: 'circle-dashed', bar: 'bg-gray-300 dark:bg-gray-700' };
+            }
+        };
+
+        function renderCockpit() {
+            const queueContainer = document.getElementById('action-queue-container');
+            const actionAgents = cockpitAgents.filter(a => a.actionRequired);
+            if (actionAgents.length === 0) {
+                queueContainer.innerHTML = `<div class="p-8 text-center rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 text-gray-500"><i data-lucide="check-circle" class="w-8 h-8 mx-auto mb-2 text-green-500/50"></i><p>Aucune action requise.</p></div>`;
+            } else {
+                queueContainer.innerHTML = actionAgents.map(agent => {
+                    const styles = getStatusStyles(agent.state);
+                    return `
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg ${styles.bg} ${styles.text} flex items-center justify-center"><i data-lucide="${agent.icon}" class="w-5 h-5"></i></div>
+                                <div><h4 class="font-bold text-gray-900 dark:text-white">${agent.name}</h4><p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${agent.detail}</p></div>
+                            </div>
+                            <button onclick="handleCockpitAction('${agent.id}')" class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20">Aller voir</button>
+                        </div>`;
+                }).join('');
+            }
+            document.getElementById('activity-overview-container').innerHTML = cockpitAgents.map(agent => {
+                const styles = getStatusStyles(agent.state);
+                return `
+                    <div class="p-4 rounded-xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder">
+                        <div class="flex items-center gap-3 mb-3"><i data-lucide="${agent.icon}" class="w-5 h-5 ${styles.text}"></i><h4 class="font-semibold text-sm text-gray-900 dark:text-white">${agent.name}</h4></div>
+                        <div class="mb-2 flex justify-between text-xs"><span class="text-gray-500">${agent.detail}</span><span class="font-bold ${styles.text}">${agent.progress}%</span></div>
+                        <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden"><div class="h-full ${styles.bar} rounded-full" style="width: ${agent.progress}%"></div></div>
+                    </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        window.handleCockpitAction = (id) => {
+            if(id === 'c-qualif') switchView('qualification');
+            if(id === 'c-creation') switchView('creation');
+        };
+
+        // --- 4. LOGIQUE INDEXATION ---
+        const apiSources = [
+            { name: 'API YouTube v3', type: 'Vidéo', icon: 'youtube', color: 'red', status: 'syncing', lastSync: 'En cours...' },
+            { name: 'RMC Podcasts', type: 'Flux RSS', icon: 'radio', color: 'purple', status: 'online', lastSync: 'Il y a 2 min' },
+            { name: 'The Trade Desk', type: 'SSP Programmatique', icon: 'server', color: 'blue', status: 'online', lastSync: 'Il y a 1 min' },
+            { name: 'Triton Digital', type: 'SSP Audio', icon: 'globe', color: 'blue', status: 'online', lastSync: 'Il y a 10 min' }
+        ];
+
+        function renderApiSources() {
+            document.getElementById('api-status-container').innerHTML = apiSources.map(source => {
+                let badge = source.status === 'syncing' 
+                    ? `<span class="flex items-center gap-1.5 text-xs font-medium text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse-fast"></span> Sync...</span>`
+                    : `<span class="flex items-center gap-1.5 text-xs font-medium text-green-500 bg-green-500/10 px-2 py-1 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> En ligne</span>`;
+                return `
+                    <div class="p-4 rounded-xl bg-white dark:bg-darkCard border border-gray-200 dark:border-darkBorder">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-${source.color}-500/10 text-${source.color}-500 flex items-center justify-center"><i data-lucide="${source.icon}" class="w-5 h-5"></i></div>
+                            ${badge}
+                        </div>
+                        <h4 class="font-bold text-gray-900 dark:text-white text-sm">${source.name}</h4>
+                        <div class="flex justify-between text-xs text-gray-500 mt-1"><span>${source.type}</span><span>${source.lastSync}</span></div>
+                    </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        // --- 5. LOGIQUE EXPLORER & QUALIFICATION ---
+        const channelsData = [
+            { id: 1, name: "MrBeast", avatar: "https://ui-avatars.com/api/?name=MB&background=1d4ed8&color=fff", match: 98, subs: "450M", views: "100B", er: "2.2%", bs: 99, status: "Approuvé" },
+            { id: 2, name: "T-Series", avatar: "https://ui-avatars.com/api/?name=TS&background=dc2626&color=fff", match: 92, subs: "310M", views: "320B", er: "1.7%", bs: 95, status: "Approuvé" },
+            { id: 3, name: "Cocomelon", avatar: "https://ui-avatars.com/api/?name=CC&background=16a34a&color=fff", match: 85, subs: "200M", views: "210B", er: "0.2%", bs: 100, status: "Approuvé" },
+            { id: 4, name: "Vlad and Niki", avatar: "https://ui-avatars.com/api/?name=VN&background=eab308&color=fff", match: 65, subs: "150M", views: "120B", er: "0.1%", bs: 75, status: "En Revue" },
+            { id: 5, name: "WWE", avatar: "https://ui-avatars.com/api/?name=WW&background=000&color=fff", match: 50, subs: "110M", views: "100B", er: "1.7%", bs: 40, status: "Blacklist" }
+        ];
+
+        const competitorsData = [
+            { name: "Renault (Brand)", share: 38.4, spend: "1.2M€", trend: "+2.1%", trendUp: true, color: "bg-yellow-400", brandIcon: "car" },
+            { name: "Peugeot", share: 26.2, spend: "850K€", trend: "+12.0%", trendUp: true, color: "bg-blue-600", brandIcon: "car" },
+            { name: "Volkswagen", share: 15.1, spend: "420K€", trend: "-1.5%", trendUp: false, color: "bg-gray-400", brandIcon: "car" },
+            { name: "Dacia", share: 11.5, spend: "310K€", trend: "+0.5%", trendUp: true, color: "bg-green-500", brandIcon: "car" },
+            { name: "Citroën", share: 8.8, spend: "240K€", trend: "-3.2%", trendUp: false, color: "bg-red-500", brandIcon: "car" }
+        ];
+
+        // --- NOUVELLES DONNÉES CRÉATIVES CONCURRENTES ---
+        const competitorCreatives = [
+            { brand: "Peugeot", title: "e-208 Instants Volés", platform: "Spotify", duration: "30s", brandColor: "text-blue-600 dark:text-blue-400", bgIcon: "bg-blue-100 dark:bg-blue-900/30" },
+            { brand: "Volkswagen", title: "ID.4 L'espace", platform: "Podcasts", duration: "45s", brandColor: "text-gray-600 dark:text-gray-300", bgIcon: "bg-gray-100 dark:bg-gray-800" },
+            { brand: "Dacia", title: "Spring - Accessible", platform: "YouTube", duration: "20s", brandColor: "text-green-600 dark:text-green-400", bgIcon: "bg-green-100 dark:bg-green-900/30" }
+        ];
+
+        function renderCompetition() {
+            document.getElementById('competition-sov-container').innerHTML = competitorsData.map(comp => {
+                const trendClass = comp.trendUp ? 'text-green-500' : 'text-red-500';
+                const trendIcon = comp.trendUp ? 'trending-up' : 'trending-down';
+                const mainNameClass = comp.name.includes('Renault') ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300';
+                
+                return `
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <div class="flex items-center gap-2 font-bold ${mainNameClass} text-sm">
+                                <i data-lucide="${comp.brandIcon}" class="w-4 h-4 ${comp.name.includes('Renault') ? 'text-yellow-500' : 'text-gray-400'}"></i> ${comp.name}
+                            </div>
+                            <div class="text-xl font-bold text-gray-900 dark:text-white">${comp.share}%</div>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden mb-1">
+                            <div class="h-full ${comp.color} rounded-full" style="width: ${comp.share}%"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-500">Est. Spend: ${comp.spend}</span>
+                            <span class="${trendClass} font-medium flex items-center gap-1"><i data-lucide="${trendIcon}" class="w-3 h-3"></i> ${comp.trend}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // --- RENDU DES CREATIVES ---
+            document.getElementById('competition-creatives-container').innerHTML = competitorCreatives.map(crea => {
+                // Génération d'une mini-waveform aléatoire
+                let waveform = '';
+                for(let i=0; i<25; i++) {
+                    let height = Math.max(20, Math.random() * 100);
+                    waveform += `<div class="w-1 rounded-full bg-gray-300 dark:bg-gray-600" style="height: ${height}%"></div>`;
+                }
+
+                return `
+                    <div class="p-3 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-darkHover transition-colors group cursor-pointer flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <button class="w-8 h-8 rounded-full ${crea.bgIcon} ${crea.brandColor} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                <i data-lucide="play" class="w-4 h-4 ml-0.5"></i>
+                            </button>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start mb-0.5">
+                                    <p class="text-xs font-bold text-gray-900 dark:text-white truncate pr-2">${crea.brand}</p>
+                                    <p class="text-[9px] text-gray-400 font-medium border border-gray-200 dark:border-gray-700 px-1.5 rounded">${crea.duration}</p>
+                                </div>
+                                <p class="text-[10px] text-gray-500 truncate">${crea.title} • ${crea.platform}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-end h-4 gap-0.5 px-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                            ${waveform}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderQualification() {
+            document.getElementById('qualification-table-body').innerHTML = channelsData.map(ch => {
+                // Couleurs conditionnelles pour la modération
+                let bsColor = ch.bs >= 90 ? 'text-green-500' : (ch.bs >= 70 ? 'text-yellow-500' : 'text-red-500');
+                let statusBadge = ch.status === "Approuvé" 
+                    ? '<span class="px-2 py-1 rounded-md text-xs font-bold text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-500/10"><i data-lucide="check" class="w-3 h-3 inline"></i> Approuvé</span>'
+                    : (ch.status === "En Revue" 
+                        ? '<span class="px-2 py-1 rounded-md text-xs font-bold text-yellow-700 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-500/10"><i data-lucide="eye" class="w-3 h-3 inline"></i> En Revue</span>'
+                        : '<span class="px-2 py-1 rounded-md text-xs font-bold text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-500/10"><i data-lucide="ban" class="w-3 h-3 inline"></i> Blacklist</span>');
+
+                return `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-darkHover transition-colors">
+                        <td class="px-6 py-4 text-gray-500">${ch.id}</td>
+                        <td class="px-6 py-4 flex items-center gap-3"><img src="${ch.avatar}" class="w-8 h-8 rounded-full"><span class="font-bold text-gray-900 dark:text-white">${ch.name}</span></td>
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">${ch.subs}</td>
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">${ch.views}</td>
+                        <td class="px-6 py-4 text-center font-bold ${bsColor}">${ch.bs}%</td>
+                        <td class="px-6 py-4 text-right">${statusBadge}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // --- 6. LOGIQUE PERFORMANCE (CAMPAGNES VS BENCHMARK) ---
+        const performanceCampaigns = [
+            { name: "Spring Électrique", type: "Spotify Audio", spend: "125K€", ltr: 88.5, ltrBench: 84.0, ctr: 0.85, ctrBench: 0.75, ref: "Peugeot e-208", status: "Active" },
+            { name: "Austral Hybride", type: "Podcast Sponsoring", spend: "45K€", ltr: 94.1, ltrBench: 91.0, ctr: 1.2, ctrBench: 1.1, ref: "Peugeot 3008", status: "Active" },
+            { name: "Portes Ouvertes Mars", type: "Radio Connectée", spend: "80K€", ltr: 75.4, ltrBench: 82.0, ctr: 0.4, ctrBench: 0.6, ref: "Moyenne Secteur (Promo)", status: "Sous-perf" },
+            { name: "Megane E-Tech", type: "YouTube Audio", spend: "150K€", ltr: 86.2, ltrBench: 85.5, ctr: 0.9, ctrBench: 0.85, ref: "VW ID.4", status: "Terminée" }
+        ];
+
+        function renderPerformanceCampaigns() {
+            document.getElementById('performance-campaigns-body').innerHTML = performanceCampaigns.map(camp => {
+                
+                const getDeltaHtml = (val, bench, isPositiveGood = true) => {
+                    const delta = (val - bench).toFixed(1);
+                    const isPositive = delta > 0;
+                    const isGood = isPositiveGood ? isPositive : !isPositive;
+                    const colorClass = isGood ? 'text-green-500' : 'text-red-500';
+                    const icon = isPositive ? 'arrow-up-right' : 'arrow-down-right';
+                    const sign = isPositive ? '+' : '';
+                    return `<span class="${colorClass} text-xs font-bold flex items-center gap-0.5"><i data-lucide="${icon}" class="w-3 h-3"></i> ${sign}${delta}</span>`;
+                };
+
+                const ltrDelta = getDeltaHtml(camp.ltr, camp.ltrBench);
+                const ctrDelta = getDeltaHtml(camp.ctr, camp.ctrBench);
+
+                let statusBadge = '';
+                let iaAction = '';
+                if (camp.status === 'Active') {
+                    statusBadge = `<span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-1"></span>`;
+                    iaAction = `<span class="text-green-600 dark:text-green-400 font-semibold text-xs flex items-center justify-end gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> Surperforme</span>`;
+                } else if (camp.status === 'Sous-perf') {
+                    statusBadge = `<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block mr-1 shadow-[0_0_6px_rgba(239,68,68,0.6)]"></span>`;
+                    iaAction = `<button class="px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30 rounded-md text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors flex items-center gap-1.5 ml-auto shadow-sm"><i data-lucide="zap" class="w-3 h-3"></i> Optimiser ciblage</button>`;
+                } else {
+                    statusBadge = `<span class="w-2 h-2 rounded-full bg-gray-400 inline-block mr-1"></span>`;
+                    iaAction = `<span class="text-gray-500 font-medium text-xs">Clôturée</span>`;
+                }
+
+                return `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-darkHover transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-gray-900 dark:text-white flex items-center">${statusBadge} ${camp.name}</div>
+                            <div class="text-xs text-gray-500 mt-0.5">${camp.type} • Investi: ${camp.spend}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-[11px] font-bold text-gray-600 dark:text-gray-300">
+                                vs ${camp.ref}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="font-bold text-gray-900 dark:text-white text-base">${camp.ltr}%</div>
+                                ${ltrDelta}
+                            </div>
+                            <div class="text-[10px] text-gray-500 mt-0.5 font-medium">Bench: ${camp.ltrBench}%</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="font-bold text-gray-900 dark:text-white text-base">${camp.ctr}%</div>
+                                ${ctrDelta}
+                            </div>
+                            <div class="text-[10px] text-gray-500 mt-0.5 font-medium">Bench: ${camp.ctrBench}%</div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            ${iaAction}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- INITIALISATION GENERALE ---
+        renderCockpit();
+        renderApiSources();
+        renderCompetition();
+        renderQualification();
+        renderPerformanceCampaigns();
+        lucide.createIcons();
+        switchView('cockpit'); // Vue par défaut
+
+    </script>
+</body>
+</html>
