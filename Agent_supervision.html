@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervision des Agents</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Définitions des dégradés pour le SVG Area Chart */
+        .svg-chart {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#FDFCF8] font-sans text-stone-900 p-8 md:p-12">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- En-tête supérieur -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-stone-900 tracking-tight">Agent Supervision</h1>
+                <p class="text-stone-500 mt-1">Suivi en temps réel des agents Audion AI</p>
+            </div>
+            <button class="w-10 h-10 rounded-full bg-[#C88470] text-white flex items-center justify-center hover:bg-[#b5735f] transition-colors shadow-sm">
+                <i data-lucide="sparkles" class="w-[18px] h-[18px]"></i>
+            </button>
+        </div>
+
+        <!-- GRAPHIQUE À PLAT (MATRICE 2D NOIRE - TEMPS RÉEL) -->
+        <div class="w-full bg-stone-950 rounded-2xl mb-8 p-6 relative shadow-xl border border-stone-800 flex flex-col overflow-hidden">
+            <!-- HUD En-tête du graphique -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 z-10 gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-white mb-2">
+                        <i data-lucide="layout-grid" class="w-5 h-5 text-[#C88470]"></i>
+                        <h2 class="text-xl font-bold tracking-wide">Volume d'Indexation (Temps Réel)</h2>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-baseline gap-3">
+                            <span id="matrix-current-count" class="text-4xl font-bold text-white tabular-nums tracking-tight">0</span>
+                            <span class="text-sm text-stone-400 font-medium">/ 1,2M contenus ciblés cette semaine</span>
+                        </div>
+                        <p class="text-xs text-stone-500 font-medium mt-1.5">
+                            Représentation matricielle : <span class="text-stone-300 font-semibold">1 point = 3 000 contenus</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Légende en direct -->
+                <div class="flex gap-5 bg-white/5 backdrop-blur-sm border border-white/10 px-4 py-2.5 rounded-lg">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#1E7D4C] shadow-[0_0_8px_rgba(30,125,76,0.8)]"></span>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Indexés</span>
+                            <span id="matrix-qualified-count" class="text-sm text-white font-bold leading-none mt-0.5 tabular-nums">0K</span>
+                        </div>
+                    </div>
+                    <div class="w-px h-8 bg-stone-700"></div>
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-stone-500"></span>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">En attente</span>
+                            <span id="matrix-waiting-count" class="text-sm text-white font-bold leading-none mt-0.5 tabular-nums">0K</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grille de points (Matrice 2D) -->
+            <div id="matrix-grid" class="grid grid-cols-[repeat(20,1fr)] md:grid-cols-[repeat(40,1fr)] gap-1.5 md:gap-2 w-full z-10">
+                <!-- Les points sont générés par Javascript -->
+            </div>
+            
+            <!-- Reflet décoratif en arrière-plan -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stone-800/20 via-stone-950/0 to-transparent pointer-events-none z-0"></div>
+        </div>
+
+        <!-- Ligne du haut : Agents actifs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            
+            <!-- Carte Indexation -->
+            <div class="relative flex flex-col p-5 rounded-xl border bg-white border-stone-200 shadow-sm hover:shadow-md transition-all">
+                <div class="absolute left-0 top-4 bottom-4 w-1 bg-[#C88470] rounded-r-full"></div>
+                <div class="flex justify-between items-center mb-6 pl-2">
+                    <div class="flex items-center gap-2 text-stone-800 font-medium">
+                        <i data-lucide="database" class="w-[18px] h-[18px] text-stone-800"></i>
+                        <span class="text-stone-900">Indexation</span>
+                    </div>
+                    <div class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D1F2E0] text-[#1E7D4C]">En cours</div>
+                </div>
+                <div class="pl-2 flex-grow flex flex-col">
+                    <div class="grid gap-4 grid-cols-2">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="file-audio" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">1.2M</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">contenus indexés cette semaine</span>
+                        </div>
+                        <div class="flex flex-col border-l border-stone-100 pl-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="clock" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">400K</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">heures d'audio indexées</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 mb-2">
+                        <div class="w-full h-12 mt-4 relative">
+                            <svg class="w-full h-full svg-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="indexGradient" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#C88470" stop-opacity="0.3" />
+                                        <stop offset="100%" stop-color="#C88470" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0,30 L0,15 L10,20 L20,10 L30,22 L40,5 L50,15 L60,25 L70,10 L80,18 L90,5 L100,12 L100,30 Z" fill="url(#indexGradient)" />
+                                <path d="M0,15 L10,20 L20,10 L30,22 L40,5 L50,15 L60,25 L70,10 L80,18 L90,5 L100,12" fill="none" stroke="#C88470" stroke-width="1.5" stroke-linejoin="round" />
+                            </svg>
+                            <div class="absolute bottom-0 left-0 w-full flex justify-between text-[8px] text-stone-400 px-1">
+                                <span>Lun</span><span>Auj</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-stone-100 flex gap-6">
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="zap" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Vitesse</div>
+                                <div class="text-sm font-medium text-stone-800">450 h/min</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="globe" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Sources</div>
+                                <div class="text-sm font-medium text-stone-800">13 actives</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Qualification -->
+            <div class="relative flex flex-col p-5 rounded-xl border bg-white border-stone-200 shadow-sm hover:shadow-md transition-all">
+                <div class="absolute left-0 top-4 bottom-4 w-1 bg-[#C88470] rounded-r-full"></div>
+                <div class="flex justify-between items-center mb-6 pl-2">
+                    <div class="flex items-center gap-2 text-stone-800 font-medium">
+                        <i data-lucide="sliders-horizontal" class="w-[18px] h-[18px] text-stone-800"></i>
+                        <span class="text-stone-900">Qualification</span>
+                    </div>
+                    <div class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D1F2E0] text-[#1E7D4C]">En cours</div>
+                </div>
+                <div class="pl-2 flex-grow flex flex-col">
+                    <div class="grid gap-4 grid-cols-2">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="file-audio" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">850K</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">contenus qualifiés cette semaine</span>
+                        </div>
+                        <div class="flex flex-col border-l border-stone-100 pl-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="tags" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">11M</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">catégories appliquées</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 mb-2">
+                        <div class="mt-4 w-full">
+                            <div class="flex justify-between text-[10px] text-stone-500 mb-1.5 font-medium">
+                                <span>Taux d'analyse sécurisée</span>
+                                <span class="text-[#1E7D4C]">98.3% Safe</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-stone-100 rounded-full overflow-hidden flex">
+                                <div class="h-full bg-[#1E7D4C] w-[98.3%] transition-all duration-1000"></div>
+                                <div class="h-full bg-red-400 w-[1.7%] transition-all duration-1000" title="14.2K filtrés"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-stone-100 flex gap-6">
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="tags" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Profondeur</div>
+                                <div class="text-sm font-medium text-stone-800">13 cat. / contenu</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="shield-check" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Brand Safety</div>
+                                <div class="text-sm font-medium text-stone-800">14,2K filtrés</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Création -->
+            <div class="relative flex flex-col p-5 rounded-xl border bg-white border-stone-200 shadow-sm hover:shadow-md transition-all">
+                <div class="absolute left-0 top-4 bottom-4 w-1 bg-[#C88470] rounded-r-full"></div>
+                <div class="flex justify-between items-center mb-6 pl-2">
+                    <div class="flex items-center gap-2 text-stone-800 font-medium">
+                        <i data-lucide="music" class="w-[18px] h-[18px] text-stone-800"></i>
+                        <span class="text-stone-900">Création</span>
+                    </div>
+                    <div class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D1F2E0] text-[#1E7D4C]">En cours</div>
+                </div>
+                <div class="pl-2 flex-grow flex flex-col">
+                    <div class="grid gap-4 grid-cols-1">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="megaphone" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">24</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">campagnes générées cette semaine</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 mb-2">
+                        <div class="mt-4 w-full h-12 flex flex-col justify-end">
+                            <div class="flex items-end justify-between h-8 gap-1 w-full">
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 33.33%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 66.66%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 50%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 100%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 33.33%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 83.33%"></div>
+                                <div class="w-full bg-[#C88470] rounded-t-sm opacity-80 hover:opacity-100 transition-opacity" style="height: 33.33%"></div>
+                            </div>
+                            <div class="w-full flex justify-between text-[8px] text-stone-400 mt-1 px-1">
+                                <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-stone-100 flex gap-6">
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="shuffle" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Échelle</div>
+                                <div class="text-sm font-medium text-stone-800">1 250 variations</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="zap" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Vitesse</div>
+                                <div class="text-sm font-medium text-stone-800">57 s moy./campagne</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ligne du bas : Intelligence & Performance -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Carte Analyse Concurrentielle -->
+            <div class="relative flex flex-col p-5 rounded-xl border bg-white border-stone-200 shadow-sm hover:shadow-md transition-all">
+                <div class="absolute left-0 top-4 bottom-4 w-1 bg-[#C88470] rounded-r-full"></div>
+                <div class="flex justify-between items-center mb-6 pl-2">
+                    <div class="flex items-center gap-2 text-stone-800 font-medium">
+                        <i data-lucide="scan" class="w-[18px] h-[18px] text-stone-800"></i>
+                        <span class="text-stone-900">Analyse Concurrentielle</span>
+                    </div>
+                    <div class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D1F2E0] text-[#1E7D4C]">En cours</div>
+                </div>
+                <div class="pl-2 flex-grow flex flex-col">
+                    <div class="grid gap-4 grid-cols-2">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="users" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">27</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">concurrents suivis</span>
+                        </div>
+                        <div class="flex flex-col border-l border-stone-100 pl-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="layers" class="w-6 h-6 text-[#C88470]"></i>
+                                <span class="text-3xl font-bold text-stone-900 tracking-tight">135</span>
+                            </div>
+                            <span class="text-xs text-stone-500 leading-snug mt-1 max-w-[120px]">créations extraites</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 mb-2">
+                        <div class="mt-4 flex flex-col gap-2 w-full">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-stone-500 w-12 truncate">Comp. A</span>
+                                <div class="flex-grow h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-stone-400" style="width: 100%"></div>
+                                </div>
+                                <span class="text-[10px] text-stone-500 font-medium">5</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-stone-500 w-12 truncate">Comp. B</span>
+                                <div class="flex-grow h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-stone-400" style="width: 80%"></div>
+                                </div>
+                                <span class="text-[10px] text-stone-500 font-medium">4</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-stone-500 w-12 truncate">Comp. C</span>
+                                <div class="flex-grow h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-stone-400" style="width: 100%"></div>
+                                </div>
+                                <span class="text-[10px] text-stone-500 font-medium">5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-stone-100 flex gap-6">
+                        <div class="flex items-start gap-2">
+                            <div class="mt-0.5 text-stone-400"><i data-lucide="layers" class="w-[14px] h-[14px]"></i></div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider text-stone-400 mb-0.5">Extraction</div>
+                                <div class="text-sm font-medium text-stone-800">5 créas / concurrent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Performance -->
+            <div class="relative flex flex-col p-5 rounded-xl border bg-[#F6F5F2] border-transparent">
+                <div class="flex justify-between items-center mb-6 pl-2">
+                    <div class="flex items-center gap-2 text-stone-800 font-medium">
+                        <i data-lucide="trending-up" class="w-[18px] h-[18px] text-stone-400"></i>
+                        <span class="text-stone-500">Performance</span>
+                    </div>
+                    <div class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EAE8E3] text-stone-500">Hors ligne</div>
+                </div>
+                <div class="pl-2 flex-grow flex flex-col">
+                    <div class="h-full flex items-center pt-2">
+                        <span class="text-sm text-stone-400 italic">En attente du lancement d'une campagne active pour surveiller les métriques LTR...</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Flux d'Activité -->
+        <div class="mt-8 bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-4 border-b border-stone-100 pb-4">
+                <div class="flex items-center gap-2 text-stone-900">
+                    <i data-lucide="activity" class="w-5 h-5 text-[#1E7D4C] animate-pulse"></i>
+                    <h2 class="text-lg font-bold">Journal d'Activité des Agents</h2>
+                </div>
+                <div class="text-xs font-medium text-[#1E7D4C] bg-[#D1F2E0]/40 px-3 py-1.5 rounded-full flex items-center gap-2 border border-[#D1F2E0]">
+                    <span class="w-2 h-2 rounded-full bg-[#1E7D4C] animate-pulse"></span>
+                    Surveillance en temps réel
+                </div>
+            </div>
+            
+            <div id="live-feed-container" class="flex flex-col gap-2.5">
+                <!-- Les éléments de flux seront injectés ici par Javascript -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Init Lucide icons initially
+        lucide.createIcons();
+
+        // --- MATRICE 2D - TEMPS RÉEL LOGIC ---
+        const TOTAL_TARGET = 1200000;
+        const TOTAL_DOTS = 400;
+
+        const elMatrixCurrentCount = document.getElementById('matrix-current-count');
+        const elMatrixQualifiedCount = document.getElementById('matrix-qualified-count');
+        const elMatrixWaitingCount = document.getElementById('matrix-waiting-count');
+        const elMatrixGrid = document.getElementById('matrix-grid');
+
+        // Pré-générer les points de la grille pour ne modifier que leurs classes ensuite
+        for (let i = 0; i < TOTAL_DOTS; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'w-2 h-2 md:w-3 md:h-3 rounded-full transition-colors duration-300 bg-stone-500/80';
+            elMatrixGrid.appendChild(dot);
+        }
+        const dotElements = Array.from(elMatrixGrid.children);
+
+        function updateMatrix() {
+            const now = new Date();
+            const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1; 
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - dayOfWeek);
+            startOfWeek.setHours(0, 0, 0, 0);
+
+            const elapsedMs = now.getTime() - startOfWeek.getTime();
+            const totalMsInWeek = 7 * 24 * 60 * 60 * 1000;
+            
+            const ratio = Math.min(Math.max(elapsedMs / totalMsInWeek, 0), 1);
+            const currentCount = Math.floor(TOTAL_TARGET * ratio);
+
+            const activeDotsCount = Math.floor((currentCount / TOTAL_TARGET) * TOTAL_DOTS);
+            const remainingCount = TOTAL_TARGET - currentCount;
+
+            // Update Text
+            elMatrixCurrentCount.innerText = currentCount.toLocaleString('fr-FR');
+            elMatrixQualifiedCount.innerText = (currentCount / 1000).toFixed(1) + 'K';
+            elMatrixWaitingCount.innerText = (remainingCount / 1000).toFixed(1) + 'K';
+
+            // Update Grid Colors
+            for (let i = 0; i < TOTAL_DOTS; i++) {
+                const isIndexed = i < activeDotsCount;
+                if (isIndexed) {
+                    dotElements[i].className = 'w-2 h-2 md:w-3 md:h-3 rounded-full transition-colors duration-300 bg-[#1E7D4C] shadow-[0_0_4px_rgba(30,125,76,0.6)]';
+                } else {
+                    dotElements[i].className = 'w-2 h-2 md:w-3 md:h-3 rounded-full transition-colors duration-300 bg-stone-500/80';
+                }
+            }
+        }
+
+        // Run immediately, then interval
+        updateMatrix();
+        setInterval(updateMatrix, 100);
+
+        // --- LIVE FEED LOGIC ---
+        const agentEvents = [
+            { name: 'Agent Indexation', action: 'Nouveau contenu traité', icon: 'database', bg: 'bg-[#C88470]/10', text: 'text-[#C88470]', border: 'border-[#C88470]/20' },
+            { name: 'Agent Qualification', action: 'Catégories appliquées', icon: 'sliders-horizontal', bg: 'bg-[#1E7D4C]/10', text: 'text-[#1E7D4C]', border: 'border-[#1E7D4C]/20' },
+            { name: 'Agent Création', action: 'Variation générée', icon: 'music', bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'border-blue-500/20' },
+            { name: 'Agent Analyse', action: 'Extraction concurrente', icon: 'scan', bg: 'bg-stone-500/10', text: 'text-stone-500', border: 'border-stone-500/20' }
+        ];
+
+        const contents = ['Journal de 8h', 'Tech Talk Ep. 42', 'Morning News', 'Campagne Été 2026', 'Podcast Sport', 'Review Cinéma'];
+        const details = ['Source: Radio France', 'Audio: 45min', '13 Tags insérés', 'Format 30s', 'Source: Ausha', 'Pub audio détectée'];
+
+        let feedItems = [
+            { id: 1, agent: agentEvents[0], target: 'Journal de 8h', detail: 'Source: Radio France', time: 0, isNew: true },
+            { id: 2, agent: agentEvents[1], target: 'Tech Talk Ep. 42', detail: '13 Tags insérés', time: 3, isNew: false },
+            { id: 3, agent: agentEvents[2], target: 'Campagne Hiver', detail: 'Format 30s', time: 6, isNew: false },
+        ];
+        
+        let counterId = 4;
+        const feedContainer = document.getElementById('live-feed-container');
+
+        function renderFeed() {
+            feedContainer.innerHTML = ''; // Clear current feed
+
+            feedItems.forEach((item, index) => {
+                const isNewClass = item.isNew 
+                    ? `bg-[#FDFCF8] ${item.agent.border} shadow-sm translate-y-0 opacity-100 scale-100` 
+                    : `bg-[#F6F5F2] border-transparent opacity-60 translate-y-0 scale-[0.99]`;
+                
+                const iconBgClass = item.isNew ? `${item.agent.bg} ${item.agent.text}` : 'bg-stone-200 text-stone-500';
+                const nameTextClass = item.isNew ? item.agent.text : 'text-stone-700';
+                const timeStr = item.time === 0 ? "À l'instant" : `Il y a ${item.time}s`;
+
+                const checkIcon = item.isNew ? `<i data-lucide="check-circle-2" class="w-3.5 h-3.5 ${item.agent.text}"></i>` : '';
+
+                const htmlString = `
+                    <div class="flex items-center justify-between p-3 rounded-lg border transition-all duration-700 ease-out ${isNewClass}">
+                        <div class="flex items-center gap-4">
+                            <div class="p-2 rounded-full transition-colors ${iconBgClass}">
+                                <i data-lucide="${item.agent.icon}" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-sm ${nameTextClass}">
+                                        ${item.agent.name}
+                                    </span>
+                                    <span class="text-stone-400 text-xs">→</span>
+                                    <span class="text-sm font-medium text-stone-800">${item.agent.action}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-stone-500 mt-0.5">
+                                    <span class="font-medium">Cible: ${item.target}</span>
+                                    <span class="text-[10px] text-stone-400 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200">${item.detail}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-stone-400 tabular-nums">${timeStr}</span>
+                            ${checkIcon}
+                        </div>
+                    </div>
+                `;
+                feedContainer.insertAdjacentHTML('beforeend', htmlString);
+            });
+            
+            lucide.createIcons(); // Parse new icons
+        }
+
+        function triggerNewFeedItem() {
+            // Update old items times
+            feedItems = feedItems.map(item => ({
+                ...item,
+                isNew: false,
+                time: item.time + 3
+            }));
+
+            // Create new item
+            const randomAgent = agentEvents[Math.floor(Math.random() * agentEvents.length)];
+            const randomContent = contents[Math.floor(Math.random() * contents.length)];
+            const randomDetail = details[Math.floor(Math.random() * details.length)];
+            
+            const newItem = {
+                id: counterId++,
+                agent: randomAgent,
+                target: randomContent,
+                detail: randomDetail,
+                time: 0,
+                isNew: true
+            };
+
+            feedItems.unshift(newItem); // Add to top
+            
+            // Keep only 6 elements
+            if (feedItems.length > 6) {
+                feedItems.pop();
+            }
+
+            renderFeed();
+        }
+
+        // Initialize feed
+        renderFeed();
+        setInterval(triggerNewFeedItem, 3000);
+
+    </script>
+</body>
+</html>
