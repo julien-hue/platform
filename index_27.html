@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supervision Indexation - Dashboard</title>
+    <title>Indexation Supervision - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; }
         .log-terminal { font-family: 'Monaco', 'Consolas', monospace; }
         @keyframes pulse-soft {
             0%, 100% { opacity: 1; }
@@ -18,38 +18,22 @@
         .pulse { animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         .avatar-stack { display: flex; align-items: center; }
         .avatar-stack > * { margin-left: -0.5rem; border: 2px solid white; }
-        .dark .avatar-stack > * { border-color: #1e293b; }
         .avatar-stack > *:first-child { margin-left: 0; }
         
-        /* Personnalisation de la scrollbar pour la zone principale */
+        /* Custom scrollbar for main area */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; }
         ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        success: '#22c55e',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body class="h-screen flex overflow-hidden bg-gray-50 dark:bg-[#0f172a] text-slate-900 transition-colors duration-300">
+<body class="h-screen flex overflow-hidden bg-[#FDFCF8] text-stone-900">
 
-    <!-- MENU LATÉRAL GAUCHE -->
-    <aside class="w-72 bg-[#FAFAFA] dark:bg-[#0f172a] border-r border-stone-200 dark:border-slate-800 flex-shrink-0 flex flex-col p-6 overflow-y-auto z-20 transition-colors duration-300">
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-72 bg-[#FAFAFA] border-r border-stone-200 flex-shrink-0 flex flex-col p-6 overflow-y-auto z-20">
         
-        <!-- Logo Audion AI -->
-        <div class="flex items-center gap-2.5 mb-8 text-stone-900 dark:text-white">
+        <!-- Audion AI Logo -->
+        <div class="flex items-center gap-2.5 mb-8 text-stone-900">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-7 h-7" style="stroke-linejoin: round; stroke-linecap: round;">
                 <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"></path>
             </svg>
@@ -57,24 +41,24 @@
         </div>
 
         <!-- Dashboard Link -->
-        <a href="#" class="flex items-center gap-3 text-stone-600 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:text-stone-900 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors -mx-3">
+        <a href="#" class="flex items-center gap-3 text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors -mx-3">
             <i data-lucide="layout-grid" class="w-5 h-5"></i>
             <span class="font-medium text-[15px]">Dashboard</span>
         </a>
 
         <!-- Search Bar -->
         <div class="relative mt-6 mb-8">
-            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 dark:text-slate-500"></i>
-            <input type="text" placeholder="Search..." class="w-full pl-9 pr-12 py-2.5 bg-white dark:bg-slate-800 border border-stone-200 dark:border-slate-700 rounded-lg text-sm text-stone-800 dark:text-white focus:outline-none focus:border-stone-400 dark:focus:border-slate-500 focus:ring-1 focus:ring-stone-200 dark:focus:ring-slate-600 transition-all">
-            <kbd class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F9FAFB] dark:bg-slate-700 border border-stone-200 dark:border-slate-600 text-stone-500 dark:text-slate-400 px-1.5 py-0.5 rounded text-[10px] font-sans font-medium tracking-wide">⌘K</kbd>
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+            <input type="text" placeholder="Search..." class="w-full pl-9 pr-12 py-2.5 bg-white border border-stone-200 rounded-lg text-sm text-stone-800 focus:outline-none focus:border-stone-400 focus:ring-1 focus:ring-stone-200 transition-all">
+            <kbd class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F9FAFB] border border-stone-200 text-stone-500 px-1.5 py-0.5 rounded text-[10px] font-sans font-medium tracking-wide">⌘K</kbd>
         </div>
 
         <!-- Section: Agents -->
-        <h3 class="text-xs font-semibold text-stone-500 dark:text-slate-500 mb-3">Agents</h3>
+        <h3 class="text-xs font-semibold text-stone-500 mb-3">Agents</h3>
         
         <nav class="flex flex-col gap-1 -mx-3">
-            <!-- Agent: Indexation (ACTIF sur cette page) -->
-            <a href="#" class="flex items-center justify-between bg-stone-100 dark:bg-slate-800 text-stone-900 dark:text-white px-3 py-2.5 rounded-lg transition-colors">
+            <!-- Agent: Indexation (ACTIVE on this page) -->
+            <a href="#" class="flex items-center justify-between bg-stone-200 text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
                 <div class="flex items-center gap-3">
                     <i data-lucide="database" class="w-5 h-5"></i>
                     <span class="font-medium text-[15px]">Indexation</span>
@@ -83,35 +67,35 @@
             </a>
 
             <!-- Agent: Qualification -->
-            <a href="#" class="flex items-center justify-between text-stone-600 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:text-stone-900 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors">
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="sliders-horizontal" class="w-5 h-5 text-stone-500 dark:text-slate-500"></i>
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5 text-stone-500"></i>
                     <span class="font-medium text-[15px]">Qualification</span>
                 </div>
                 <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
             </a>
 
             <!-- Agent: Competition Analysis -->
-            <a href="#" class="flex items-center justify-between text-stone-600 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:text-stone-900 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors">
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="scan" class="w-5 h-5 text-stone-500 dark:text-slate-500"></i>
+                    <i data-lucide="scan" class="w-5 h-5 text-stone-500"></i>
                     <span class="font-medium text-[15px]">Competition Analysis</span>
                 </div>
             </a>
 
             <!-- Agent: Creation -->
-            <a href="#" class="flex items-center justify-between text-stone-600 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:text-stone-900 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors">
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="music" class="w-5 h-5 text-stone-500 dark:text-slate-500"></i>
+                    <i data-lucide="music" class="w-5 h-5 text-stone-500"></i>
                     <span class="font-medium text-[15px]">Creation</span>
                 </div>
                 <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
             </a>
 
             <!-- Agent: Performance -->
-            <a href="#" class="flex items-center justify-between text-stone-600 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:text-stone-900 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors">
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="trending-up" class="w-5 h-5 text-stone-500 dark:text-slate-500"></i>
+                    <i data-lucide="trending-up" class="w-5 h-5 text-stone-500"></i>
                     <span class="font-medium text-[15px]">Performance</span>
                 </div>
             </a>
@@ -119,67 +103,55 @@
         
     </aside>
 
-    <!-- ZONE PRINCIPALE (Tableau de Bord Indexation) -->
-    <main class="flex-grow overflow-y-auto relative transition-colors duration-300">
+    <!-- MAIN AREA (Indexation Dashboard) -->
+    <main class="flex-grow overflow-y-auto relative">
         <div class="max-w-7xl mx-auto px-6 py-8 md:px-10">
             
             <!-- Header -->
             <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                 <div class="flex items-center gap-4">
-                    <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 border border-blue-200 dark:border-blue-800">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                        </span>
-                        AGENT ACTIF
-                    </div>
-                    <h1 class="text-2xl font-bold tracking-tight text-slate-800 dark:text-white">Supervision Indexation</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-stone-900">Indexation Supervision</h1>
                 </div>
-                
-                <button onclick="toggleDarkMode()" class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95 text-slate-800 dark:text-white">
-                    <span id="theme-icon" class="text-lg">🌙</span>
-                    <span id="theme-text" class="text-sm font-medium">Mode Sombre</span>
-                </button>
             </header>
 
             <!-- Main Stats -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
                 <!-- Left: Total Volume -->
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-center transition-colors duration-300">
-                    <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400 mb-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        <span class="text-xs font-bold uppercase tracking-wider">Volume indexé aujourd'hui</span>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 flex flex-col justify-center">
+                    <div class="flex items-center gap-3 text-stone-500 mb-2">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Volume indexed today</span>
                     </div>
-                    <div class="text-6xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">300,000</div>
-                    <div class="flex items-center gap-1.5 text-success font-semibold text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                        <span>+12.4% vs hier</span>
+                    <div class="text-6xl font-black text-stone-900 mb-2 tracking-tighter">300,000</div>
+                    <div class="flex items-center gap-1.5 text-emerald-600 font-semibold text-sm">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        <span>+12.4% vs yesterday</span>
                     </div>
                 </div>
 
-                <!-- Right: Terminal Log (Remplace la répartition) -->
+                <!-- Right: Terminal Log (Replaces distribution) -->
                 <div class="lg:col-span-2 flex flex-col h-full">
                     <div class="flex justify-between items-center mb-4 px-2">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Flux d'ingestion temps réel</h3>
-                        <span class="text-[10px] font-mono text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded">worker-fr-02</span>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500">Real-time ingestion feed</h3>
+                        <span class="text-[10px] font-mono text-stone-500 bg-stone-200 px-2 py-1 rounded">worker-fr-02</span>
                     </div>
-                    <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-lg border border-slate-800 flex-grow flex flex-col">
-                        <div class="bg-slate-800/50 px-6 py-3 border-b border-slate-700 flex items-center justify-between">
+                    <div class="bg-stone-950 rounded-3xl overflow-hidden shadow-lg border border-stone-800 flex-grow flex flex-col">
+                        <div class="bg-stone-900/50 px-6 py-3 border-b border-stone-800 flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <div class="flex gap-1.5">
                                     <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
                                     <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
                                     <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
                                 </div>
-                                <span class="text-[11px] font-mono text-slate-400 ml-3">agent-indexation.log</span>
+                                <span class="text-[11px] font-mono text-stone-400 ml-3">agent-indexation.log</span>
                             </div>
                         </div>
-                        <div id="log-container" class="log-terminal p-6 h-56 overflow-y-auto text-[13px] leading-relaxed space-y-1 text-slate-300">
-                            <div class="flex gap-3"><span class="text-slate-600">[11:30:01]</span> <span class="text-emerald-400 font-bold">SUCCESS</span> <span>[Audion360] - Récupération du flux publicitaire terminée.</span></div>
-                            <div class="flex gap-3"><span class="text-slate-600">[11:30:05]</span> <span class="text-blue-400 font-bold">FETCH</span> <span>[YouTube Data API V3] - Scan massif terminé.</span></div>
-                            <div class="flex gap-3"><span class="text-slate-600">[11:30:12]</span> <span class="text-amber-400 font-bold">PROCESS</span> <span>[Pathway] - Ingestion VAST : 100% complété.</span></div>
-                            <div class="flex gap-3"><span class="text-slate-600">[11:30:15]</span> <span class="text-emerald-400 font-bold">SUCCESS</span> <span>[Indexation] - 300,000 assets atteints aujourd'hui !</span></div>
-                            <div class="flex gap-3"><span class="text-slate-600">[11:30:22]</span> <span class="text-blue-400 font-bold">FETCH</span> <span>[Podcast Audion] - Nouvelle entrée RSS détectée (Total: 3329)</span></div>
+                        <div id="log-container" class="log-terminal p-6 h-56 overflow-y-auto text-[13px] leading-relaxed space-y-1 text-stone-300">
+                            <div class="flex gap-3"><span class="text-stone-500">[11:30:01]</span> <span class="text-emerald-400 font-bold">SUCCESS</span> <span>[Audion360] - Ad feed retrieval completed.</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[11:30:05]</span> <span class="text-blue-400 font-bold">FETCH</span> <span>[YouTube Data API V3] - Massive scan completed.</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[11:30:12]</span> <span class="text-amber-400 font-bold">PROCESS</span> <span>[Pathway] - VAST Ingestion: 100% completed.</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[11:30:15]</span> <span class="text-emerald-400 font-bold">SUCCESS</span> <span>[Indexation] - 300,000 assets reached today!</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[11:30:22]</span> <span class="text-blue-400 font-bold">FETCH</span> <span>[Audion Podcast] - New RSS entry detected (Total: 3329)</span></div>
                         </div>
                     </div>
                 </div>
@@ -187,276 +159,276 @@
 
             <!-- Connection States -->
             <div class="mb-10">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-6">État des connexions sources</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-6">Source connections status</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     
                     <!-- YouTube -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center justify-center text-[#FF0000]">
+                                <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-[#FF0000]">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">YouTube</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Video Platform</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">YouTube</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Video Platform</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://yt3.googleusercontent.com/ytc/AIdro_mEdBuj1fCqUVLlvdLxIQtLZvUBN3cD-fB7LrYY9Gug65M=s900-c-k-c0x00ffffff-no-rj" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://i.scdn.co/image/ab6765630000ba8a545cacbb7edb040cb19baffa" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfPxnu8nKHv2wgih9UKI2KMhMSFoGPERy8CA&s" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://unavatar.io/youtube/HugoDecrypte" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 object-cover" alt="HugoDécrypte">
+                                <img src="https://unavatar.io/youtube/MrBeast" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 object-cover" alt="MrBeast">
+                                <img src="https://unavatar.io/youtube/Vilebrequin" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 object-cover" alt="Vilebrequin">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- Spotify -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center text-[#1DB954]">
+                                <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-[#1DB954]">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.49 17.31c-.218.358-.684.47-1.042.252-2.852-1.742-6.443-2.136-10.672-1.17a.75.75 0 1 1-.334-1.462c4.628-1.056 8.59-.6 11.8 1.36.357.218.47.684.248 1.042zm1.464-3.26c-.275.446-.86.59-1.306.315-3.265-2.007-8.243-2.588-12.103-1.416a.917.917 0 1 1-.532-1.756c4.41-1.338 9.904-.69 13.626 1.595.446.275.59.86.315 1.262zm.126-3.414c-3.914-2.325-10.375-2.54-14.136-1.398a1.083 1.083 0 0 1-.634-2.072c4.32-1.31 11.45-1.06 15.908 1.587a1.083 1.083 0 0 1-1.138 1.883z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">Spotify</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Audio Streaming</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">Spotify</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Audio Streaming</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbh46o8jOsLJN9poC9fpcUlWUXTepnAOKwMg&s" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=sp2" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=sp3" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=sp1" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=sp2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=sp3" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- Apple Music -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-rose-50 dark:bg-rose-900/20 rounded-xl flex items-center justify-center text-[#FA243C]">
+                                <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-[#FA243C]">
                                     <svg class="w-5 h-5" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.3 48.6-.7 90.4-82.5 102.7-119.3-65.2-30.7-61.7-90-62-91.3zM207.8 96c20.8-25.3 33.3-58.1 29.5-96-26.4 1.1-60.8 17.6-82 42.4-18.6 21.6-33 55.4-28.4 92.4 29.2 2.2 60.1-13.6 80.9-38.8z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">Apple Music</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Audio Streaming</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">Apple Music</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Audio Streaming</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9fQ-DzT7r3hIUKPCio9_W0Ik1IGz6Lic5w&s" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=am2" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=am3" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=am1" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=am2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/shapes/svg?seed=am3" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- RMC Networks -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/40 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50">
+                                <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 border border-orange-200">
                                     <span class="font-black text-[13px] tracking-tighter leading-none mt-0.5">RMC</span>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">RMC Networks</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Radio Network</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">RMC Networks</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Radio Network</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRNoBv6GsfSPViW-64SVfyXEdU3q_ivjC_QcgVzPqu2WO99RgBB1mG7S5yiY0rRKZilsMMz-nD3V-l9kbXatTutymAYiIu0lTZqq-4FD0&s=10" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh3EOXf2Iw1nYSFesMxal8fG9sJooi1E9wgg&s" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6e/46/e4/6e46e4f4-67dc-11e9-af18-6defa4b6ec76/mza_15666578273571671172.jpg/1200x1200bf.webp" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=BF" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=RM" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=SP" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- RTL Networks -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 bg-[#E3000F] rounded-xl flex items-center justify-center text-white shadow-inner">
                                     <span class="font-black text-[14px] tracking-tighter leading-none italic pr-0.5 mt-0.5">RTL</span>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">RTL Networks</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Radio Network</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">RTL Networks</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Radio Network</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://is5-ssl.mzstatic.com/image/thumb/Podcasts115/v4/b8/73/c2/b873c2f0-a7ae-98fc-3512-9a83ab8ea2ad/mza_13533205087983663832.jpg/250x250bb.jpg" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/06/93/a2/0693a211-5cef-a5ce-c788-e3e897964785/mza_9139408145449524526.jpg/1200x1200bf-60.jpg" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://images.rtl.fr/~c/300v300/rtl/www/1775878-lorant-deutsch-entrez-dans-l-histoire.jpg" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=RT" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=FU" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=R2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- Triton -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-[#0061A0]">
+                                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-[#0061A0]">
                                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M4 11h4v9H4zm6-4h4v13h-4zm6 6h4v7h-4z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">Triton</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Digital Audio</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">Triton</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Digital Audio</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWyICWRQaiJL1xF4y8SKSZAHaOzrxGA5A9dg&s" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://art19.com/shows/balanced-black-girl" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=tr3" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=tr1" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=tr2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=tr3" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- Red Circle -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center justify-center text-[#E53935]">
+                                <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-[#E53935]">
                                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" fill="currentColor" /></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">Red Circle</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Podcast Hosting</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">Red Circle</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Podcast Hosting</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://m.media-amazon.com/images/M/MV5BMjJkMzkwNDUtNmU0MC00N2Y2LWIyOWQtMjUwNzk1ZDRjZTE3XkEyXkFqcGc@._V1_.jpg" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://api.dicebear.com/7.x/rings/svg?seed=rc2" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://api.dicebear.com/7.x/rings/svg?seed=rc3" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/rings/svg?seed=rc1" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/rings/svg?seed=rc2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/rings/svg?seed=rc3" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
                     </div>
 
                     <!-- Audioboom -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-5 rounded-2xl shadow-sm hover:border-slate-300 dark:hover:border-slate-500 transition-all flex flex-col gap-4">
+                    <div class="bg-white border border-stone-200 p-5 rounded-2xl shadow-sm hover:border-stone-300 transition-all flex flex-col gap-4">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl flex items-center justify-center text-[#0F62FE]">
+                                <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-[#0F62FE]">
                                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 8.718v6.564c0 4.808-3.91 8.718-8.718 8.718s-8.718-3.91-8.718-8.718V8.718C6.564 3.91 10.474 0 15.282 0S24 3.91 24 8.718zm-8.718 6.071c-3.344 0-6.071-2.728-6.071-6.071s2.727-6.072 6.071-6.072c3.345 0 6.072 2.728 6.072 6.072s-2.727 6.071-6.072 6.071zm-8.718-3.424V7.544C6.564 3.376 3.187 0 0 0v24h2.528v-9.528c1.657 0 3.197-.506 4.46-1.365l-.013-.016a6.524 6.524 0 0 0-.411-1.726z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-white leading-none">Audioboom</h4>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold">Podcast Hosting</p>
+                                    <h4 class="font-bold text-stone-800 leading-none">Audioboom</h4>
+                                    <p class="text-[10px] text-stone-400 mt-1 uppercase font-semibold">Podcast Hosting</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3 Logos par ligne -->
+                        <!-- 3 Logos per row -->
                         <div class="space-y-2 pt-1">
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest">Récents</span>
+                            <span class="text-[9px] uppercase font-bold text-stone-400 tracking-widest">Recent</span>
                             <div class="grid grid-cols-3 gap-2">
-                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab1" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="1">
-                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab2" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="2">
-                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab3" class="w-full aspect-square rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700 p-1.5 object-contain" alt="3">
+                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab1" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="1">
+                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab2" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="2">
+                                <img src="https://api.dicebear.com/7.x/icons/svg?seed=ab3" class="w-full aspect-square rounded-lg bg-stone-50 border border-stone-200 p-1.5 object-contain" alt="3">
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-slate-50 dark:border-slate-700/50">
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flux actif
+                        <div class="flex justify-between items-center mt-auto pt-3 border-t border-stone-100">
+                            <div class="text-[11px] text-stone-500 font-medium flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-3.5 h-3.5"></i> Active feed
                             </div>
-                            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider leading-none flex items-center gap-1.5">
+                            <span class="bg-emerald-100 text-emerald-600 text-[9px] px-2 py-1 rounded-full font-bold border border-emerald-200 uppercase tracking-wider leading-none flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> OK
                             </span>
                         </div>
@@ -472,30 +444,14 @@
         // Init Lucide icons
         lucide.createIcons();
 
-        // Dark Mode Logic (adapté pour fonctionner correctement avec la classe 'dark' globale Tailwind)
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.classList.toggle('dark');
-            const icon = document.getElementById('theme-icon');
-            const text = document.getElementById('theme-text');
-            
-            if (isDark) {
-                icon.innerText = '☀️';
-                text.innerText = 'Mode Clair';
-            } else {
-                icon.innerText = '🌙';
-                text.innerText = 'Mode Sombre';
-            }
-        }
-
         // Terminal Log Logic
         const logContainer = document.getElementById('log-container');
         const actions = [
-            { type: 'SUCCESS', color: 'text-emerald-400', msg: '[Indexation] - Asset indexé avec succès dans le cloud.' },
-            { type: 'FETCH', color: 'text-blue-400', msg: '[YouTube] - Mise à jour de la chaîne média #25266.' },
-            { type: 'PROCESS', color: 'text-amber-400', msg: '[Pathway] - Analyse VAST des métadonnées.' },
-            { type: 'FETCH', color: 'text-purple-400', msg: '[Audion] - Ingestion du podcast Spotify : "L\'Heure du Crime".' },
-            { type: 'INFO', color: 'text-slate-400', msg: '[System] - Heartbeat stable sur worker-fr-02.' }
+            { type: 'SUCCESS', color: 'text-emerald-400', msg: '[Indexation] - Asset successfully indexed in the cloud.' },
+            { type: 'FETCH', color: 'text-blue-400', msg: '[YouTube] - Update of media channel #25266.' },
+            { type: 'PROCESS', color: 'text-amber-400', msg: '[Pathway] - VAST metadata analysis.' },
+            { type: 'FETCH', color: 'text-purple-400', msg: '[Audion] - Ingestion of Spotify podcast: "L\'Heure du Crime".' },
+            { type: 'INFO', color: 'text-stone-400', msg: '[System] - Stable heartbeat on worker-fr-02.' }
         ];
 
         setInterval(() => {
@@ -506,7 +462,7 @@
             const logEntry = document.createElement('div');
             logEntry.className = 'flex gap-3 opacity-0 translate-x-2 transition-all duration-300';
             logEntry.innerHTML = `
-                <span class="text-slate-600 font-mono">${timeStr}</span>
+                <span class="text-stone-500 font-mono">${timeStr}</span>
                 <span class="${action.color} font-bold">${action.type}</span>
                 <span>${action.msg}</span>
             `;
