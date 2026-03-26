@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Intelligence - Strategic Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .log-terminal { font-family: 'Monaco', 'Consolas', monospace; }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pulse { animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
+        
+        @keyframes fill-bar {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        .animate-fill { animation: fill-bar 1.5s ease-out forwards; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-[#FDFCF8] text-stone-900">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-72 bg-[#FAFAFA] border-r border-stone-200 flex-shrink-0 flex flex-col p-6 overflow-y-auto z-20">
+        <!-- Audion AI Logo -->
+        <div class="flex items-center gap-2.5 mb-8 text-stone-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-7 h-7" style="stroke-linejoin: round; stroke-linecap: round;">
+                <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"></path>
+            </svg>
+            <span class="text-2xl font-extrabold tracking-tight">Audion AI</span>
+        </div>
+
+        <!-- Dashboard Link -->
+        <a href="#" class="flex items-center gap-3 text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors -mx-3">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            <span class="font-medium text-[15px]">Global Overview</span>
+        </a>
+
+        <!-- Search Bar -->
+        <div class="relative mt-6 mb-8">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+            <input type="text" placeholder="Search Brand..." class="w-full pl-9 pr-12 py-2.5 bg-white border border-stone-200 rounded-lg text-sm text-stone-800 focus:outline-none focus:border-stone-400 focus:ring-1 focus:ring-stone-200 transition-all">
+            <kbd class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F9FAFB] border border-stone-200 text-stone-500 px-1.5 py-0.5 rounded text-[10px] font-sans font-medium tracking-wide">⌘K</kbd>
+        </div>
+
+        <!-- Section: Agents -->
+        <h3 class="text-xs font-semibold text-stone-500 mb-3">Intelligent Agents</h3>
+        
+        <nav class="flex flex-col gap-1 -mx-3">
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="database" class="w-5 h-5"></i>
+                    <span class="font-medium text-[15px]">Indexation</span>
+                </div>
+                <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                    <span class="font-medium text-[15px]">Qualification</span>
+                </div>
+            </a>
+
+            <!-- Agent: Competitive Intelligence (ACTIVE) -->
+            <a href="#" class="flex items-center justify-between bg-stone-200 text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="scan" class="w-5 h-5"></i>
+                    <span class="font-medium text-[15px]">Competition Analysis</span>
+                </div>
+                <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            </a>
+
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="music" class="w-5 h-5 text-stone-500"></i>
+                    <span class="font-medium text-[15px]">Creation</span>
+                </div>
+            </a>
+
+            <a href="#" class="flex items-center justify-between text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3 py-2.5 rounded-lg transition-colors">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-stone-500"></i>
+                    <span class="font-medium text-[15px]">Performance</span>
+                </div>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="flex-grow overflow-y-auto relative">
+        <div class="max-w-7xl mx-auto px-6 py-8 md:px-10">
+            
+            <!-- Header -->
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-3xl font-bold tracking-tight text-stone-900">Competitive Intelligence</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 hidden sm:flex border-r border-stone-200 pr-4">
+                        <span class="text-sm font-medium text-stone-500">Monitoring:</span>
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2 border border-blue-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> BigQuery Sync
+                        </span>
+                    </div>
+                    <button class="flex items-center gap-2 bg-stone-900 text-white hover:bg-stone-800 px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 text-sm font-medium">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Scan Competitors</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main KPIs: Competitive Metrics -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                <!-- Competitors Mapped -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 flex flex-col justify-center relative overflow-hidden">
+                    <div class="flex items-center gap-3 text-stone-500 mb-2 relative z-10">
+                        <i data-lucide="users" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Competitors Identified</span>
+                    </div>
+                    <div class="text-6xl font-black text-stone-900 mb-2 tracking-tighter relative z-10">24</div>
+                    <div class="flex items-center gap-1.5 text-blue-600 font-semibold text-sm relative z-10">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>3 new challengers detected</span>
+                    </div>
+                    <i data-lucide="target" class="absolute -right-6 -bottom-6 w-48 h-48 text-stone-50 opacity-50 z-0 transform -rotate-12"></i>
+                </div>
+
+                <!-- Ad Pressure Index -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 flex flex-col justify-center">
+                    <div class="flex items-center gap-3 text-stone-500 mb-2">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Market Ad Pressure</span>
+                    </div>
+                    <div class="text-6xl font-black text-stone-900 mb-2 tracking-tighter">High</div>
+                    <div class="flex items-center gap-1.5 text-stone-500 font-medium text-sm">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        <span>+12% volume vs. last month</span>
+                    </div>
+                </div>
+
+                <!-- Share of Voice -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 flex flex-col justify-center">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3 text-stone-500">
+                            <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Share of Voice (SOV)</span>
+                        </div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">Top Player: 34%</span>
+                    </div>
+                    <div class="text-6xl font-black text-blue-600 mb-4 tracking-tighter">18.4%</div>
+                    <!-- SOV Progress bar -->
+                    <div class="w-full bg-stone-100 h-2.5 rounded-full overflow-hidden flex">
+                        <div class="bg-blue-500 h-full animate-fill" style="width: 18.4%"></div>
+                        <div class="bg-stone-300 h-full" style="width: 81.6%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Competitor Extraction (Audio/Video Assets) -->
+            <div class="mb-10">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-6">LATEST COMPETITOR ASSETS (EXTRACTED)</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Competitor 1: Giant -->
+                    <div class="bg-white border border-stone-200 p-8 rounded-3xl shadow-sm transition-all hover:shadow-md">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-600 border border-stone-100">
+                                    <i data-lucide="factory" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-stone-900 leading-tight">Global Player A</h4>
+                                    <p class="text-sm text-stone-500 font-medium mt-0.5">Established Giant</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-3xl font-black text-stone-900 tracking-tighter">$24.5M</span>
+                                <span class="text-xs text-stone-400 font-semibold uppercase tracking-wider">Est. Monthly Spend</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">Extracted Creatives (Audio-First)</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-100 rounded-xl cursor-pointer hover:bg-blue-100 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="volume-2" class="w-4 h-4 text-blue-600"></i>
+                                            <span class="text-xs font-bold">Summer_Campaign_30s.mp3</span>
+                                        </div>
+                                        <span class="text-[10px] font-bold bg-blue-100 text-blue-600 px-2 py-0.5 rounded">AUDIO</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl cursor-pointer hover:bg-stone-100 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="video" class="w-4 h-4 text-stone-400"></i>
+                                            <span class="text-xs font-bold">Brand_Story_15s.mp4</span>
+                                        </div>
+                                        <span class="text-[10px] font-bold bg-stone-200 text-stone-500 px-2 py-0.5 rounded">VIDEO</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">Pression (Proxy YT Views)</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="flex-1 bg-stone-50 border border-stone-100 rounded-xl p-3 flex justify-between items-center">
+                                        <span class="text-xs font-semibold text-stone-600">Total Views</span>
+                                        <span class="text-sm font-black text-stone-900">12.4M</span>
+                                    </div>
+                                    <div class="flex-1 bg-stone-50 border border-stone-100 rounded-xl p-3 flex justify-between items-center">
+                                        <span class="text-xs font-semibold text-stone-600">CPM Avg.</span>
+                                        <span class="text-sm font-black text-stone-900">$14.2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Competitor 2: Challenger -->
+                    <div class="bg-white border border-stone-200 p-8 rounded-3xl shadow-sm transition-all hover:shadow-md">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 border border-amber-100">
+                                    <i data-lucide="zap" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-stone-900 leading-tight">Fast Challenger B</h4>
+                                    <p class="text-sm text-stone-500 font-medium mt-0.5">Emerging Disruptor</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-3xl font-black text-stone-900 tracking-tighter">$4.2M</span>
+                                <span class="text-xs text-stone-400 font-semibold uppercase tracking-wider">Est. Monthly Spend</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">Extracted Creatives</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl opacity-60 italic">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="volume-x" class="w-4 h-4 text-stone-300"></i>
+                                            <span class="text-xs font-medium">No active Audio found</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-red-50 border border-red-100 rounded-xl cursor-pointer hover:bg-red-100 transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="video" class="w-4 h-4 text-red-600"></i>
+                                            <span class="text-xs font-bold">Launch_Demo_60s.mp4</span>
+                                        </div>
+                                        <span class="text-[10px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded">VIDEO</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">Pression (Proxy YT Views)</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="flex-1 bg-stone-50 border border-stone-100 rounded-xl p-3 flex justify-between items-center">
+                                        <span class="text-xs font-semibold text-stone-600">Total Views</span>
+                                        <span class="text-sm font-black text-stone-900">840k</span>
+                                    </div>
+                                    <div class="flex-1 bg-stone-50 border border-stone-100 rounded-xl p-3 flex justify-between items-center">
+                                        <span class="text-xs font-semibold text-stone-600">Engagement</span>
+                                        <span class="text-sm font-black text-stone-900">4.8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Feed (Terminal style) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                <!-- Market Indicators -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 flex flex-col">
+                    <div class="flex items-center gap-3 text-stone-500 mb-6">
+                        <i data-lucide="globe" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Strategic Discovery</span>
+                    </div>
+                    
+                    <div class="flex-grow flex flex-col justify-center gap-4">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[10px] font-bold text-stone-400 uppercase">Competitive Set</span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-stone-100 px-2 py-1 rounded text-[11px] font-bold">Fintech</span>
+                                <span class="bg-stone-100 px-2 py-1 rounded text-[11px] font-bold">Neo-Banking</span>
+                                <span class="bg-stone-100 px-2 py-1 rounded text-[11px] font-bold">Retail</span>
+                            </div>
+                        </div>
+                        <div class="h-px bg-stone-100 w-full"></div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[10px] font-bold text-stone-400 uppercase">Targeting Overlap</span>
+                            <div class="text-2xl font-black text-stone-900">62.4%</div>
+                            <p class="text-[11px] text-stone-500">Audience segments overlap on Spotify/YouTube.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BigQuery / Transparency Log -->
+                <div class="lg:col-span-2 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4 px-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500">Strategic Intelligence Stream</h3>
+                        <span class="text-[10px] font-mono text-stone-500 bg-stone-200 px-2 py-1 rounded">bq-ads-transparency</span>
+                    </div>
+                    <div class="bg-stone-950 rounded-3xl overflow-hidden shadow-lg border border-stone-800 flex-grow flex flex-col">
+                        <div class="bg-stone-900/50 px-6 py-3 border-b border-stone-800 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="flex gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                </div>
+                                <span class="text-[11px] font-mono text-stone-400 ml-3">agent-competition-v3.log</span>
+                            </div>
+                        </div>
+                        <div id="log-container" class="log-terminal p-6 h-64 overflow-y-auto text-[13px] leading-relaxed space-y-1 text-stone-300">
+                            <div class="flex gap-3"><span class="text-stone-500">[14:02:11]</span> <span class="text-blue-400 font-bold">SYNC</span> <span>BigQuery cross-reference: Google Ads Transparency Center database.</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[14:02:15]</span> <span class="text-emerald-400 font-bold">FOUND</span> <span>New competitor "NeoFinance" detected. Categorizing: Startup/Challenger.</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[14:02:18]</span> <span class="text-amber-400 font-bold">EXTRACT</span> <span>Retrieving active Audio assets for Global Player A...</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[14:02:22]</span> <span class="text-purple-400 font-bold">PROXY</span> <span>Calculating pressure: YouTube view count aggregation for Asset #712...</span></div>
+                            <div class="flex gap-3"><span class="text-stone-500">[14:02:25]</span> <span class="text-emerald-400 font-bold">READY</span> <span>Competitive landscape matrix updated. Current SOV calibrated.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Init Lucide icons
+        lucide.createIcons();
+
+        // Terminal Log Logic for Competition Agent
+        const logContainer = document.getElementById('log-container');
+        const actions = [
+            { type: 'SYNC', color: 'text-blue-400', msg: 'Refreshing Google Ads database links for Top 5 competitors.' },
+            { type: 'EXTRACT', color: 'text-amber-400', msg: 'Audio creative detected on Spotify Ad Studio for "Brand X". Extraction successful.' },
+            { type: 'RANK', color: 'text-stone-400', msg: 'Recalculating strategic ranking based on new series C funding (Competitor B).' },
+            { type: 'PROXY', color: 'text-purple-400', msg: 'Estimating ad pressure: 2.1M new views detected on Video assets.' },
+            { type: 'ALERT', color: 'text-red-400', msg: 'High pressure detected in "Insurance" vertical. SOV declining.' }
+        ];
+
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'flex gap-3 opacity-0 translate-x-2 transition-all duration-300';
+            logEntry.innerHTML = `
+                <span class="text-stone-500 font-mono">${timeStr}</span>
+                <span class="${action.color} font-bold">${action.type}</span>
+                <span>${action.msg}</span>
+            `;
+            
+            logContainer.appendChild(logEntry);
+            setTimeout(() => logEntry.classList.remove('opacity-0', 'translate-x-2'), 10);
+            
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            if (logContainer.children.length > 20) {
+                logContainer.removeChild(logContainer.children[0]);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
