@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI - Agent de Performance & Optimisation</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Animations fluides */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hachures animées pour le score potentiel */
+        .bg-stripes {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+            animation: moveStripes 1s linear infinite;
+        }
+        @keyframes moveStripes {
+            from { background-position: 0 0; }
+            to { background-position: 1rem 0; }
+        }
+
+        /* Onde sonore personnalisée */
+        .waveform-bar {
+            width: 4px;
+            background-color: #E5E7EB;
+            border-radius: 2px;
+            margin: 0 2px;
+            transition: background-color 0.3s;
+        }
+        .waveform-bar.active {
+            background-color: #3B82F6;
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-[#F8F9FA] text-[#111827] overflow-hidden">
+
+    <!-- SIDEBAR (Identique à votre interface) -->
+    <aside class="w-64 bg-[#F8F9FA] border-r border-gray-200 hidden md:flex flex-col justify-between z-10 flex-shrink-0">
+        <div>
+            <div class="p-6 flex items-center gap-2">
+                <div class="w-6 h-6 bg-black text-white flex items-center justify-center rounded-sm font-bold text-xs">A</div>
+                <span class="font-bold text-xl tracking-tight">Audion AI</span>
+            </div>
+            
+            <div class="px-4 pb-4">
+                <div class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                    <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </div>
+            </div>
+            
+            <div class="px-4 pb-4">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                    <input type="text" placeholder="Search..." class="w-full pl-9 pr-8 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black/5">
+                    <div class="absolute right-2 top-1/2 transform -translate-y-1/2 border border-gray-200 rounded px-1.5 text-[10px] text-gray-400 font-medium">⌘K</div>
+                </div>
+            </div>
+            
+            <div class="px-4">
+                <div class="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider px-3">Agents</div>
+                <nav class="space-y-0.5">
+                    <div class="flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-gray-600 hover:bg-gray-100 font-medium">
+                        <div class="flex items-center gap-3"><i data-lucide="database" class="w-[18px] h-[18px] text-gray-400"></i><span class="text-sm">Indexation</span></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-gray-600 hover:bg-gray-100 font-medium">
+                        <div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-[18px] h-[18px] text-gray-400"></i><span class="text-sm">Qualification</span></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-gray-600 hover:bg-gray-100 font-medium">
+                        <div class="flex items-center gap-3"><i data-lucide="activity" class="w-[18px] h-[18px] text-gray-400"></i><span class="text-sm">Competition Analysis</span></div>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-gray-600 hover:bg-gray-100 font-medium">
+                        <div class="flex items-center gap-3"><i data-lucide="music" class="w-[18px] h-[18px] text-gray-400"></i><span class="text-sm">Creation</span></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex items-center justify-between px-3 py-2 rounded-md cursor-pointer bg-[#EAEBED] text-black font-semibold">
+                        <div class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-[18px] h-[18px] text-black"></i><span class="text-sm">Performance</span></div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t border-gray-200 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Julien" alt="Julien" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                    <div class="text-sm font-semibold">Julien Rialan</div>
+                    <div class="text-xs text-gray-500">julien@audion.fm</div>
+                </div>
+            </div>
+            <i data-lucide="chevron-up" class="w-4 h-4 text-gray-400"></i>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-white relative">
+        
+        <!-- HEADER & TABS -->
+        <header class="px-8 pt-8 pb-0 border-b border-gray-200 flex-shrink-0 bg-white z-20">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold mb-2 flex items-center gap-2">
+                        Agent de Performance
+                        <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> Intelligence Active
+                        </span>
+                    </h1>
+                    <p class="text-gray-500 text-sm">Pivotez l'analyse pour découvrir comment générer plus d'impact.</p>
+                </div>
+                <button class="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm">
+                    <i data-lucide="wand-2" class="w-4 h-4"></i> Générer un rapport IA
+                </button>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex space-x-8">
+                <button onclick="switchTab('adn')" id="btn-adn" class="tab-btn px-2 py-4 flex items-center gap-2 text-sm font-semibold border-b-2 border-black text-black transition-colors">
+                    <i data-lucide="fingerprint" class="w-4 h-4"></i> 1. ADN Créatif (Transversal)
+                </button>
+                <button onclick="switchTab('prescriptif')" id="btn-prescriptif" class="tab-btn px-2 py-4 flex items-center gap-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition-colors">
+                    <i data-lucide="target" class="w-4 h-4"></i> 2. Score Prescriptif (Potentiel)
+                </button>
+                <button onclick="switchTab('attention')" id="btn-attention" class="tab-btn px-2 py-4 flex items-center gap-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition-colors">
+                    <i data-lucide="activity-square" class="w-4 h-4"></i> 3. Courbe d'Attention (Temps)
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA (Scrollable) -->
+        <div class="flex-1 overflow-y-auto bg-[#FAFAFA] p-8">
+            
+            <!-- ========================================== -->
+            <!-- ALTERNATIVE 1 : L'ADN CRÉATIF (Transversal) -->
+            <!-- ========================================== -->
+            <div id="tab-adn" class="tab-content max-w-5xl mx-auto fade-in block">
+                
+                <!-- En-tête AI -->
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-white mb-8 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-500/30 p-2 rounded-lg">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-blue-200"></i>
+                            </div>
+                            <h2 class="text-xl font-bold">Voici ce qui fait la différence sur Audion AI ce mois-ci</h2>
+                        </div>
+                        <p class="text-blue-200 max-w-2xl text-sm leading-relaxed mb-6">
+                            L'Agent a agrégé toutes les campagnes de la plateforme pour contourner le manque de données sectorielles. Voici la recette du succès globale, basée sur des centaines de publicités audios performantes.
+                        </p>
+                        <button class="bg-white text-indigo-900 px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors shadow-md">
+                            Envoyer ces règles à l'Agent Création <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grille d'attributs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Carte 1 -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-green-100 text-green-700 p-2.5 rounded-xl">
+                                <i data-lucide="headphones" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-green-50 border border-green-200 text-green-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> +22 pts
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Fond sonore immersif (SFX/3D)</h3>
+                        <p class="text-sm text-gray-500 mb-4">Par rapport à une musique standard ou l'absence de musique, un design sonore riche augmente massivement la rétention.</p>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Carte 2 -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
+                                <i data-lucide="zap" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-blue-50 border border-blue-200 text-blue-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> +18 pts
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Nom de marque avant 3s</h3>
+                        <p class="text-sm text-gray-500 mb-4">Citer explicitement la marque dans l'introduction (hook) génère l'Impact Score et la mémorisation les plus élevés.</p>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 70%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Carte 3 -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-purple-100 text-purple-700 p-2.5 rounded-xl">
+                                <i data-lucide="timer" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-purple-50 border border-purple-200 text-purple-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> +12 pts
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Format Court (10-15s)</h3>
+                        <p class="text-sm text-gray-500 mb-4">Comparé aux formats 30s classiques, les formats courts garantissent une complétion supérieure du Call-To-Action.</p>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Carte 4 -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-orange-100 text-orange-700 p-2.5 rounded-xl">
+                                <i data-lucide="mic-2" class="w-6 h-6"></i>
+                            </div>
+                            <span class="bg-orange-50 border border-orange-200 text-orange-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> +4 pts
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Voix Féminine (selon cible)</h3>
+                        <p class="text-sm text-gray-500 mb-4">Sur les campagnes Retail et FMCG actuelles, les voix féminines dynamiques surperforment légèrement les voix masculines.</p>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-orange-500 h-2 rounded-full" style="width: 35%"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- ALTERNATIVE 2 : LE SCORE PRESCRIPTIF (Potentiel) -->
+            <!-- ========================================== -->
+            <div id="tab-prescriptif" class="tab-content max-w-4xl mx-auto hidden">
+                
+                <!-- Header Sélecteur -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Diagnostic & Opportunités</h2>
+                        <p class="text-sm text-gray-500 mt-1">Ne regardez plus le passé, visez le potentiel maximum.</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm cursor-pointer hover:bg-gray-50">
+                        <i data-lucide="file-audio" class="w-5 h-5 text-gray-400"></i>
+                        <span class="text-sm font-semibold">Campagne "Lancement Été 2026"</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
+                    
+                    <!-- Colonne Gauche : La Jauge -->
+                    <div class="p-8 md:w-1/2 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center justify-center bg-gray-50/50">
+                        
+                        <div class="relative w-full max-w-[280px] aspect-square flex items-center justify-center">
+                            <!-- SVG Gauge Background -->
+                            <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#E5E7EB" stroke-width="8"></circle>
+                                <!-- Score actuel (40%) -->
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#111827" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="150" class="transition-all duration-1000"></circle>
+                                <!-- Score potentiel (+25%) hachuré -->
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#22C55E" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="251" class="transition-all duration-1000 origin-center opacity-80" id="potential-arc"></circle>
+                            </svg>
+                            
+                            <!-- Text in center -->
+                            <div class="text-center z-10 flex flex-col items-center">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Score Actuel</div>
+                                <div class="text-5xl font-black text-gray-900 mb-1">40<span class="text-xl text-gray-400 font-medium">/100</span></div>
+                                <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 mt-2 shadow-sm">
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i> Potentiel : 65
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-center text-sm text-gray-500 mt-6 max-w-xs">
+                            Votre campagne sous-performe actuellement, mais l'IA a identifié <strong class="text-gray-900">3 leviers créatifs</strong> pour redresser la barre.
+                        </p>
+                    </div>
+
+                    <!-- Colonne Droite : Les Actions -->
+                    <div class="p-8 md:w-1/2">
+                        <div class="flex items-center gap-2 text-sm font-bold text-blue-600 uppercase tracking-wider mb-6">
+                            <i data-lucide="cpu" class="w-4 h-4"></i> Recommandations de l'Agent
+                        </div>
+
+                        <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
+                            
+                            <!-- Action 1 -->
+                            <div class="relative flex items-start gap-4">
+                                <div class="bg-white border-2 border-green-500 text-green-600 font-black text-sm w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0 z-10 shadow-sm shadow-green-100">
+                                    +10
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-bold text-gray-900 mb-1">Raccourcir le tunnel intro</h4>
+                                    <p class="text-xs text-gray-500 leading-relaxed">Passez l'introduction de 8s à 3s pour éviter le décrochage prématuré détecté dans votre verticale.</p>
+                                </div>
+                            </div>
+
+                            <!-- Action 2 -->
+                            <div class="relative flex items-start gap-4">
+                                <div class="bg-white border-2 border-green-500 text-green-600 font-black text-sm w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0 z-10 shadow-sm shadow-green-100">
+                                    +8
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-bold text-gray-900 mb-1">Avancer l'Appel à l'Action</h4>
+                                    <p class="text-xs text-gray-500 leading-relaxed">Placez le CTA "Découvrez sur audion.fm" avant la 15ème seconde.</p>
+                                </div>
+                            </div>
+
+                            <!-- Action 3 -->
+                            <div class="relative flex items-start gap-4">
+                                <div class="bg-white border-2 border-green-500 text-green-600 font-black text-sm w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0 z-10 shadow-sm shadow-green-100">
+                                    +7
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-bold text-gray-900 mb-1">Dynamiser la voix</h4>
+                                    <p class="text-xs text-gray-500 leading-relaxed">L'agent suggère une intonation plus promotionnelle pour correspondre aux standards du secteur Retail.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <button class="w-full bg-black text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-gray-800 transition-colors shadow-md group">
+                                <i data-lucide="wand-2" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                                Appliquer via l'Agent Création
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- ALTERNATIVE 3 : LA COURBE D'ATTENTION (Temps)-->
+            <!-- ========================================== -->
+            <div id="tab-attention" class="tab-content max-w-5xl mx-auto hidden">
+                
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                    
+                    <!-- Header Chart -->
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <div class="flex items-center gap-4">
+                            <button class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-md">
+                                <i data-lucide="play" class="w-5 h-5 ml-1"></i>
+                            </button>
+                            <div>
+                                <h2 class="text-lg font-bold text-gray-900">Spot_30s_Lancement_Ete.wav</h2>
+                                <p class="text-sm text-gray-500 flex items-center gap-1">
+                                    <i data-lucide="activity" class="w-3 h-3"></i> Analyse de Rétention (Listen-Through Rate)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Complétion Finale</div>
+                            <div class="text-2xl font-black text-red-600">32.5% <span class="text-sm text-red-400 font-medium">seulement</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Zone de Graphique Interactive -->
+                    <div class="p-8 relative h-[320px] bg-white">
+                        
+                        <!-- Lignes de repère (Grille Y) -->
+                        <div class="absolute inset-0 py-8 px-12 flex flex-col justify-between pointer-events-none">
+                            <div class="border-b border-gray-100 w-full h-0 relative"><span class="absolute -left-8 -top-2 text-xs text-gray-400">100%</span></div>
+                            <div class="border-b border-gray-100 w-full h-0 relative"><span class="absolute -left-8 -top-2 text-xs text-gray-400">75%</span></div>
+                            <div class="border-b border-gray-100 border-dashed w-full h-0 relative"><span class="absolute -left-8 -top-2 text-xs text-gray-400">50%</span></div>
+                            <div class="border-b border-gray-100 w-full h-0 relative"><span class="absolute -left-8 -top-2 text-xs text-gray-400">25%</span></div>
+                            <div class="border-b border-gray-400 w-full h-0 relative"><span class="absolute -left-8 -top-2 text-xs text-gray-400">0%</span></div>
+                        </div>
+
+                        <!-- Waveform Générée en JS (Container) -->
+                        <div id="waveform-container" class="absolute inset-x-12 bottom-8 top-8 flex items-end justify-between opacity-30 z-0">
+                            <!-- Les barres seront injectées ici par JS -->
+                        </div>
+
+                        <!-- Courbe SVG -->
+                        <div class="absolute inset-x-12 bottom-8 top-8 z-10 pointer-events-none">
+                            <svg viewBox="0 0 1000 240" class="w-full h-full preserve-aspect-ratio-none overflow-visible">
+                                <!-- Ligne principale de rétention -->
+                                <path 
+                                    d="M0,0 Q150,0 260,100 T500,120 T750,150 T1000,165" 
+                                    fill="none" 
+                                    stroke="#2563EB" 
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                />
+                                <!-- Remplissage sous la courbe -->
+                                <path 
+                                    d="M0,0 Q150,0 260,100 T500,120 T750,150 T1000,165 L1000,240 L0,240 Z" 
+                                    fill="url(#blueGradient)" 
+                                    opacity="0.2"
+                                />
+                                <defs>
+                                    <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#3B82F6" />
+                                        <stop offset="100%" stop-color="transparent" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+
+                        <!-- Marqueur : Alerte Décrochage (00:08s) -->
+                        <div class="absolute top-[132px] left-[calc(3rem+26%)] z-20 group cursor-help">
+                            <!-- Point d'alerte -->
+                            <div class="relative">
+                                <div class="absolute -inset-2 bg-red-500 rounded-full animate-ping opacity-20"></div>
+                                <div class="relative w-4 h-4 bg-red-500 border-2 border-white rounded-full shadow-md z-10"></div>
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 w-[2px] h-[100px] bg-red-300 border-l border-dashed border-red-500 z-0"></div>
+                            </div>
+                            
+                            <!-- Tooltip de l'Agent -->
+                            <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-64 bg-white border border-red-100 rounded-xl shadow-xl p-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 pointer-events-none z-30">
+                                <div class="flex items-center gap-2 text-red-600 mb-2">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">Alerte IA - 00:08s</span>
+                                </div>
+                                <p class="text-sm text-gray-800 font-medium leading-snug">
+                                    C'est le moment exact où la musique de transition s'accélère. 35% de l'audience a quitté à ce stade.
+                                </p>
+                                <div class="mt-2 text-xs font-bold text-blue-600 bg-blue-50 p-2 rounded-lg">
+                                    <i data-lucide="lightbulb" class="w-3 h-3 inline mr-1"></i>
+                                    Déplacez votre message clé avant cette seconde.
+                                </div>
+                                <!-- Flèche du tooltip -->
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-red-100 transform rotate-45 -mt-1.5"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Timeline Footer -->
+                    <div class="bg-gray-900 text-gray-400 text-xs font-medium px-12 py-3 flex justify-between relative">
+                        <span>00:00</span>
+                        <span>00:05</span>
+                        <span class="text-red-400 font-bold">00:10</span>
+                        <span>00:15</span>
+                        <span>00:20</span>
+                        <span>00:25</span>
+                        <span>00:30</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- LOGIQUE JAVASCRIPT -->
+    <script>
+        // 1. Initialiser les icônes Lucide
+        lucide.createIcons();
+
+        // 2. Gestion des Onglets
+        function switchTab(tabId) {
+            // Cacher tous les contenus
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('fade-in', 'block');
+            });
+            
+            // Réinitialiser le style des boutons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-black', 'text-black');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            // Afficher le contenu ciblé
+            const targetContent = document.getElementById(`tab-${tabId}`);
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('block', 'fade-in');
+
+            // Mettre en surbrillance le bouton actif
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-gray-500');
+            activeBtn.classList.add('border-black', 'text-black');
+
+            // Trigger animations spécifiques selon l'onglet
+            if(tabId === 'prescriptif') {
+                animateGauge();
+            } else if (tabId === 'attention') {
+                generateWaveform();
+            }
+        }
+
+        // 3. Animation de la Jauge (Tab 2)
+        function animateGauge() {
+            const arc = document.getElementById('potential-arc');
+            // Réinitialiser
+            arc.style.strokeDashoffset = "251";
+            // Animer vers la valeur (+25% de la circonférence totale qui est 251)
+            // 40% = offset 150 (actuel). Pour arriver à 65%, il faut ajouter 25%.
+            // 25% de 251 = ~63. offset final = 150 - 63 = 87
+            setTimeout(() => {
+                arc.style.strokeDashoffset = "87";
+                arc.style.transform = "rotate(144deg)"; // rotation pour démarrer à la fin de la jauge noire (40% de 360 = 144)
+            }, 100);
+        }
+
+        // 4. Génération de la Waveform visuelle (Tab 3)
+        function generateWaveform() {
+            const container = document.getElementById('waveform-container');
+            if (container.children.length > 0) return; // Ne pas regénérer si déjà fait
+
+            const barCount = 80;
+            let html = '';
+            for (let i = 0; i < barCount; i++) {
+                // Générer une hauteur aléatoire pour simuler l'audio
+                const height = Math.random() * 80 + 10;
+                // Assombrir la couleur après le point de décrochage (à ~26% de la largeur)
+                const isAfterDrop = (i / barCount) > 0.26;
+                const opacityClass = isAfterDrop ? 'opacity-30' : 'opacity-100';
+                const colorClass = isAfterDrop ? 'bg-gray-400' : 'bg-blue-400';
+                
+                html += `<div class="waveform-bar h-full flex flex-col justify-end w-full">
+                            <div class="${colorClass} ${opacityClass} rounded-t-sm w-full" style="height: ${height}%"></div>
+                         </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // Initialisation de la waveform pour l'onglet par défaut si besoin
+        // Ici, on démarre sur l'onglet 1 (ADN), donc pas besoin d'appeler generateWaveform() tout de suite.
+    </script>
+</body>
+</html>
