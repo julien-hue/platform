@@ -370,4 +370,56 @@
             const indBench = document.getElementById('sortBenchIndicator');
 
             btnScore.className = `font-medium flex items-center gap-1 ${key === 'score' ? 'text-black' : 'text-gray-400'}`;
-            btnBench.className = `font-medium flex items-center gap-1 ${key === 'benchmarkGap' ? 'text-black' : 'text-gray-4
+            btnBench.className = `font-medium flex items-center gap-1 ${key === 'benchmarkGap' ? 'text-black' : 'text-gray-400'}`;
+            
+            if(key === 'score') {
+                indScore.classList.remove('hidden');
+                indBench.classList.add('hidden');
+                indScore.innerText = direction === 'desc' ? '↓' : '↑';
+            } else {
+                indBench.classList.remove('hidden');
+                indScore.classList.add('hidden');
+                indBench.innerText = direction === 'desc' ? '↓' : '↑';
+            }
+
+            renderTable();
+        }
+
+        // --- EVENT LISTENERS ---
+        // Recherche
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderTable();
+        });
+
+        // Filtres de confiance
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Maj State
+                filterConfidence = e.currentTarget.dataset.filter;
+                
+                // Maj UI des boutons
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-white', 'shadow-sm', 'text-black');
+                    b.classList.add('text-gray-500', 'hover:text-gray-900');
+                });
+                e.currentTarget.classList.remove('text-gray-500', 'hover:text-gray-900');
+                e.currentTarget.classList.add('bg-white', 'shadow-sm', 'text-black');
+
+                // Re-render
+                expandedRow = null; // fermer le tiroir quand on filtre
+                renderTable();
+            });
+        });
+
+        // Tri
+        document.getElementById('sortScoreBtn').addEventListener('click', () => handleSort('score'));
+        document.getElementById('sortBenchBtn').addEventListener('click', () => handleSort('benchmarkGap'));
+
+        // Initialisation au chargement
+        renderTable();
+
+    </script>
+</body>
+</html>
