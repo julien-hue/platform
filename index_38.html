@@ -148,24 +148,46 @@
             },
             {
                 id: 3,
-                title: "Carrefour Drive (Copie) (30s)",
+                title: "Audi Business (15s)",
                 badge: "Spot 3",
-                audioSrc: "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+                audioSrc: "https://actions.google.com/sounds/v1/water/rain_on_roof.ogg",
                 waveform: {
-                    greenZone: [0, 5],
-                    greenText: "Hook Promotionnel",
+                    greenZone: [0, 4],
+                    greenText: "Hook Marque",
+                    redZone: [6, 15],
+                    redText: "Tunnel Specs (Surcharge)"
+                },
+                scores: {
+                    conformite: { value: 90, label: "Fort (~90%)", color: "bg-emerald-500", text: "Point positif : Le cahier des charges est respecté à la lettre (hybride, autonomie, ChatGPT, URL). Les arguments commerciaux B2B sont présents." },
+                    memorisation: { value: 75, label: "Bon (~75%)", color: "bg-green-500", text: "Point positif : 'Audi Business' est cité dès les premières secondes. La marque est clairement identifiée en introduction." },
+                    adhesion: { value: 30, label: "Faible (~30%)", color: "bg-red-500", text: "Point d'alerte : Ton institutionnel très froid et distant. Le spot ressemble à la lecture d'un catalogue technique et manque cruellement d'accroche émotionnelle." }
+                },
+                reco: {
+                    positive: "Le ciblage contextuel avec 'L'Heure du Monde' est pertinent pour une cible professionnelle B2B.",
+                    negative: "Surcharge cognitive. Lister trop d'arguments à la suite (ChatGPT, hybridation, 815km d'autonomie) empêche l'auditeur de n'en retenir qu'un seul.",
+                    suggestion: "\"Épurer le script. Concentrez-vous sur un seul bénéfice clé par spot (ex: la tranquillité d'esprit avec l'autonomie hybride) pour éviter l'effet 'liste de courses'.\""
+                }
+            },
+            {
+                id: 4,
+                title: "MAIF Auto (20s)",
+                badge: "Spot 4",
+                audioSrc: "https://actions.google.com/sounds/v1/water/rain_on_roof.ogg",
+                waveform: {
+                    greenZone: [5, 12],
+                    greenText: "Storytelling (Pain point)",
                     redZone: null,
                     redText: null
                 },
                 scores: {
-                    conformite: { value: 95, label: "Fort", color: "bg-emerald-500", text: "Analyse identique au Spot 1 (Fichier audio dupliqué). Promesse claire et mentions légales présentes." },
-                    memorisation: { value: 80, label: "Fort (~80%)", color: "bg-emerald-500", text: "Analyse identique au Spot 1. Citation précoce et répétée de la marque." },
-                    adhesion: { value: 25, label: "Critique (~25%)", color: "bg-red-500", text: "Analyse identique au Spot 1. Ton excessivement promotionnel et manque de naturel." }
+                    conformite: { value: 95, label: "Fort (~95%)", color: "bg-emerald-500", text: "Point positif : La promesse (remboursement intégral + apport en cas de vol de leasing) est expliquée très clairement malgré la complexité du sujet." },
+                    memorisation: { value: 80, label: "Fort (~80%)", color: "bg-emerald-500", text: "Point positif : Effet de primauté et de récence. La marque ouvre le spot ('Sponsorisé par la MAIF') et le ferme avec sa signature." },
+                    adhesion: { value: 85, label: "Excellent (~85%)", color: "bg-emerald-500", text: "Point positif : Excellent usage du storytelling conversationnel. Exploiter une angoisse réelle (le vol) pour proposer une solution crée un soulagement et de la confiance." }
                 },
                 reco: {
-                    positive: "Le message est direct et sans ambiguïté sur le prix.",
-                    negative: "Manque total d'originalité. C'est une récitation de prospectus qui ne génère aucune préférence de marque.",
-                    suggestion: "\"Même recommandation que pour le spot 1 : L'Agent de création suggère de réécrire les 5 premières secondes pour intégrer un insight consommateur fort avant de parler de prix.\""
+                    positive: "L'empathie est très forte. L'approche pédagogique sur un sujet contractuel (leasing) rend la marque proche des préoccupations de l'auditeur.",
+                    negative: "La transition avec les mentions légales est un peu abrupte, ce qui casse légèrement l'ambiance intimiste créée au début.",
+                    suggestion: "\"Tenter d'intégrer les mentions légales avec la même intonation rassurante que le reste du spot, pour ne pas donner l'impression d'une accélération publicitaire artificielle.\""
                 }
             }
         ];
