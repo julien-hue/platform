@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Analysis Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="flex h-screen bg-white text-slate-800 font-sans overflow-hidden">
+
+    <!-- Sidebar -->
+    <div class="w-64 bg-[#0A0A0A] text-zinc-400 flex flex-col justify-between shrink-0">
+        <div>
+            <div class="p-6 flex items-center gap-3 text-white font-semibold text-xl tracking-tight">
+                <i data-lucide="hexagon" class="w-6 h-6"></i> Audion AI
+            </div>
+
+            <div class="px-4 py-2 mt-4">
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                    <i data-lucide="search" class="w-4 h-4"></i> <span class="font-medium text-sm">Discovery</span>
+                </button>
+            </div>
+
+            <div class="px-8 py-3 text-xs font-semibold text-zinc-600 tracking-wider mt-4">
+                MODULES
+            </div>
+
+            <div class="px-4 space-y-1 text-sm font-medium">
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                    <i data-lucide="compass" class="w-4 h-4"></i> Content Explorer
+                </button>
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                    <i data-lucide="activity" class="w-4 h-4"></i> Competition Analysis
+                </button>
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                    <i data-lucide="wand-2" class="w-4 h-4"></i> Campaign Creation
+                </button>
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg bg-zinc-800 text-white transition-colors">
+                    <i data-lucide="search" class="w-4 h-4"></i> Creative Analysis
+                </button>
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Campaign Performance
+                </button>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-zinc-800">
+            <button class="flex items-center gap-3 w-full px-4 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors text-sm font-medium mb-2">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i> Tools Library
+            </button>
+            <div class="flex items-center gap-3 px-4 py-2">
+                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                    JR
+                </div>
+                <div class="text-sm">
+                    <div class="text-white font-medium">Julien Rialan</div>
+                    <div class="text-zinc-500 text-xs">julien@audion.fm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 bg-slate-50 overflow-y-auto p-10 relative">
+        <div class="max-w-5xl mx-auto space-y-6">
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Creative Analysis</h1>
+            
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 text-sm font-medium rounded-md border border-blue-100">
+                <i data-lucide="activity" class="w-4 h-4"></i> Modèle propriétaire entraîné sur +500 rapports détaillés de campagnes audiodigitales
+            </div>
+
+            <!-- Conteneur dynamique géré par le JavaScript -->
+            <div id="app-dynamic-content" class="space-y-6"></div>
+
+            <!-- Bottom Action Bar -->
+            <div class="bg-[#1A1A1A] rounded-xl p-4 flex flex-col md:flex-row items-center justify-between shadow-xl mt-8 gap-4">
+                <div class="text-white text-sm font-medium px-4 text-center md:text-left">
+                    L'IA peut réécrire le script pour corriger les points faibles identifiés.
+                </div>
+                <button class="bg-white text-slate-900 hover:bg-slate-100 transition-colors px-6 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    Générer V2 optimisée (Agent Création)
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Données des analyses avec une évaluation très stricte
+        const spotsData = [
+            {
+                id: 1,
+                title: "Carrefour Drive (30s)",
+                badge: "Spot 1",
+                audioSrc: "https://actions.google.com/sounds/v1/office/keyboard_typing.ogg",
+                waveform: {
+                    greenZone: [0, 5],
+                    greenText: "Hook Promotionnel",
+                    redZone: null,
+                    redText: null
+                },
+                scores: {
+                    conformite: { value: 95, label: "Fort", color: "bg-emerald-500", text: "Point positif : La promesse de remboursement et les must-haves (conditions, URL) sont exhaustifs. Le cahier des charges est rempli." },
+                    memorisation: { value: 80, label: "Fort (~80%)", color: "bg-emerald-500", text: "Point positif : Marque citée dès la première seconde et répétée 4 fois. L'ancrage est bon, bien que la répétition soit lourde." },
+                    adhesion: { value: 25, label: "Critique (~25%)", color: "bg-red-500", text: "Point d'alerte : Ton 'tunnel de prix' désincarné et robotique. Aucune empathie, aucun humour. Le spot sature l'auditeur d'informations commerciales sans créer de lien." }
+                },
+                reco: {
+                    positive: "L'ancrage de la marque est immédiat. Impossible pour l'auditeur de ne pas savoir qui communique.",
+                    negative: "L'adhésion est sacrifiée sur l'autel de la promotion. Le jeu d'acteur est artificiel ('Quand vous me dites drive pratique...'). L'absence d'aspérité sonore (hors voix) rend l'écoute fastidieuse sur 30 secondes.",
+                    suggestion: "\"Raccourcir l'argumentaire promotionnel. Ajouter un bruitage de la vie quotidienne ou une situation stressante en introduction pour créer un soulagement (empathie) apporté par la solution Drive.\""
+                }
+            },
+            {
+                id: 2,
+                title: "McDonald's McSmart (20s)",
+                badge: "Spot 2",
+                audioSrc: "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg",
+                waveform: {
+                    greenZone: [0, 8],
+                    greenText: "Hook Sonore (0-08s)",
+                    redZone: [15, 16],
+                    redText: "Alerte : Marque citée tardivement (00:15s)"
+                },
+                scores: {
+                    conformite: { value: 85, label: "Bon (~85%)", color: "bg-green-500", text: "Point positif : La mécanique de l'offre (5€, choix des menus) est claire. Attention, les mentions sanitaires sont expédiées trop rapidement à la fin." },
+                    memorisation: { value: 30, label: "Faible (~30%)", color: "bg-red-500", text: "Point d'alerte : Erreur classique d'attribution. La marque 'McDonald's' n'apparaît qu'à 15 secondes. L'auditeur retient '5 euros' mais perd l'émetteur principal s'il zappe avant la fin." },
+                    adhesion: { value: 90, label: "Excellent (~90%)", color: "bg-emerald-500", text: "Point positif : Le parti-pris de la chorale lyrique est décalé et capte immédiatement l'attention. L'humour fonctionne parfaitement." }
+                },
+                reco: {
+                    positive: "L'émergence est excellente grâce à la créativité sonore (chorale). Le ton casse les codes de la publicité fast-food classique.",
+                    negative: "Le déficit de mémorisation de la marque mère est flagrant. Le jingle final ne suffit pas à compenser l'absence de citation dans les 10 premières secondes.",
+                    suggestion: "\"Intégrer le nom de la marque dès l'accroche sans casser le rythme de la chorale. Ex: '5 euros chez McDo ! Oui 5 euros !'\""
+                }
+            },
+            {
+                id: 3,
+                title: "Carrefour Drive (Copie) (30s)",
+                badge: "Spot 3",
+                audioSrc: "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+                waveform: {
+                    greenZone: [0, 5],
+                    greenText: "Hook Promotionnel",
+                    redZone: null,
+                    redText: null
+                },
+                scores: {
+                    conformite: { value: 95, label: "Fort", color: "bg-emerald-500", text: "Analyse identique au Spot 1 (Fichier audio dupliqué). Promesse claire et mentions légales présentes." },
+                    memorisation: { value: 80, label: "Fort (~80%)", color: "bg-emerald-500", text: "Analyse identique au Spot 1. Citation précoce et répétée de la marque." },
+                    adhesion: { value: 25, label: "Critique (~25%)", color: "bg-red-500", text: "Analyse identique au Spot 1. Ton excessivement promotionnel et manque de naturel." }
+                },
+                reco: {
+                    positive: "Le message est direct et sans ambiguïté sur le prix.",
+                    negative: "Manque total d'originalité. C'est une récitation de prospectus qui ne génère aucune préférence de marque.",
+                    suggestion: "\"Même recommandation que pour le spot 1 : L'Agent de création suggère de réécrire les 5 premières secondes pour intégrer un insight consommateur fort avant de parler de prix.\""
+                }
+            }
+        ];
+
+        // Générer des hauteurs fixes pour les barres de la waveform
+        const waveformBars = Array.from({ length: 60 }, () => 20 + Math.random() * 60);
+
+        let currentActiveTab = 0;
+
+        function generateWaveformHTML(data) {
+            let markersHTML = '';
+            
+            if (data.greenZone) {
+                markersHTML += `
+                    <div class="bg-green-500 text-white px-2 py-1 rounded" style="margin-left: ${(data.greenZone[0]/60)*100}%">
+                        ${data.greenText}
+                    </div>`;
+            }
+            if (data.redZone) {
+                markersHTML += `
+                    <div class="bg-red-500 text-white px-2 py-1 rounded shadow-lg shadow-red-500/20" style="position: absolute; left: ${(data.redZone[0]/60)*100}%">
+                        ${data.redText}
+                    </div>`;
+            }
+
+            let barsHTML = waveformBars.map((height, i) => {
+                let color = "bg-purple-600/70";
+                if (data.greenZone && i >= data.greenZone[0] && i <= data.greenZone[1]) color = "bg-green-500";
+                else if (data.redZone && i >= data.redZone[0] && i <= data.redZone[1]) color = "bg-red-500";
+                else if (i % 8 === 0) color = "bg-purple-500";
+                else if (i % 5 === 0) color = "bg-purple-800";
+
+                return `<div class="w-full rounded-t-sm ${color} transition-all duration-300" style="height: ${height}%"></div>`;
+            }).join('');
+
+            return `
+                <div class="relative h-40 bg-zinc-900 rounded-xl p-4 flex flex-col justify-end mt-4 overflow-hidden">
+                    <div class="absolute top-4 left-4 right-4 flex justify-between z-10 text-xs font-bold">
+                        ${markersHTML}
+                    </div>
+                    <div class="flex items-end justify-between h-24 gap-[2px]">
+                        ${barsHTML}
+                    </div>
+                    <div class="flex justify-between text-zinc-500 text-[10px] font-medium mt-2 px-1">
+                        <span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span>
+                        <span>00:20</span><span>00:25</span><span>00:30</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderApp(tabIndex) {
+            currentActiveTab = tabIndex;
+            const activeData = spotsData[tabIndex];
+            const container = document.getElementById('app-dynamic-content');
+
+            // Tabs HTML
+            const tabsHTML = `
+                <div class="flex gap-2 p-1 bg-slate-200/50 rounded-lg w-fit mb-6">
+                    ${spotsData.map((spot, idx) => `
+                        <button onclick="renderApp(${idx})" class="px-5 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
+                            tabIndex === idx 
+                                ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-900/5' 
+                                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200'
+                        }">
+                            ${spot.badge} : ${spot.title.split(' ')[0]} ${spot.title.split(' ')[1]}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            // Waveform Box HTML
+            const waveformBoxHTML = `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+                        <div class="flex items-center gap-2 text-slate-900 font-bold text-lg">
+                            <i data-lucide="activity" class="w-5 h-5 text-slate-700"></i> Analyse Contextuelle du spot : ${activeData.title}
+                        </div>
+                        <audio controls src="${activeData.audioSrc}" class="h-10 w-full md:w-80 outline-none">
+                            Votre navigateur ne supporte pas la lecture audio.
+                        </audio>
+                    </div>
+                    ${generateWaveformHTML(activeData.waveform)}
+                </div>
+            `;
+
+            // Scores and Recos HTML
+            const detailsHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Card: Scores -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-8">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                            <h2 class="font-bold text-lg text-slate-900">Synthèse Créative Audion</h2>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full">Évaluation Stricte</span>
+                        </div>
+
+                        ${['conformite', 'memorisation', 'adhesion'].map(key => {
+                            const score = activeData.scores[key];
+                            const title = key.charAt(0).toUpperCase() + key.slice(1).replace('e', 'é'); // Quick format for titles
+                            const titleLabel = key === 'conformite' ? 'Conformité avec le brief' : title;
+                            const textColor = score.color.replace('bg-', 'text-');
+                            
+                            return `
+                                <div>
+                                    <div class="flex justify-between mb-2 text-sm font-bold">
+                                        <span class="text-slate-800">${titleLabel}</span>
+                                        <span class="${textColor}">${score.label}</span>
+                                    </div>
+                                    <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+                                        <div class="h-full ${score.color} transition-all duration-500" style="width: ${score.value}%"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-relaxed">${score.text}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Right Card: Recommendations -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="font-bold text-lg text-slate-900 border-b border-slate-100 pb-4 mb-6">Recommandations Creative</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-green-500 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 mb-1">Points Positifs</h3>
+                                    <p class="text-sm text-slate-600 leading-relaxed">${activeData.reco.positive}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 mb-1">Points d'Amélioration</h3>
+                                    <p class="text-sm text-slate-600 leading-relaxed mb-4">${activeData.reco.negative}</p>
+                                    
+                                    <div class="bg-pink-50 border-l-4 border-pink-500 p-4 rounded-r-lg">
+                                        <div class="text-[10px] font-bold text-pink-500 uppercase tracking-wider mb-2">Suggestion de l'Agent de Création :</div>
+                                        <div class="text-sm text-pink-900 italic font-medium">${activeData.reco.suggestion}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = tabsHTML + waveformBoxHTML + detailsHTML;
+            
+            // Re-render Lucide icons for the newly injected HTML
+            lucide.createIcons();
+        }
+
+        // Initialize App on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp(0); // Load first tab
+            lucide.createIcons(); // Initialize static icons (sidebar)
+        });
+
+    </script>
+</body>
+</html>
