@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Analysis Report - Intermarché</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    },
+                    colors: {
+                        report: {
+                            bg: '#F9FAFB',
+                            surface: '#FFFFFF',
+                            border: '#E5E7EB',
+                            textMain: '#111827',
+                            textMuted: '#6B7280',
+                            textLight: '#9CA3AF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F9FAFB; color: #111827; }
+        .data-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+        }
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6B7280;
+        }
+        .score-circle {
+            transform: rotate(-90deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased pb-16">
+
+    <!-- Top Navigation Bar (PDF Inspired) -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-4 mb-8 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <div class="font-black text-xl tracking-tighter text-gray-900 flex items-center gap-2">
+                Audion AI
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#" class="hover:text-gray-900">Agenda</a>
+                <a href="#" class="text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4">Qualification</a>
+                <a href="#" class="hover:text-gray-900">Competitive Analysis</a>
+                <a href="#" class="hover:text-gray-900">Creative Analysis</a>
+                <a href="#" class="hover:text-gray-900">Performance</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm font-medium">
+            <span class="text-gray-500 text-xs">Report ID: #IM-CRM-0224</span>
+        </div>
+    </nav>
+
+    <!-- Main Wrapper -->
+    <div class="max-w-5xl mx-auto px-4">
+        
+        <!-- Document Title -->
+        <header class="mb-8">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+            <p class="text-gray-500 text-sm flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4"></i> Intermarché Carmaux - Campagne Commerciale (Février)
+            </p>
+        </header>
+
+        <!-- Brief Recap (Input Data) -->
+        <section class="data-card p-5 mb-10 bg-gray-50/50">
+            <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">10 jours en février</span></div>
+                <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">2 000 €</span></div>
+                <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">30 à 60 ans et +</span></div>
+                <div><span class="text-gray-400 block text-xs uppercase mb-1">Zone</span> <span class="font-medium">Carmaux + 15 km</span></div>
+                <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Intérêts</span> <span class="font-medium text-gray-600">Commerce local, Commerces de proximité, Gastronomie, Alimentation, Cuisine, Produits locaux, Famille</span></div>
+            </div>
+        </section>
+
+        <!-- SCORES BY ADVERTISING OBJECTIVE -->
+        <div class="mb-12">
+            <h2 class="section-label mb-4">Scores by Advertising Objective</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Awareness -->
+                <div class="data-card p-6 flex flex-col items-center text-center">
+                    <span class="text-sm font-semibold text-gray-700 mb-4">Awareness</span>
+                    <div class="relative w-20 h-20 flex items-center justify-center mb-4">
+                        <svg class="w-full h-full score-circle" viewBox="0 0 36 36">
+                            <path class="text-gray-100" stroke-width="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="text-emerald-500" stroke-dasharray="92, 100" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="absolute text-xl font-bold text-gray-900">92</span>
+                    </div>
+                    <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-1 rounded-sm uppercase tracking-wider">Optimal</span>
+                </div>
+
+                <!-- Consideration -->
+                <div class="data-card p-6 flex flex-col items-center text-center">
+                    <span class="text-sm font-semibold text-gray-700 mb-4">Consideration</span>
+                    <div class="relative w-20 h-20 flex items-center justify-center mb-4">
+                        <svg class="w-full h-full score-circle" viewBox="0 0 36 36">
+                            <path class="text-gray-100" stroke-width="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="text-blue-500" stroke-dasharray="78, 100" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="absolute text-xl font-bold text-gray-900">78</span>
+                    </div>
+                    <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-sm uppercase tracking-wider">Strong</span>
+                </div>
+
+                <!-- Performance -->
+                <div class="data-card p-6 flex flex-col items-center text-center">
+                    <span class="text-sm font-semibold text-gray-700 mb-4">Performance</span>
+                    <div class="relative w-20 h-20 flex items-center justify-center mb-4">
+                        <svg class="w-full h-full score-circle" viewBox="0 0 36 36">
+                            <path class="text-gray-100" stroke-width="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="text-red-500" stroke-dasharray="64, 100" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="absolute text-xl font-bold text-gray-900">64</span>
+                    </div>
+                    <span class="text-[10px] font-bold bg-red-100 text-red-800 px-2 py-1 rounded-sm uppercase tracking-wider">Needs Work</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-b border-gray-200 mb-6 pb-2">
+            <h2 class="section-label">Detail by Axis</h2>
+        </div>
+
+        <!-- Main Content - Linear Structure -->
+        <main class="flex flex-col space-y-4">
+
+            <!-- 1. Sociodemography -->
+            <section class="data-card p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">1. Sociodémographie Augmentée</h3>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span>
+                        <span class="text-2xl font-bold text-gray-900">88</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-500">Structure Foyer</span>
+                        <span class="font-medium text-gray-900">30-60 ans+, Familles & Séniors Actifs</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-500">Géographie & Zone</span>
+                        <span class="font-medium text-gray-900">Bassin Carmausin (Carmaux + 15km)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-500">Niveau de vie</span>
+                        <span class="font-medium text-gray-900">Foyers moyens, attentifs au budget</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-500">Rôle décisionnel</span>
+                        <span class="font-bold text-gray-900">Responsable des Courses (RDA)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Shopping Habits -->
+            <section class="data-card p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">2. Habitudes & Rapport à l'Achat</h3>
+                    <span class="text-2xl font-bold text-gray-900">82</span>
+                </div>
+                
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide">
+                            <span class="text-gray-500">Magasin Physique (85%)</span>
+                            <span class="text-gray-500">Drive (15%)</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden">
+                            <div class="bg-gray-800" style="width: 85%"></div>
+                            <div class="bg-gray-300" style="width: 15%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm">
+                            <i data-lucide="tags" class="w-5 h-5 text-gray-400"></i>
+                            <div>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1</span>
+                                <span class="font-semibold text-gray-900 text-sm">Pouvoir d'achat & Promotions</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm">
+                            <i data-lucide="store" class="w-5 h-5 text-gray-400"></i>
+                            <div>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span>
+                                <span class="font-semibold text-gray-900 text-sm">Proximité & Produits Locaux</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Contextual Intelligence -->
+            <section class="data-card p-6">
+                <div class="flex justify-between items-start mb-8">
+                    <h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage</h3>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span>
+                        <span class="text-2xl font-bold text-gray-900">74</span>
+                    </div>
+                </div>
+                
+                <div class="relative py-2">
+                    <!-- Flat line -->
+                    <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                        <!-- Step 1 -->
+                        <div class="flex flex-col items-center bg-white">
+                            <div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10">
+                                <span class="font-mono text-xs font-bold text-gray-600">07:30</span>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900">Petit-déjeuner</span>
+                            <span class="text-xs text-gray-500 text-center mt-1">Smart Speaker<br>Radio Locale / Info</span>
+                        </div>
+                        
+                        <!-- Step 2 -->
+                        <div class="flex flex-col items-center bg-white">
+                            <div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10">
+                                <span class="font-mono text-xs font-bold text-gray-600">11:30</span>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900">Pause Déjeuner</span>
+                            <span class="text-xs text-gray-500 text-center mt-1">Écouteurs / Smartphone<br>Musique & Actu</span>
+                        </div>
+
+                        <!-- Step 3 (Highlight) -->
+                        <div class="flex flex-col items-center bg-white relative">
+                            <div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Drive-to-Store</div>
+                            <div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10">
+                                <span class="font-mono text-xs font-bold text-gray-900">17:30</span>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900">Trajet & Courses</span>
+                            <span class="text-xs text-gray-500 text-center mt-1">Bluetooth Voiture<br>Proximité magasin</span>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="flex flex-col items-center bg-white">
+                            <div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10">
+                                <span class="font-mono text-xs font-bold text-gray-600">19:00</span>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900">Préparation Repas</span>
+                            <span class="text-xs text-gray-500 text-center mt-1">Enceinte Cuisine<br>Contexte Gastronomie</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Psychographics -->
+            <section class="data-card p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">4. Psychographie & Affinités</h3>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span>
+                        <span class="text-2xl font-bold text-gray-900">85</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="h-48 w-full md:w-1/3 relative">
+                        <canvas id="psychoChart"></canvas>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4">Cible pragmatique et ancrée, très attachée à son territoire. Elle cherche activement à concilier la gestion d'un budget serré avec le fait de "bien manger" en famille.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">CommerceLocal</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">GastronomieTarnaise</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">PouvoirDachat</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">VieDeFamille</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Funnel -->
+            <section class="data-card p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement (Format 10 Jours)</h3>
+                    <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <!-- Funnel graphic flat -->
+                    <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                        <div class="bg-gray-100 py-3 text-center border border-gray-200">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Awareness</span>
+                            <span class="font-mono font-bold text-gray-900 text-lg">60%</span>
+                        </div>
+                        <div class="bg-gray-200 py-3 text-center border border-gray-300 mx-[5%]">
+                            <span class="text-[10px] text-gray-600 font-bold uppercase tracking-widest block mb-1">Consideration</span>
+                            <span class="font-mono font-bold text-gray-900 text-lg">30%</span>
+                        </div>
+                        <div class="bg-gray-800 py-3 text-center mx-[15%]">
+                            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Conversion</span>
+                            <span class="font-mono font-bold text-white text-lg">10%</span>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0"></span>
+                                <div><span class="font-bold text-gray-900">Couverture Locale :</span> 60% du budget ciblé sur le rayon large pour créer l'événement.</div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 shrink-0"></span>
+                                <div><span class="font-bold text-gray-900">Promotion / Offre :</span> 30% alloué à la répétition (fréquence) pour ancrer le message promotionnel.</div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span>
+                                <div><span class="font-bold text-gray-900">Trafic Magasin :</span> 10% concentré sur l'urgence (derniers jours) pour inciter au déplacement.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Intent Data -->
+            <section class="data-card p-6">
+                 <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes (Intent Datas)</h3>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span>
+                        <span class="text-2xl font-bold text-gray-900">95</span>
+                    </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 mb-4 uppercase tracking-wider font-semibold">Signaux de ciblage dynamique</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Recherches (Search)</h4>
+                        <p class="text-sm text-gray-600">"Promo supermarché", "Recettes familiales pas chères", "Drive Intermarché", "Catalogue semaine".</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments de vie</h4>
+                        <p class="text-sm text-gray-600">Pic d'écoute jeudi/vendredi (prépa repas familiaux du week-end), orga. vacances de février.</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">In-App / Géoloc</h4>
+                        <p class="text-sm text-gray-600">Géofencing GPS (Waze) 10-15km, apps prospectus digitaux (Bonial), sites cuisine (Marmiton).</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Initialize Chart.js for Psychographics - Flat minimal style
+        const ctx = document.getElementById('psychoChart').getContext('2d');
+        Chart.defaults.color = '#6B7280'; 
+        Chart.defaults.font.family = 'Inter';
+
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Proximité', 'Gastronomie', 'Famille', 'Promos', 'Local', 'Actu'],
+                datasets: [{
+                    label: 'Score d\'Affinité',
+                    data: [90, 85, 80, 95, 85, 70],
+                    backgroundColor: 'rgba(17, 24, 39, 0.05)', 
+                    borderColor: '#111827', 
+                    pointBackgroundColor: '#111827',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#111827',
+                    borderWidth: 1.5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#E5E7EB' },
+                        grid: { color: '#E5E7EB' },
+                        pointLabels: { color: '#4B5563', font: { size: 9, weight: '600' } },
+                        ticks: { display: false, min: 0, max: 100 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
