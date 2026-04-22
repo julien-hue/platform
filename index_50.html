@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Analysis Report - Multi-Briefs</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    },
+                    colors: {
+                        report: {
+                            bg: '#F9FAFB',
+                            surface: '#FFFFFF',
+                            border: '#E5E7EB',
+                            textMain: '#111827',
+                            textMuted: '#6B7280',
+                            textLight: '#9CA3AF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F9FAFB; color: #111827; }
+        .data-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+        }
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased pb-16">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-4 mb-6 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <div class="font-black text-xl tracking-tighter text-gray-900 flex items-center gap-2">
+                Audion AI
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#" class="hover:text-gray-900">Agenda</a>
+                <a href="#" class="text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4">Qualification</a>
+                <a href="#" class="hover:text-gray-900">Competitive Analysis</a>
+                <a href="#" class="hover:text-gray-900">Creative Analysis</a>
+                <a href="#" class="hover:text-gray-900">Performance</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm font-medium">
+            <span class="text-gray-500 text-xs">Portfolio: Multi-Briefs Analysis</span>
+        </div>
+    </nav>
+
+    <!-- Main Wrapper -->
+    <div class="max-w-5xl mx-auto px-4">
+
+        <!-- TABS NAVIGATION -->
+        <div class="mb-8 border-b border-gray-200">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
+                <li class="mr-6">
+                    <button class="tab-btn active inline-block pb-3 border-b-2 border-gray-900 text-gray-900 transition-colors" data-target="tab-im" onclick="switchTab('tab-im')">Intermarché</button>
+                </li>
+                <li class="mr-6">
+                    <button class="tab-btn inline-block pb-3 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors" data-target="tab-seneo" onclick="switchTab('tab-seneo')">SENEO</button>
+                </li>
+                <li class="mr-6">
+                    <button class="tab-btn inline-block pb-3 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors" data-target="tab-wero" onclick="switchTab('tab-wero')">Wero (NL)</button>
+                </li>
+                <li class="mr-6">
+                    <button class="tab-btn inline-block pb-3 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors" data-target="tab-qonto" onclick="switchTab('tab-qonto')">Qonto (DE)</button>
+                </li>
+                <li class="mr-6">
+                    <button class="tab-btn inline-block pb-3 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors" data-target="tab-belambra" onclick="switchTab('tab-belambra')">Belambra</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 1 : INTERMARCHÉ -->
+        <!-- ========================================== -->
+        <div id="tab-im" class="tab-content block">
+            <header class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> Intermarché Carmaux - Campagne Commerciale
+                </p>
+            </header>
+
+            <section class="data-card p-5 mb-10 bg-gray-50/50">
+                <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">10 jours en février</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">2 000 €</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">30 à 60 ans et +</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Zone</span> <span class="font-medium">Carmaux + 15 km</span></div>
+                    <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Intérêts</span> <span class="font-medium text-gray-600">Commerce local, Commerces de proximité, Gastronomie, Alimentation, Cuisine, Produits locaux, Famille</span></div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-6 pb-2"><h2 class="section-label">Detail by Axis</h2></div>
+
+            <main class="flex flex-col space-y-4">
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">1. Sociodémographie Augmentée</h3>
+                        <div class="flex flex-col items-end">
+                            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span>
+                            <span class="text-2xl font-bold text-gray-900">88</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Structure Foyer</span><span class="font-medium text-gray-900">30-60 ans+, Familles & Séniors</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Géographie</span><span class="font-medium text-gray-900">Bassin Carmausin (+15km)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Niveau de vie</span><span class="font-medium text-gray-900">Foyers moyens, attentifs au budget</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Rôle décisionnel</span><span class="font-bold text-gray-900">Responsable des Courses</span></div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">2. Habitudes & Rapport à l'Achat</h3>
+                        <span class="text-2xl font-bold text-gray-900">82</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide"><span class="text-gray-500">Magasin Physique (85%)</span><span class="text-gray-500">Drive (15%)</span></div>
+                            <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden"><div class="bg-gray-800" style="width: 85%"></div><div class="bg-gray-300" style="width: 15%"></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="tags" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1</span><span class="font-semibold text-gray-900 text-sm">Pouvoir d'achat & Promotions</span></div></div>
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="store" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span><span class="font-semibold text-gray-900 text-sm">Proximité & Local</span></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-8">
+                        <h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage</h3>
+                        <div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">74</span></div>
+                    </div>
+                    <div class="relative py-2">
+                        <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">07:30</span></div><span class="text-sm font-bold text-gray-900">Petit-déj</span><span class="text-xs text-gray-500 text-center mt-1">Smart Speaker<br>Info Locale</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">11:30</span></div><span class="text-sm font-bold text-gray-900">Pause</span><span class="text-xs text-gray-500 text-center mt-1">Écouteurs<br>Musique</span></div>
+                            <div class="flex flex-col items-center bg-white relative"><div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Drive-to-Store</div><div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-900">17:30</span></div><span class="text-sm font-bold text-gray-900">Courses</span><span class="text-xs text-gray-500 text-center mt-1">Auto Bluetooth<br>Proximité magasin</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">19:00</span></div><span class="text-sm font-bold text-gray-900">Prépa Repas</span><span class="text-xs text-gray-500 text-center mt-1">Enceinte Cuisine<br>Gastronomie</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">4. Psychographie & Affinités</h3>
+                        <div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">85</span></div>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="h-48 w-full md:w-1/3 relative"><canvas id="psychoChart-im"></canvas></div>
+                        <div class="w-full md:w-2/3">
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">Cible ancrée, cherche à concilier gestion d'un budget serré et consommation de produits locaux en famille.</p>
+                            <div class="flex flex-wrap gap-2"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">CommerceLocal</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">PouvoirDachat</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">Famille</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement (10 Jours)</h3><span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                            <div class="bg-gray-100 py-3 text-center border border-gray-200"><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Awareness</span><span class="font-mono font-bold text-gray-900 text-lg">60%</span></div>
+                            <div class="bg-gray-200 py-3 text-center border border-gray-300 mx-[5%]"><span class="text-[10px] text-gray-600 font-bold uppercase tracking-widest block mb-1">Consideration</span><span class="font-mono font-bold text-gray-900 text-lg">30%</span></div>
+                            <div class="bg-gray-800 py-3 text-center mx-[15%]"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Conversion</span><span class="font-mono font-bold text-white text-lg">10%</span></div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Couverture :</span> Budget ciblé sur rayon large pour créer l'événement.</div></li>
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Répétition :</span> Fréquence forte pour ancrer la promo.</div></li>
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Trafic :</span> Urgence sur les derniers jours.</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">95</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Search</h4><p class="text-sm text-gray-600">"Promo supermarché", "Drive Intermarché", "Catalogue semaine".</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments</h4><p class="text-sm text-gray-600">Pic d'écoute jeudi/vendredi (prépa repas week-end).</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Géoloc</h4><p class="text-sm text-gray-600">Géofencing Waze 15km, apps prospectus digitaux (Bonial).</p></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2 : SENEO -->
+        <!-- ========================================== -->
+        <div id="tab-seneo" class="tab-content hidden">
+            <header class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    <i data-lucide="radio" class="w-4 h-4"></i> SENEO - Podcast Ondulation (Sensibilisation Écologique)
+                </p>
+            </header>
+
+            <section class="data-card p-5 mb-10 bg-gray-50/50">
+                <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">24 Nov - 1 Déc (1 sem.)</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">3 000 € (4285 écoutes)</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">Familles</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Zone</span> <span class="font-medium">Département 92</span></div>
+                    <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Contexte</span> <span class="font-medium text-gray-600">Fiction audio 2050 (pénurie d'eau). Objectifs: Sensibiliser aux enjeux de l'eau + Notoriété Syndicat Sénéo.</span></div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-6 pb-2"><h2 class="section-label">Detail by Axis</h2></div>
+
+            <main class="flex flex-col space-y-4">
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">1. Sociodémographie Augmentée</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">85</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Structure Foyer</span><span class="font-medium text-gray-900">Familles, 30-50 ans</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Géographie</span><span class="font-medium text-gray-900">Hauts-de-Seine (92)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Niveau de vie</span><span class="font-medium text-gray-900">CSP Moyenne à Supérieure</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Rôle décisionnel</span><span class="font-bold text-gray-900">Parent / Citoyen local</span></div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">2. Habitudes & Médiaconsommation</h3><span class="text-2xl font-bold text-gray-900">78</span></div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide"><span class="text-gray-500">Podcast Natif / Digital (90%)</span><span class="text-gray-500">Radio Linéaire (10%)</span></div>
+                            <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden"><div class="bg-gray-800" style="width: 90%"></div><div class="bg-gray-300" style="width: 10%"></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="leaf" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1</span><span class="font-semibold text-gray-900 text-sm">Conscience écologique</span></div></div>
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="headphones" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span><span class="font-semibold text-gray-900 text-sm">Divertissement immersif</span></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-8"><h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">92</span></div></div>
+                    <div class="relative py-2">
+                        <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">08:00</span></div><span class="text-sm font-bold text-gray-900">Trajet Domicile-Travail</span><span class="text-xs text-gray-500 text-center mt-1">Transports 92<br>Smartphone</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">12:30</span></div><span class="text-sm font-bold text-gray-900">Pause déjeuner</span><span class="text-xs text-gray-500 text-center mt-1">Bureau<br>Casque Audio</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">18:30</span></div><span class="text-sm font-bold text-gray-900">Retour famille</span><span class="text-xs text-gray-500 text-center mt-1">Voiture Bluetooth<br>Actus locales</span></div>
+                            <div class="flex flex-col items-center bg-white relative"><div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Immersive Audio</div><div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-900">21:00</span></div><span class="text-sm font-bold text-gray-900">Détente Soirée</span><span class="text-xs text-gray-500 text-center mt-1">Écoute active<br>Fiction / Podcast</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">4. Psychographie & Affinités</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">89</span></div></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="h-48 w-full md:w-1/3 relative"><canvas id="psychoChart-seneo"></canvas></div>
+                        <div class="w-full md:w-2/3">
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">Cible sensible aux enjeux de demain. Consommatrice de contenus documentaires et fictions qui portent un message sociétal fort (Edutainment).</p>
+                            <div class="flex flex-wrap gap-2"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Ecologie</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#PodcastFiction</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Citoyenneté92</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement (Out feed garanti)</h3><span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                            <div class="bg-gray-800 py-4 text-center border border-gray-200 rounded-t-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Awareness / Éducation</span><span class="font-mono font-bold text-white text-lg">100%</span></div>
+                            <div class="bg-gray-200 py-2 text-center border border-gray-300 mx-[5%]"><span class="text-[10px] text-gray-600 font-bold uppercase tracking-widest block mb-1">Consideration</span><span class="font-mono font-bold text-gray-900 text-sm">0%</span></div>
+                            <div class="bg-gray-100 py-2 text-center mx-[15%] rounded-b-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Conversion</span><span class="font-mono font-bold text-gray-500 text-sm">0%</span></div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Objectif Unique :</span> Visibilité pure et garantie d'écoute (Out feed). Il n'y a pas d'enjeu de conversion immédiate, mais une création d'imaginaire autour de la marque Sénéo.</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">76</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Recherches (Search)</h4><p class="text-sm text-gray-600">Actualité écologie, "comment réduire sa facture d'eau", recommandations podcasts fictions.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments de vie</h4><p class="text-sm text-gray-600">Réception factures énergétiques annuelles (fin d'année), recherche d'activités culturelles locales.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">In-App / Navigation</h4><p class="text-sm text-gray-600">Plateformes audio (Spotify, Apple Podcasts), applications d'informations locales 92.</p></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 3 : WERO -->
+        <!-- ========================================== -->
+        <div id="tab-wero" class="tab-content hidden">
+            <header class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    <i data-lucide="smartphone-nfc" class="w-4 h-4"></i> Wero (NL) - Phase 2 "Reassure" Campaign
+                </p>
+            </header>
+
+            <section class="data-card p-5 mb-10 bg-gray-50/50">
+                <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">6 mois (Q1 & Q2)</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">€70,000</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">18+ ans</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Zone</span> <span class="font-medium">Pays-Bas (NL)</span></div>
+                    <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Contexte</span> <span class="font-medium text-gray-600">Transition de la marque historique locale "iDEAL" vers "Wero". Objectif Phase 2 : Rassurer les utilisateurs sur la sécurité et la continuité.</span></div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-6 pb-2"><h2 class="section-label">Detail by Axis</h2></div>
+
+            <main class="flex flex-col space-y-4">
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">1. Sociodémographie Augmentée</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">82</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Structure Foyer</span><span class="font-medium text-gray-900">18+ ans (Early adopters à Mass market)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Géographie</span><span class="font-medium text-gray-900">Pays-Bas (National)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Niveau de vie</span><span class="font-medium text-gray-900">Bancarisés, consommateurs digitaux</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Rôle décisionnel</span><span class="font-bold text-gray-900">Utilisateur final / P2P Payer</span></div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">2. Habitudes & Comportements (Fintech)</h3><span class="text-2xl font-bold text-gray-900">90</span></div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide"><span class="text-gray-500">Mobile Payments (95%)</span><span class="text-gray-500">Cash/Cards (5%)</span></div>
+                            <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden"><div class="bg-gray-800" style="width: 95%"></div><div class="bg-gray-300" style="width: 5%"></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="shield-check" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1 (Phase 2)</span><span class="font-semibold text-gray-900 text-sm">Sécurité & Continuité (Trust)</span></div></div>
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="zap" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span><span class="font-semibold text-gray-900 text-sm">Frictionless Checkouts</span></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-8"><h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">95</span></div></div>
+                    <div class="relative py-2">
+                        <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">09:00</span></div><span class="text-sm font-bold text-gray-900">Commute</span><span class="text-xs text-gray-500 text-center mt-1">Radio NL / Spotify<br>Awareness</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">13:00</span></div><span class="text-sm font-bold text-gray-900">Lunch Break</span><span class="text-xs text-gray-500 text-center mt-1">Online Shopping<br>Checkout moments</span></div>
+                            <div class="flex flex-col items-center bg-white relative"><div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Social / P2P</div><div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-900">19:00</span></div><span class="text-sm font-bold text-gray-900">Sortie entre amis</span><span class="text-xs text-gray-500 text-center mt-1">Partage de l'addition<br>Trust message</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">22:00</span></div><span class="text-sm font-bold text-gray-900">E-Commerce</span><span class="text-xs text-gray-500 text-center mt-1">Mobile Devices<br>Reassurance</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">4. Psychographie & Affinités</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">77</span></div></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="h-48 w-full md:w-1/3 relative"><canvas id="psychoChart-wero"></canvas></div>
+                        <div class="w-full md:w-2/3">
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">La cible NL est très digitalisée et habituée à l'efficacité d'iDEAL. La résistance au changement existe : ils exigent sécurité absolue et commodité technologique.</p>
+                            <div class="flex flex-wrap gap-2"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Fintech</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Security</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#E-commerceNL</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement (Phase 2)</h3><span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                            <div class="bg-gray-100 py-2 text-center border border-gray-200"><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Awareness (Phase 1)</span><span class="font-mono font-bold text-gray-400 text-sm">0%</span></div>
+                            <div class="bg-gray-800 py-4 text-center border border-gray-300 mx-[5%] rounded-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Consideration / Reassure</span><span class="font-mono font-bold text-white text-lg">100%</span></div>
+                            <div class="bg-gray-200 py-2 text-center mx-[15%]"><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Conversion (Phase 3)</span><span class="font-mono font-bold text-gray-600 text-sm">0%</span></div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Focus Considération :</span> Budget 100% dédié à la réassurance. L'utilisateur *sait* qu'iDEAL devient Wero (Phase 1 validée), il faut maintenant lever les freins psychologiques et technologiques via l'audio.</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">88</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Search</h4><p class="text-sm text-gray-600">"Wero app reviews", "is Wero safe", "iDEAL replacement", requêtes concurrentes de paiement.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments de vie</h4><p class="text-sm text-gray-600">Ouverture de nouveaux comptes bancaires, périodes de soldes E-commerce (Checkout).</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">In-App / Digital</h4><p class="text-sm text-gray-600">Utilisation d'applications bancaires NL (ING, Rabobank), plateformes de e-commerce majeures.</p></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 4 : QONTO -->
+        <!-- ========================================== -->
+        <div id="tab-qonto" class="tab-content hidden">
+            <header class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i> QONTO Germany (DE) - B2B Awareness & Host Read
+                </p>
+            </header>
+
+            <section class="data-card p-5 mb-10 bg-gray-50/50">
+                <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">Année 2026</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">1.54M € (Mix Classique + Host Read)</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">Entrepreneurs B2B</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Zone</span> <span class="font-medium">Allemagne (DE)</span></div>
+                    <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Objectifs / Concurrence</span> <span class="font-medium text-gray-600">Installer "Qonto = Compte Pro" (Awareness 0) avant de segmenter. Concurrence : Sparkasse, Revolut, Finom.</span></div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-6 pb-2"><h2 class="section-label">Detail by Axis</h2></div>
+
+            <main class="flex flex-col space-y-4">
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">1. Sociodémographie B2B</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">92</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Statut Professionnel</span><span class="font-medium text-gray-900">Fondateurs, Freelances, Dirigeants PME</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Géographie</span><span class="font-medium text-gray-900">Allemagne (Hubs : Berlin, Munich, Francfort)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Comportement</span><span class="font-medium text-gray-900">Consommateurs d'outils B2B (SaaS)</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Rôle décisionnel</span><span class="font-bold text-gray-900">Décisionnaire final B2B</span></div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">2. Habitudes d'Achats B2B (Software)</h3><span class="text-2xl font-bold text-gray-900">86</span></div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide"><span class="text-gray-500">Digital / NeoBanks (70%)</span><span class="text-gray-500">Banques Tradi (30%)</span></div>
+                            <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden"><div class="bg-gray-800" style="width: 70%"></div><div class="bg-gray-300" style="width: 30%"></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="timer" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1</span><span class="font-semibold text-gray-900 text-sm">Gain de temps & Productivité</span></div></div>
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="line-chart" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span><span class="font-semibold text-gray-900 text-sm">Clarté et aide comptable</span></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-8"><h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage B2B</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">96</span></div></div>
+                    <div class="relative py-2">
+                        <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                            <div class="flex flex-col items-center bg-white relative"><div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Host Reads Peak</div><div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-900">07:30</span></div><span class="text-sm font-bold text-gray-900">Morning Commute</span><span class="text-xs text-gray-500 text-center mt-1">Podcasts Business<br>(OMR, Business Punk)</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">10:00</span></div><span class="text-sm font-bold text-gray-900">Work at Office</span><span class="text-xs text-gray-500 text-center mt-1">Desktop Webradios<br>Focus time</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">14:00</span></div><span class="text-sm font-bold text-gray-900">Work Trips</span><span class="text-xs text-gray-500 text-center mt-1">Bluetooth Car<br>Entrepreneurs on the go</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">18:00</span></div><span class="text-sm font-bold text-gray-900">Commute Back</span><span class="text-xs text-gray-500 text-center mt-1">News & Tech Podcasts<br>T3n, Digital Kompakt</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">4. Psychographie B2B</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">88</span></div></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="h-48 w-full md:w-1/3 relative"><canvas id="psychoChart-qonto"></canvas></div>
+                        <div class="w-full md:w-2/3">
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">L'entrepreneur allemand valorise la structure et la fiabilité (Sparkasse) mais est frustré par la lourdeur administrative. Forte écoute éducative via les podcasts pour scaler son business.</p>
+                            <div class="flex flex-wrap gap-2"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Entrepreneurship</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#FinTechDE</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Productivity</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement</h3><span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                            <div class="bg-gray-800 py-3 text-center border border-gray-300 rounded-t-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Awareness (Generic + Host Reads)</span><span class="font-mono font-bold text-white text-lg">70%</span></div>
+                            <div class="bg-gray-200 py-3 text-center border border-gray-300 mx-[5%]"><span class="text-[10px] text-gray-600 font-bold uppercase tracking-widest block mb-1">Consideration (Segmented features)</span><span class="font-mono font-bold text-gray-900 text-lg">30%</span></div>
+                            <div class="bg-gray-100 py-2 text-center mx-[15%] rounded-b-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Conversion (Bottom Funnel)</span><span class="font-mono font-bold text-gray-500 text-sm">0%</span></div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Saturation Host Read :</span> Budget majoritaire (600k+500k) pour marteler "Qonto = Compte Pro" via la confiance des hosts.</div></li>
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Ad Sequencing (Considération) :</span> Une fois la marque installée, retargeting audio avec messages features (Création d'ent. / Comptabilité).</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes (B2B)</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">84</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Conquest / Concurrents</h4><p class="text-sm text-gray-600">Recherches et usages concurrents : Finom, Revolut Business, Sparkasse, N26, Lexoffice.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments de vie B2B</h4><p class="text-sm text-gray-600">Création juridique (Handelsregister), levées de fonds, clôture fiscale annuelle/trimestrielle.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Navigation Web Pro</h4><p class="text-sm text-gray-600">Sites d'information financière, portails gouvernementaux PME, comparateurs de logiciels SaaS.</p></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 5 : BELAMBRA -->
+        <!-- ========================================== -->
+        <div id="tab-belambra" class="tab-content hidden">
+            <header class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-1">Audience Qualification Report</h1>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    <i data-lucide="palmtree" class="w-4 h-4"></i> BELAMBRA - Opération Spéciale Host Read CSP++
+                </p>
+            </header>
+
+            <section class="data-card p-5 mb-10 bg-gray-50/50">
+                <h2 class="section-label mb-4">Input Data / Brief Stratégique</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Durée</span> <span class="font-medium">Fév-Mai & Sep-Déc</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Budget</span> <span class="font-medium">100 000 € (Strict, in. FT)</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Profils</span> <span class="font-medium">30-50 ans, CSP++</span></div>
+                    <div><span class="text-gray-400 block text-xs uppercase mb-1">Format</span> <span class="font-medium">Host Read / OPS</span></div>
+                    <div class="md:col-span-4 mt-2"><span class="text-gray-400 block text-xs uppercase mb-1">Enjeu</span> <span class="font-medium text-gray-600">Focus absolu sur la QUALITÉ du contexte et la considération, au détriment du volume pur. Budget tendu (FT à surveiller).</span></div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-6 pb-2"><h2 class="section-label">Detail by Axis</h2></div>
+
+            <main class="flex flex-col space-y-4">
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">1. Sociodémographie Premium</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">98</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Structure Foyer</span><span class="font-medium text-gray-900">30-50 ans, Couples / Familles</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Catégorie Socio-pro</span><span class="font-medium text-gray-900">CSP++ Exclusivement</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Niveau de vie</span><span class="font-medium text-gray-900">Hauts revenus, dépenses Premium</span></div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2"><span class="text-gray-500">Rôle décisionnel</span><span class="font-bold text-gray-900">Prescripteur Vacances Haut-de-gamme</span></div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">2. Habitudes de Réservation</h3><span class="text-2xl font-bold text-gray-900">82</span></div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-2 uppercase tracking-wide"><span class="text-gray-500">Online Premium (70%)</span><span class="text-gray-500">Agences VIP (30%)</span></div>
+                            <div class="h-1.5 w-full bg-gray-100 flex rounded-sm overflow-hidden"><div class="bg-gray-800" style="width: 70%"></div><div class="bg-gray-300" style="width: 30%"></div></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="gem" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #1</span><span class="font-semibold text-gray-900 text-sm">Qualité & Exclusivité (Status)</span></div></div>
+                            <div class="bg-gray-50 p-4 border border-gray-100 flex items-center gap-4 rounded-sm"><i data-lucide="sofa" class="w-5 h-5 text-gray-400"></i><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Moteur #2</span><span class="font-semibold text-gray-900 text-sm">Confort Absolu (Clé en main)</span></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-8"><h3 class="text-lg font-bold text-gray-900">3. Spatialisation & Séquençage (Audio Premium)</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">80</span></div></div>
+                    <div class="relative py-2">
+                        <div class="absolute top-1/2 left-4 right-4 h-[1px] bg-gray-200 -translate-y-1/2 hidden md:block z-0"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                            <div class="flex flex-col items-center bg-white relative"><div class="absolute -top-6 bg-gray-900 text-white text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">Premium News</div><div class="bg-gray-50 px-3 py-1 border-2 border-gray-900 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-900">08:30</span></div><span class="text-sm font-bold text-gray-900">Morning Commute</span><span class="text-xs text-gray-500 text-center mt-1">Podcasts News Info<br>Véhicules haut de gamme</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">12:30</span></div><span class="text-sm font-bold text-gray-900">Pause</span><span class="text-xs text-gray-500 text-center mt-1">Écouteurs sans-fil<br>Lifestyle Audio</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">19:30</span></div><span class="text-sm font-bold text-gray-900">Retour / Planning</span><span class="text-xs text-gray-500 text-center mt-1">Smart Speaker Salon<br>Discussion Famille</span></div>
+                            <div class="flex flex-col items-center bg-white"><div class="bg-white px-3 py-1 border border-gray-300 rounded-full mb-3 z-10"><span class="font-mono text-xs font-bold text-gray-600">21:30</span></div><span class="text-sm font-bold text-gray-900">Soirée Détente</span><span class="text-xs text-gray-500 text-center mt-1">Podcasts Culture<br>Interviews exclusives</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">4. Psychographie & Affinités</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Optimal</span><span class="text-2xl font-bold text-gray-900">91</span></div></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="h-48 w-full md:w-1/3 relative"><canvas id="psychoChart-belambra"></canvas></div>
+                        <div class="w-full md:w-2/3">
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">Cible très exigeante qui écoute des podcasts de niche ou d'interviews profondes. La recommandation par l'host du podcast crée une caution "Premium" indispensable pour Belambra.</p>
+                            <div class="flex flex-wrap gap-2"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#PremiumTravel</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#Lifestyle</span><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-sm text-xs font-mono border border-gray-200">#SkiResorts</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">5. Trajectoire d'Engagement (Host Read OPS)</h3><span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-sm uppercase tracking-wider">Media Alloc.</span></div>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-full md:w-1/2 flex flex-col gap-[2px]">
+                            <div class="bg-gray-100 py-3 text-center border border-gray-200"><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Awareness</span><span class="font-mono font-bold text-gray-900 text-lg">30%</span></div>
+                            <div class="bg-gray-800 py-3 text-center border border-gray-300 mx-[5%] rounded-sm"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Consideration (Trust Building)</span><span class="font-mono font-bold text-white text-lg">70%</span></div>
+                            <div class="bg-gray-200 py-2 text-center mx-[15%]"><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Conversion</span><span class="font-mono font-bold text-gray-600 text-sm">0%</span></div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-900 mt-1.5 shrink-0"></span><div><span class="font-bold text-gray-900">Stratégie Qualité/ROI :</span> Avec un budget très monitoré (100k), le Host Read permet de sauter l'étape awareness classique pour capitaliser directement sur l'image de marque et la considération haut-de-gamme.</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-card p-6">
+                    <div class="flex justify-between items-start mb-6"><h3 class="text-lg font-bold text-gray-900">6. Déclencheurs Intentionnistes (Premium)</h3><div class="flex flex-col items-end"><span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-sm mb-1 uppercase tracking-wider">Strong</span><span class="text-2xl font-bold text-gray-900">79</span></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Search Haut de Gamme</h4><p class="text-sm text-gray-600">"Club vacances luxe", "Station ski premium famille", concurrents (Club Med).</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Moments & Saisonnalité</h4><p class="text-sm text-gray-600">Réservations "Early Booking" (Vague 1 Fév/Mar pour l'été) et "Last Minute Luxe" au ski.</p></div>
+                        <div class="p-4 border border-gray-200 rounded-sm bg-gray-50/50"><h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2 mb-2">Navigation Web</h4><p class="text-sm text-gray-600">Voyage Privé, sites de compagnies aériennes Business Class, Golfs & Spas.</p></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('block');
+                tab.classList.add('hidden');
+            });
+            // Show target
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+
+            // Update tab styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-gray-900', 'text-gray-900');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
+            activeBtn.classList.add('border-gray-900', 'text-gray-900');
+            activeBtn.classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        // CHART JS INITIALIZATION
+        Chart.defaults.color = '#6B7280'; 
+        Chart.defaults.font.family = 'Inter';
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: '#E5E7EB' },
+                    grid: { color: '#E5E7EB' },
+                    pointLabels: { color: '#4B5563', font: { size: 9, weight: '600' } },
+                    ticks: { display: false, min: 0, max: 100 }
+                }
+            },
+            plugins: { legend: { display: false } }
+        };
+
+        const chartDatasetBase = {
+            backgroundColor: 'rgba(17, 24, 39, 0.05)', 
+            borderColor: '#111827', 
+            pointBackgroundColor: '#111827',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#111827',
+            borderWidth: 1.5,
+        };
+
+        // Tab 1 : Intermarché
+        new Chart(document.getElementById('psychoChart-im').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Proximité', 'Gastronomie', 'Famille', 'Promos', 'Local', 'Actu'],
+                datasets: [{ ...chartDatasetBase, label: 'Score', data: [90, 85, 80, 95, 85, 70] }]
+            },
+            options: chartOptions
+        });
+
+        // Tab 2 : SENEO
+        new Chart(document.getElementById('psychoChart-seneo').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Écologie', 'Fiction Audio', 'Local (92)', 'Actualité', 'Éducation', 'Famille'],
+                datasets: [{ ...chartDatasetBase, label: 'Score', data: [95, 85, 90, 75, 80, 85] }]
+            },
+            options: chartOptions
+        });
+
+        // Tab 3 : WERO
+        new Chart(document.getElementById('psychoChart-wero').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Mobile Tech', 'E-commerce', 'Finance', 'Security', 'Innovation', 'Convenience'],
+                datasets: [{ ...chartDatasetBase, label: 'Score', data: [95, 85, 90, 100, 70, 95] }]
+            },
+            options: chartOptions
+        });
+
+        // Tab 4 : QONTO
+        new Chart(document.getElementById('psychoChart-qonto').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Entrepreneurship', 'FinTech', 'Productivity', 'Business News', 'Tech', 'Management'],
+                datasets: [{ ...chartDatasetBase, label: 'Score', data: [100, 95, 90, 85, 80, 75] }]
+            },
+            options: chartOptions
+        });
+
+        // Tab 5 : BELAMBRA
+        new Chart(document.getElementById('psychoChart-belambra').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Premium Travel', 'Lifestyle', 'Ski/Montagne', 'Famille', 'Culture', 'Évasion'],
+                datasets: [{ ...chartDatasetBase, label: 'Score', data: [95, 80, 90, 85, 75, 85] }]
+            },
+            options: chartOptions
+        });
+
+    </script>
+</body>
+</html>
