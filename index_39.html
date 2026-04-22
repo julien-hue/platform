@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Performance Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .radar-grid { stroke: #e2e8f0; stroke-width: 1; fill: none; }
+        .radar-axis { stroke: #e2e8f0; stroke-width: 1; }
+        .radar-polygon { fill: rgba(59, 130, 246, 0.2); stroke: #3b82f6; stroke-width: 2; }
+        
+        .driver-card { transition: all 0.2s ease; }
+        .driver-card:hover { border-color: #3b82f6; background-color: #f8fafc; transform: translateY(-2px); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-200 pb-6">
+            <h1 class="text-3xl font-bold text-slate-800">Creative Performance Matrix</h1>
+            <p class="text-slate-500 mt-2 italic">Transverse Driver Analysis - Carrefour Drive Campaign</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Radar Visualization -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
+                <h2 class="text-lg font-semibold mb-4 self-start flex items-center gap-2 text-slate-800">
+                    <i data-lucide="trending-up" class="text-blue-600 w-5 h-5"></i>
+                    Driver Footprint
+                </h2>
+                
+                <div class="relative w-full max-w-[350px] aspect-square">
+                    <svg viewBox="0 0 300 300" class="w-full h-full overflow-visible" id="radar-svg">
+                        <!-- Background Circles generated via JS -->
+                        <g id="radar-background"></g>
+                        <!-- Axes generated via JS -->
+                        <g id="radar-axes"></g>
+                        <!-- Polygon path -->
+                        <polygon id="radar-poly" class="radar-polygon"></polygon>
+                        <!-- Points and labels -->
+                        <g id="radar-points"></g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Optimization Priority List -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h2 class="text-lg font-semibold mb-6 flex items-center gap-2 text-slate-800">
+                    <i data-lucide="alert-circle" class="text-orange-500 w-5 h-5"></i>
+                    Optimization Priority
+                </h2>
+                <div id="drivers-list" class="space-y-4">
+                    <!-- Cards will be injected here via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Summary -->
+        <div class="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="check-circle" class="text-emerald-400 w-6 h-6"></i>
+                Strategic Summary
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="border-l-2 border-emerald-400 pl-4">
+                    <p class="text-emerald-400 text-xs font-bold uppercase mb-1">Key Strengths</p>
+                    <p class="text-sm text-slate-300">The hook (Attention) and voice delivery (Vocal Quality) are exceptional, securing brand recall from the first few seconds.</p>
+                </div>
+                <div class="border-l-2 border-blue-400 pl-4">
+                    <p class="text-blue-400 text-xs font-bold uppercase mb-1">Watch Items</p>
+                    <p class="text-sm text-slate-300">Narrative is solid but simplification is needed to reduce mental friction during the detailed price guarantee explanation.</p>
+                </div>
+                <div class="border-l-2 border-red-400 pl-4">
+                    <p class="text-red-400 text-xs font-bold uppercase mb-1">Critical Priority</p>
+                    <p class="text-sm text-slate-300">**Dynamics** (35) are the main bottleneck. A more rhythmic edit or tonal shifts are required to maintain energy levels.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const drivers = [
+            { id: 'attention', label: 'Attention', score: 95, status: 'Excellent', color: '#10b981', icon: 'eye', desc: "Immediate brand capture via Carrefour branding." },
+            { id: 'vocal', label: 'Vocal Quality', score: 92, status: 'Excellent', color: '#10b981', icon: 'mic', desc: "Confident, enthusiastic, and highly engaging voice-over." },
+            { id: 'storytelling', label: 'Storytelling', score: 75, status: 'Strong', color: '#3b82f6', icon: 'message-square', desc: "Clear narrative flow from Drive service to price promise." },
+            { id: 'clarity', label: 'Clarity', score: 75, status: 'Strong', color: '#3b82f6', icon: 'target', desc: "Main call-to-action (Carrefour.fr) well identified." },
+            { id: 'cognitive', label: 'Cognitive Load', score: 54, status: 'Moderate', color: '#f59e0b', icon: 'brain', desc: "Complexity due to detailed price guarantee conditions." },
+            { id: 'dynamics', label: 'Dynamics', score: 35, status: 'Critical', color: '#ef4444', icon: 'zap', desc: "Lack of tonal variation and rhythmic pacing." }
+        ];
+
+        // Radar Chart Constants
+        const centerX = 150;
+        const centerY = 150;
+        const radius = 100;
+        const total = drivers.length;
+
+        function getCoords(index, score, rScale = 1) {
+            const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
+            const r = (radius * score * rScale) / 100;
+            return {
+                x: centerX + r * Math.cos(angle),
+                y: centerY + r * Math.sin(angle)
+            };
+        }
+
+        // Initialize Radar
+        const bgGroup = document.getElementById('radar-background');
+        const axesGroup = document.getElementById('radar-axes');
+        const pointsGroup = document.getElementById('radar-points');
+        const poly = document.getElementById('radar-poly');
+
+        // Draw background circles
+        [20, 40, 60, 80, 100].forEach(rVal => {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", centerX);
+            circle.setAttribute("cy", centerY);
+            circle.setAttribute("r", (radius * rVal) / 100);
+            circle.classList.add("radar-grid");
+            bgGroup.appendChild(circle);
+        });
+
+        const pointsAttr = [];
+
+        drivers.forEach((d, i) => {
+            const pos = getCoords(i, d.score);
+            const edge = getCoords(i, 100);
+            const labelPos = getCoords(i, 100, 1.25);
+
+            pointsAttr.push(`${pos.x},${pos.y}`);
+
+            // Axis line
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", centerX);
+            line.setAttribute("y1", centerY);
+            line.setAttribute("x2", edge.x);
+            line.setAttribute("y2", edge.y);
+            line.classList.add("radar-axis");
+            axesGroup.appendChild(line);
+
+            // Point
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", pos.x);
+            circle.setAttribute("cy", pos.y);
+            circle.setAttribute("r", "5");
+            circle.setAttribute("fill", d.color);
+            pointsGroup.appendChild(circle);
+
+            // Label
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", labelPos.x);
+            text.setAttribute("y", labelPos.y);
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("font-size", "10");
+            text.setAttribute("font-weight", "700");
+            text.setAttribute("class", "fill-slate-500 uppercase tracking-tighter");
+            text.textContent = d.label;
+            pointsGroup.appendChild(text);
+        });
+
+        poly.setAttribute("points", pointsAttr.join(" "));
+
+        // Build Priority List
+        const listContainer = document.getElementById('drivers-list');
+        const sortedDrivers = [...drivers].sort((a, b) => a.score - b.score);
+
+        sortedDrivers.forEach(d => {
+            const card = document.createElement('div');
+            card.className = "driver-card p-4 rounded-xl border border-slate-100 bg-slate-50/50";
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 rounded-lg bg-white shadow-sm" style="color: ${d.color}">
+                            <i data-lucide="${d.icon}" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800">${d.label}</h3>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase" style="background-color: ${d.color}20; color: ${d.color}">
+                                ${d.status}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-black text-slate-700">${d.score}</span>
+                        <span class="text-xs text-slate-400 ml-1">/100</span>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-600 ml-12">${d.desc}</p>
+            `;
+            listContainer.appendChild(card);
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
