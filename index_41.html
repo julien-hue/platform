@@ -18,11 +18,11 @@
 </head>
 <body class="p-4 md:p-8 text-slate-800">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         
         <!-- Navigation -->
         <div id="tabs-container" class="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
-            <!-- Tabs will be injected here -->
+            <!-- Les onglets seront injectés ici par le script -->
         </div>
 
         <div class="flex flex-col lg:flex-row gap-6 items-stretch">
@@ -38,14 +38,14 @@
                 </div>
                 
                 <div id="original-content" class="p-8 overflow-y-auto max-h-[600px] bg-[#fdfdfd] custom-scrollbar text-[11px] leading-relaxed text-slate-600 font-mono whitespace-pre-line border-l-2 border-gray-100 pl-4">
-                    <!-- Original brief text -->
+                    <!-- Le texte du brief original sera injecté ici -->
                 </div>
             </div>
 
             <!-- Panneau Droit: Brief Enrichi -->
             <div class="lg:w-3/5 bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col border border-gray-100 animate-fade-in">
                 
-                <!-- Header -->
+                <!-- En-tête -->
                 <div class="bg-[#E57373] p-4 text-center relative">
                     <h2 class="text-white font-black text-lg uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
                     <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20">
@@ -57,7 +57,7 @@
                     <!-- Persona -->
                     <div class="relative">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="uppercase text-[10px] font-black tracking-[0.2em] text-[#E57373] bg-red-50 px-2 py-1 rounded">Profile Analytique</span>
+                            <span class="uppercase text-[10px] font-black tracking-[0.2em] text-[#E57373] bg-red-50 px-2 py-1 rounded">Profil Analytique</span>
                             <div class="h-[1px] flex-grow bg-gray-100"></div>
                         </div>
                         <div class="flex justify-between items-start gap-4">
@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-8">
-                        <!-- Data Block 1 -->
+                        <!-- Bloc de données 1 -->
                         <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 relative group transition-colors hover:border-[#E57373]/30">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="space-y-1">
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="text-right">
                                     <span id="sec1-metric" class="text-4xl font-black text-[#E57373] tracking-tighter block leading-none"></span>
-                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Affinity</span>
+                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Affinité</span>
                                 </div>
                             </div>
                             <a id="sec1-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-[9px] font-bold text-[#E57373] hover:underline bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-transform active:scale-95">
@@ -97,7 +97,7 @@
                             </a>
                         </div>
 
-                        <!-- Data Block 2 -->
+                        <!-- Bloc de données 2 -->
                         <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 relative group transition-colors hover:border-[#E57373]/30">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="space-y-1">
@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="text-right">
                                     <span id="sec2-metric" class="text-4xl font-black text-[#E57373] tracking-tighter block leading-none"></span>
-                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Uplift Impact</span>
+                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Impact Uplift</span>
                                 </div>
                             </div>
                             <a id="sec2-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-[9px] font-bold text-[#E57373] hover:underline bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-transform active:scale-95">
@@ -119,7 +119,7 @@
                         </div>
                     </div>
 
-                    <!-- Footer Details -->
+                    <!-- Détails de bas de page -->
                     <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-100">
                         <div class="space-y-4">
                             <p class="text-[9px] font-black uppercase text-slate-800 tracking-widest flex items-center gap-2">
@@ -285,10 +285,10 @@
         function updateUI() {
             const data = briefs[activeIdx];
             
-            // Original
+            // Brief original
             document.getElementById('original-content').textContent = data.original;
 
-            // Enriched
+            // Brief enrichi
             document.getElementById('persona-title').textContent = data.enriched.persona;
             document.getElementById('persona-profil').textContent = data.enriched.profil;
             document.getElementById('match-rate').textContent = data.enriched.matchRate;
@@ -328,7 +328,7 @@
 
             document.getElementById('audio-brand').textContent = data.enriched.audioBrand;
 
-            // Update Tabs
+            // Mise à jour des onglets
             renderTabs();
         }
 
@@ -347,7 +347,7 @@
             });
         }
 
-        // Init
+        // Initialisation
         updateUI();
     </script>
 </body>
