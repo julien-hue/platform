@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion's Briefing Agent Synthesis - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfcfc;
+            color: #1a1a1a;
+        }
+        .selection-green::selection {
+            background-color: rgba(34, 197, 94, 0.2);
+        }
+        .tab-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 selection-green">
+
+    <div class="max-w-[1400px] mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col items-center mb-8">
+            <div class="border border-gray-200 bg-white rounded-lg px-6 py-1 mb-6 text-sm uppercase tracking-widest text-gray-500 font-medium shadow-sm">
+                Audion AI Dashboard
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-center italic uppercase leading-tight text-gray-900 mb-8">
+                Briefing Agent <br class="md:hidden"> Synthesis
+            </h1>
+
+            <!-- Onglets de Navigation -->
+            <div class="flex flex-wrap justify-center gap-3 mb-4 w-full border-b border-gray-100 pb-8">
+                <button onclick="openTab('bnpp')" id="btn-bnpp" class="tab-btn px-6 py-2.5 rounded-full border border-gray-900 bg-gray-900 text-white text-sm font-bold transition-all shadow-md hover:-translate-y-0.5">1. BNPP</button>
+                <button onclick="openTab('retail')" id="btn-retail" class="tab-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold transition-all shadow-sm hover:-translate-y-0.5">2. RETAIL</button>
+                <button onclick="openTab('lrdm')" id="btn-lrdm" class="tab-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold transition-all shadow-sm hover:-translate-y-0.5">3. LRDM</button>
+                <button onclick="openTab('cbc')" id="btn-cbc" class="tab-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold transition-all shadow-sm hover:-translate-y-0.5">4. CBC</button>
+                <button onclick="openTab('mae')" id="btn-mae" class="tab-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold transition-all shadow-sm hover:-translate-y-0.5">5. ASSURANCE</button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             ONGLET 1 : BNPP
+        =========================================== -->
+        <div id="tab-bnpp" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Colonne Gauche: Original Brief -->
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-6 bg-white shadow-sm relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 italic font-black text-6xl select-none">BNPP</div>
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-6 border-b border-gray-100 pb-3 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Original Brief
+                        </h2>
+                        <div class="space-y-6 text-gray-700">
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Cible Principale</span>
+                                <p class="text-base font-bold text-gray-900">Tech, Data, DevCo</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Focus sur les talents du secteur numérique.</p>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Objectif Stratégique</span>
+                                <p class="text-base font-bold text-gray-900">Série "Unexpected"</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Format podcast (5-10m) décors décalés.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Budget</span>
+                                    <p class="text-xl font-black text-gray-900">150 K€</p>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Période</span>
+                                    <p class="text-sm font-bold text-gray-900 mt-1">Janv. 2026</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] uppercase text-gray-500 font-bold mb-2 tracking-widest">KPIs (Attentes)</span>
+                                <ul class="text-[12px] space-y-2 font-medium">
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> Écoutes / Engagement</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> Couverture globale</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne Droite: AI Enriched Brief -->
+                <div class="lg:col-span-9 shadow-xl rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <div class="bg-gray-900 p-4 text-center border-b-[3px] border-green-500 flex items-center justify-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-green-400"></i>
+                        <h2 class="text-white text-sm font-black uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    </div>
+                    
+                    <!-- Grille unifiée des 4 zones -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                        
+                        <!-- Zone 1 : Persona -->
+                        <div class="p-6 md:p-8 flex flex-col">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="user" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">1. Le Persona Cible</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">"Le Tech Talent Exigeant"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Filtre Anti-Bullshit :</strong> Ultra-sollicité, il rejette immédiatement les discours "corporate" institutionnels. Il exige de la transparence sur les stacks techniques.</p>
+                                <p><strong class="text-gray-900 block mb-1">Moteur d'attention :</strong> L'humour, l'autodérision et la disruption sont les seuls leviers capables de percer sa barrière d'attention de "candidat passif".</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 2 : Insights Data -->
+                        <div class="p-6 md:p-8 flex flex-col border-b md:border-b border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="database" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">2. Insights Data</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Détection d'Intentionnistes</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Signaux faibles :</strong> Ciblage algorithmique croisant les recherches de type "formations dev", "salaires data scientist", ou les consultations de forums (StackOverflow).</p>
+                                <p><strong class="text-gray-900 block mb-1">Lookalike Audiences :</strong> Modélisation des profils audio similaires aux meilleurs employés actuels de BNPP via la Data First-Party.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 3 : Intelligence Contextuelle -->
+                        <div class="p-6 md:p-8 flex flex-col border-t md:border-t-0 border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="headphones" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">3. Contexte</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">L'écoute "Deep Work"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p>Ciblage des moments de forte concentration (code, analyse) via les playlists Lo-Fi, Électro et Ambiant.</p>
+                                <p>L'insertion du teaser audio dans ce flux doit créer l'effet "Wow" : un contraste sonore immédiat (ex: bruits de campagne) qui casse la monotonie du travail pour souligner l'aspect <span class="font-bold">#Unexpected</span>.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 : Engagement & Mesure -->
+                        <div class="p-6 md:p-8 flex flex-col border-t border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">4. Engagement & Mesure</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4 text-green-600">Objectif LTR : 85%+</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Séquençage Cross-Device :</strong> Si l'utilisateur écoute le teaser mobile jusqu'au bout (complétion), un pixel de retargeting s'active.</p>
+                                <p>Il sera reciblé le soir même avec la version vidéo (Shorts) sur ses réseaux sociaux (Desktop/Tablette) pour générer le clic vers la page Carrières.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             ONGLET 2 : RETAIL
+        =========================================== -->
+        <div id="tab-retail" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-6 bg-white shadow-sm relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 italic font-black text-6xl select-none">RETAIL</div>
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-6 border-b border-gray-100 pb-3 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Original Brief
+                        </h2>
+                        <div class="space-y-6 text-gray-700">
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Cible Principale</span>
+                                <p class="text-base font-bold text-gray-900">25-40 ans</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Cœur de cible Audio Digital.</p>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Objectif Stratégique</span>
+                                <p class="text-base font-bold text-gray-900">Notoriété (Achat/Vente)</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Réseau physique de reconditionné.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Budget</span>
+                                    <p class="text-xl font-black text-gray-900">100 K€</p>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Période</span>
+                                    <p class="text-sm font-bold text-gray-900 mt-1">Fil Rouge 2026</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] uppercase text-gray-500 font-bold mb-2 tracking-widest">Dilemme Agence</span>
+                                <p class="text-[12px] font-medium text-gray-600 italic">"Est-ce pertinent d'être en fil rouge avec ce budget ou vaut-il mieux faire des vagues ?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-9 shadow-xl rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <div class="bg-gray-900 p-4 text-center border-b-[3px] border-green-500 flex items-center justify-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-green-400"></i>
+                        <h2 class="text-white text-sm font-black uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                        
+                        <!-- Zone 1 -->
+                        <div class="p-6 md:p-8 flex flex-col">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="user" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">1. Le Persona Cible</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">"Le Smart Shopper"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Conscience Mixte :</strong> La motivation économique prime sur l'écologie. Cherche des bons plans intelligents face à l'inflation.</p>
+                                <p><strong class="text-gray-900 block mb-1">Frein Psychologique :</strong> La peur de l'obsolescence et des pannes. Le message doit impérativement axer sur la réassurance : la garantie contractuelle et la proximité du réseau physique.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 2 -->
+                        <div class="p-6 md:p-8 flex flex-col border-b md:border-b border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="database" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">2. Insights Data</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Fil Rouge "Always-On"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Micro-Moments continus :</strong> Le besoin de cash ou l'achat de reconditionné suite à une casse intervient toute l'année, hors saisonnalité.</p>
+                                <p><strong class="text-gray-900 block mb-1">Frequency Capping :</strong> Un budget de 80K€ sur 12 mois nécessite un plafonnement algorithmique strict (2/3 impressions max par semaine) pour maintenir la couverture sans générer d'Ad Fatigue.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 3 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t md:border-t-0 border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="refresh-cw" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">3. Contexte</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Dynamic Ad Insertion</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p>Une campagne fil rouge nécessite un renouvellement créatif permanent. La DAI permet l'assemblage automatique.</p>
+                                <p><strong class="text-gray-900 block mb-1">Triggers temporels :</strong> "Besoin de cash pour les vacances ?" (Juin) / "Nouvel iPhone sorti ?" (Sept) oriente sur la revente de l'ancien modèle sans repasser par la production.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">4. Engagement & Mesure</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Télémétrie Retail</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Fenêtre d'attribution (14J) :</strong></p>
+                                <p>Si un auditeur entend le spot sur Spotify/NRJ et se connecte au site de l'enseigne dans les 14 jours, l'Identity Resolution créditera la visite à l'audio.</p>
+                                <p>Preuve du ROI direct d'une campagne de notoriété.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             ONGLET 3 : LRDM
+        =========================================== -->
+        <div id="tab-lrdm" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-6 bg-white shadow-sm relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 italic font-black text-6xl select-none">LRDM</div>
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-6 border-b border-gray-100 pb-3 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Original Brief
+                        </h2>
+                        <div class="space-y-6 text-gray-700">
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Cible Principale</span>
+                                <p class="text-base font-bold text-gray-900">Mamans, Couples, Retraités</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">CSP Moyen / Inférieur.</p>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Objectif Stratégique</span>
+                                <p class="text-base font-bold text-gray-900">Drive-to-Store Massif</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Créer du trafic en magasin.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Budget</span>
+                                    <p class="text-xl font-black text-gray-900">300 K€</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">FR & BE</p>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Périodes</span>
+                                    <p class="text-sm font-bold text-gray-900 mt-1">Mars & Sept.</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] uppercase text-gray-500 font-bold mb-2 tracking-widest">Technologie Requise</span>
+                                <ul class="text-[12px] space-y-2 font-medium">
+                                    <li class="flex items-center gap-2"><i data-lucide="settings-2" class="w-3 h-3 text-green-500"></i> DCO (Repiquage Magasins)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-9 shadow-xl rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <div class="bg-gray-900 p-4 text-center border-b-[3px] border-green-500 flex items-center justify-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-green-400"></i>
+                        <h2 class="text-white text-sm font-black uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                        
+                        <!-- Zone 1 -->
+                        <div class="p-6 md:p-8 flex flex-col">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="user" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">1. Le Persona Cible</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">"Le RDA sous Tension"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Psychologie d'achat :</strong> Achat "High Involvement", anxiogène (peur de se tromper sur le sommeil). Le RDA porte la charge mentale de l'équipement.</p>
+                                <p><strong class="text-gray-900 block mb-1">Moteur :</strong> Exige une clarté absolue sur la praticité et le Rapport Qualité/Prix pour justifier son déplacement physique.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 2 -->
+                        <div class="p-6 md:p-8 flex flex-col border-b md:border-b border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="database" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">2. Insights Data</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Transitions Systémiques</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p>La literie s'achète lors de moments de bascule de vie.</p>
+                                <p><strong class="text-gray-900 block mb-1">Ciblage Data :</strong> Détection de foyers en phase de déménagement / crédit immo (Couples), ou intentions liées à la maternité (Puériculture).</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 3 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t md:border-t-0 border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="map-pin" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">3. Contexte</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">DCO Hyperlocale</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Le GPS Vocal :</strong> L'IA lit l'adresse IP (localisation) de l'auditeur. Le script générique fusionne avec les variables locales en temps réel.</p>
+                                <p class="italic">"Venez tester ce matelas au Roi du Matelas de [Ville], situé à seulement [Distance] km d'ici !"</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="navigation" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">4. Engagement & Mesure</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Trafic In-Market Physique</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Tracking Physique :</strong></p>
+                                <p>Audion trace le Device ID exposé, puis observe si cet appareil pénètre physiquement dans le polygone de géofencing (le magasin) dans les jours suivants.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             ONGLET 4 : CBC
+        =========================================== -->
+        <div id="tab-cbc" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-6 bg-white shadow-sm relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 italic font-black text-6xl select-none">CBC</div>
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-6 border-b border-gray-100 pb-3 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Original Brief
+                        </h2>
+                        <div class="space-y-6 text-gray-700">
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Cible Principale</span>
+                                <p class="text-base font-bold text-gray-900">Indépendants B2B</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">25-40 ans (IT / Mktg / HR / Consulting).</p>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Objectif Stratégique</span>
+                                <p class="text-base font-bold text-gray-900">Business Pure Online</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Banque 100% digitale. Wallonie (Exclu BXL).</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Budget</span>
+                                    <p class="text-xl font-black text-gray-900">20 K€</p>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Période</span>
+                                    <p class="text-sm font-bold text-gray-900 mt-1">Août (2-3 Sem.)</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] uppercase text-gray-500 font-bold mb-2 tracking-widest">Attentes Clients</span>
+                                <p class="text-[12px] font-medium text-gray-600 italic">"Peut-on utiliser la DCO sectorielle B2B avec ce budget média (Frais prod offerts) ?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-9 shadow-xl rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <div class="bg-gray-900 p-4 text-center border-b-[3px] border-green-500 flex items-center justify-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-green-400"></i>
+                        <h2 class="text-white text-sm font-black uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                        
+                        <!-- Zone 1 -->
+                        <div class="p-6 md:p-8 flex flex-col">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="user" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">1. Le Persona Cible</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">"Le Solopreneur Connecté"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Pain Point :</strong> Son temps est facturable. Il rejette la lenteur des guichets traditionnels. L'administratif est sa bête noire absolue.</p>
+                                <p><strong class="text-gray-900 block mb-1">Driver :</strong> Il exige le "Zéro Papier" et des API ouvertes (compta auto). Les Ad-Blockers web l'obligent à être ciblé via l'audio (non-skippable).</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 2 -->
+                        <div class="p-6 md:p-8 flex flex-col border-b md:border-b border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="database" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">2. Insights Data</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Ciblage Déterministe</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Signaux de bascule :</strong> Détection de navigation sur les simulateurs de statuts d'indépendants, ou portails freelances (Malt, Upwork).</p>
+                                <p><strong class="text-gray-900 block mb-1">Géofencing Strict :</strong> Exclusion IP radicale de Bruxelles pour concentrer le micro-budget sur la Wallonie.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 3 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t md:border-t-0 border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">3. Contexte</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">DCO Sectorielle B2B</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p>L'accroche (Hook) s'adapte en temps réel selon le métier inféré de l'auditeur pour garantir la personnalisation.</p>
+                                <p class="italic font-medium border-l-2 border-gray-300 pl-3">"Freelance IT ? Ne perdez plus de temps..." <br><br>"Consultant RH ? Simplifiez votre facturation..."</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="target" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">4. Engagement & Mesure</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Acquisition & Leads (CTR)</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Entonnoir Mobile :</strong> Le budget tactique de 20K€ sur 2 semaines induit une forte répétition (Share of Voice).</p>
+                                <p>L'audio est systématiquement doté d'une <em>Companion Banner</em>. Le but exclusif est le clic sortant pour générer des ouvertures de comptes.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             ONGLET 5 : ASSURANCE (MAE)
+        =========================================== -->
+        <div id="tab-mae" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-6 bg-white shadow-sm relative overflow-hidden h-full">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 italic font-black text-6xl select-none">MAE</div>
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-6 border-b border-gray-100 pb-3 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Original Brief
+                        </h2>
+                        <div class="space-y-6 text-gray-700">
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Cible Principale</span>
+                                <p class="text-base font-bold text-gray-900">Mères enfants 6-7 ans</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Focus sur l'Entrée au CP (CSP moyenne).</p>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Objectif Stratégique</span>
+                                <p class="text-base font-bold text-gray-900">"Continuité Scolaire"</p>
+                                <p class="text-[13px] text-gray-500 mt-1 leading-tight">Acquisition Rentrée : L'école continue même à la maison.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Budget</span>
+                                    <p class="text-xl font-black text-gray-900">50 K€</p>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] uppercase text-green-600 font-bold mb-1 tracking-widest">Période</span>
+                                    <p class="text-sm font-bold text-gray-900 mt-1">Août 2026</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] uppercase text-gray-500 font-bold mb-2 tracking-widest">Attentes Créatives</span>
+                                <ul class="text-[12px] space-y-2 font-medium">
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> OPS Host-Read (45s)</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> Spot classique (30s)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-9 shadow-xl rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <div class="bg-gray-900 p-4 text-center border-b-[3px] border-green-500 flex items-center justify-center gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-green-400"></i>
+                        <h2 class="text-white text-sm font-black uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                        
+                        <!-- Zone 1 -->
+                        <div class="p-6 md:p-8 flex flex-col">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="user" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">1. Le Persona Cible</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">"La Mère Protectrice"</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Charge mentale :</strong> L'assurance est vécue comme une obligation obscure. Face à un accident, la crainte est avant tout organisationnelle ("Comment faire le taxi pour un enfant platré ?").</p>
+                                <p><strong class="text-gray-900 block mb-1">Valeurs :</strong> Cherche de la réassurance. Refuse les publicités anxiogènes axées sur le drame (Brand Safety absolue). Veut des solutions pratiques MAE.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 2 -->
+                        <div class="p-6 md:p-8 flex flex-col border-b md:border-b border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="database" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">2. Insights Data</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Le Pic d'Acquisition (Août)</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Trigger Entrée CP :</strong> L'entrée à l'école primaire est LE déclencheur d'intention majeur de l'assurance scolaire.</p>
+                                <p><strong class="text-gray-900 block mb-1">Croisement Déterministe :</strong> Ciblage des audiences acheteuses de fournitures scolaires (Cartables) et vêtements 6 ans en e-commerce.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 3 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t md:border-t-0 border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="mic" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">3. Contexte</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Host-Read : Relation Parasociale</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Empathie par la Voix :</strong> Sponsoring natif par des créatrices de podcasts Parenting (ex: Bliss Stories).</p>
+                                <p>L'animatrice raconte son propre rapport à la rentrée. L'assurance devient la recommandation d'une amie bienveillante, brisant la froideur institutionnelle MAE.</p>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 -->
+                        <div class="p-6 md:p-8 flex flex-col border-t border-gray-100">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
+                                <div class="bg-green-50 text-green-600 p-2 rounded-lg"><i data-lucide="activity" class="w-4 h-4"></i></div>
+                                <h3 class="text-gray-500 font-mono text-[11px] uppercase tracking-widest font-bold">4. Engagement & Mesure</h3>
+                            </div>
+                            <h4 class="text-xl font-black text-gray-900 leading-tight mb-4">Brand Lift Study (BLS)</h4>
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 text-[13px] text-gray-600 leading-relaxed space-y-3 flex-grow">
+                                <p><strong class="text-gray-900 block mb-1">Mesure de l'association mentale :</strong></p>
+                                <p>Au-delà de l'écoute, nous mesurons l'impact psychologique. Le KPI validé par le sondage (exposé vs non-exposé) sera l'association du terme "Continuité scolaire" et "Garde d'enfant" avec la marque MAE.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 flex flex-col md:flex-row justify-between items-center border-t border-gray-200 pt-8 pb-12">
+            <p class="text-gray-400 text-[10px] uppercase tracking-widest mb-4 md:mb-0">
+                Audion AI Synthesis | Modélisation & Ingénierie Stratégique
+            </p>
+            <div class="text-4xl font-black italic tracking-tighter text-gray-900 flex items-start">
+                AUDION <span class="text-green-600 text-xs font-bold not-italic ml-1 mt-1 tracking-normal border-[1.5px] border-green-600 rounded px-1 leading-none py-0.5 shadow-sm">AI</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Onglets & Icônes -->
+    <script>
+        lucide.createIcons();
+
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('block');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-md');
+                btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200', 'shadow-sm');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200', 'shadow-sm');
+            activeBtn.classList.add('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-md');
+        }
+    </script>
+</body>
+</html>
