@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI Enriched Briefs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E57373; border-radius: 10px; }
+        .tab-active { background-color: #E57373 !important; color: white !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transform: scale(1.05); }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Navigation -->
+        <div id="tabs-container" class="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
+            <!-- Tabs will be injected here -->
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+            
+            <!-- Panneau Gauche: Brief Original -->
+            <div class="lg:w-2/5 bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col h-fit lg:sticky lg:top-8 overflow-hidden">
+                <div class="p-5 border-b border-gray-100 bg-slate-50 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span class="uppercase text-[10px] font-bold tracking-[0.2em]">Source Originale (Email)</span>
+                    </div>
+                    <div class="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                </div>
+                
+                <div id="original-content" class="p-8 overflow-y-auto max-h-[600px] bg-[#fdfdfd] custom-scrollbar text-[11px] leading-relaxed text-slate-600 font-mono whitespace-pre-line border-l-2 border-gray-100 pl-4">
+                    <!-- Original brief text -->
+                </div>
+            </div>
+
+            <!-- Panneau Droit: Brief Enrichi -->
+            <div class="lg:w-3/5 bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col border border-gray-100 animate-fade-in">
+                
+                <!-- Header -->
+                <div class="bg-[#E57373] p-4 text-center relative">
+                    <h2 class="text-white font-black text-lg uppercase tracking-[0.2em]">Audion AI Enriched Strategy</h2>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.15 0a10 10 0 0 1 0-14.14"/></svg>
+                    </div>
+                </div>
+
+                <div class="p-8 flex-grow space-y-10">
+                    <!-- Persona -->
+                    <div class="relative">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="uppercase text-[10px] font-black tracking-[0.2em] text-[#E57373] bg-red-50 px-2 py-1 rounded">Profile Analytique</span>
+                            <div class="h-[1px] flex-grow bg-gray-100"></div>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="max-w-[75%]">
+                                <h3 id="persona-title" class="text-4xl font-black italic uppercase tracking-tighter mb-4 text-slate-900 leading-[0.9]"></h3>
+                                <p id="persona-profil" class="text-xs text-slate-600 leading-relaxed font-medium text-justify"></p>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <div class="inline-flex flex-col items-center">
+                                    <span id="match-rate" class="text-6xl font-black text-[#E57373] tracking-tighter leading-none"></span>
+                                    <p class="text-[10px] font-black uppercase text-[#E57373] mt-1 tracking-widest">Match</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="match-label" class="text-[9px] text-gray-400 mt-4 leading-tight italic max-w-[80%] border-l border-gray-200 pl-3"></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-8">
+                        <!-- Data Block 1 -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 relative group transition-colors hover:border-[#E57373]/30">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                        <p id="sec1-title" class="text-[10px] font-black uppercase text-slate-800 tracking-wider"></p>
+                                    </div>
+                                    <p id="sec1-text" class="text-[11px] text-slate-600 leading-relaxed max-w-[90%]"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="sec1-metric" class="text-4xl font-black text-[#E57373] tracking-tighter block leading-none"></span>
+                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Affinity</span>
+                                </div>
+                            </div>
+                            <a id="sec1-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-[9px] font-bold text-[#E57373] hover:underline bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-transform active:scale-95">
+                                <span id="sec1-source"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            </a>
+                        </div>
+
+                        <!-- Data Block 2 -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 relative group transition-colors hover:border-[#E57373]/30">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                        <p id="sec2-title" class="text-[10px] font-black uppercase text-slate-800 tracking-wider"></p>
+                                    </div>
+                                    <p id="sec2-text" class="text-[11px] text-slate-600 leading-relaxed max-w-[90%]"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="sec2-metric" class="text-4xl font-black text-[#E57373] tracking-tighter block leading-none"></span>
+                                    <span class="text-[8px] font-bold text-slate-300 uppercase">Uplift Impact</span>
+                                </div>
+                            </div>
+                            <a id="sec2-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-[9px] font-bold text-[#E57373] hover:underline bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-transform active:scale-95">
+                                <span id="sec2-source"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Footer Details -->
+                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-100">
+                        <div class="space-y-4">
+                            <p class="text-[9px] font-black uppercase text-slate-800 tracking-widest flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#E57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Segmentation Cible
+                            </p>
+                            <div id="leviers-container" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="space-y-4">
+                                <p class="text-[9px] font-black uppercase text-slate-800 tracking-widest flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#E57373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> KPIs & Validation
+                                </p>
+                                <div id="kpis-container" class="grid grid-cols-1 gap-2"></div>
+                            </div>
+                            
+                            <div class="bg-slate-900 p-4 rounded-xl flex items-center gap-4 shadow-lg">
+                                <div class="p-2 bg-slate-800 rounded-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.15 0a10 10 0 0 1 0-14.14"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Identité Sonore</p>
+                                    <p id="audio-brand" class="text-[10px] font-black text-white uppercase tracking-wider"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-12 text-gray-400 text-[9px] uppercase tracking-[0.4em] font-medium pb-8">
+        Intelligence & Strategie Data // Audion AI System v3.1
+    </div>
+
+    <script>
+        const briefs = [
+            {
+                id: 'subway',
+                brand: 'SUBWAY',
+                original: `Cible : 18/34 ans / promophiles / conso Fast food.\nBudget annuel : 280 K€\n\nTemps forts :\nMars : Campagne 1mois Menu lucky deal à 4,90 (mcfirst like) => Prod du spot + IA sur la geoloc sur les différents points de vente.\nCampagne fil rouge : 3 à 4 créas différentes dans l’année (pack cookie sur les après-midi, recette en vedette du moment, coupon dispos sur l’app).\n\nBesoin de plugger de l’étude également pour mesurer l’uplift de visite en magasin.`,
+                enriched: {
+                    persona: 'LES GEN-Z FOODIES',
+                    profil: 'Cible 18-34 ans caractérisée par une forte "Fatigue de la décision" alimentaire. Ils utilisent les services de streaming audio (Spotify, Deezer) comme support de routine quotidienne. 65% des jeunes urbains déclarent que les promotions ciblées influencent leur choix de restaurant le jour même.',
+                    matchRate: '84%',
+                    matchLabel: 'Indice d\'affinité avec les podcasts "Pop-Culture" et "Lifestyle" (Source: Médiamétrie Global Audio).',
+                    section1Title: 'SENSIBILITÉ PRIX & RÉACTIVITÉ PROMO',
+                    section1Text: 'La Gen Z est la génération la plus sensible au rapport valeur/prix. Le format audio avec Dynamic Creative Optimization (DCO) permet d\'injecter le prix d\'appel (4,90€) et l\'adresse locale en temps réel, créant un sentiment d\'urgence et de proximité imbattable par rapport au display statique.',
+                    section1Metric: '91%',
+                    section1Source: 'Kantar - Food Trends',
+                    section1Url: 'https://www.kantar.com/fr/secteurs/biens-de-consommation',
+                    section2Title: 'UPLIFT DRIVE-TO-STORE VIA L\'IA',
+                    section2Text: 'L\'utilisation de l\'IA pour la géo-fencing intelligente augmente le taux de visite en restaurant de 35% en moyenne. Le couplage avec des coupons numériques exclusifs permet une réconciliation directe entre l\'impression publicitaire et le passage en caisse.',
+                    section2Metric: 'x1.8',
+                    section2Source: 'Case Studies HappyDemics',
+                    section2Url: 'https://www.happydemics.com/fr/etudes-de-cas',
+                    leviers: ['smart_budgeting', 'local_proximity', 'fast_food_heavy_users', 'urban_mobility', 'mobile_first_shoppers'],
+                    promis: ['tracking_visites_réelles', 'ia_geoloc_dynamique', 'taux_de_complétion_>90%'],
+                    audioBrand: 'URBAINE, ÉNERGIQUE, ACCESSIBLE'
+                }
+            },
+            {
+                id: 'apple',
+                brand: 'APPLE',
+                original: `Campagne Q324 Values (exclusive au marché Européen).\nPiliers : Privacy, Sustainability, Meaningful Innovation, Accessibility.\nActivations sur dates clés avec créas adaptées.\nObjectif : Présence autour de moments avec added value (contenu éditorial), publié le jour de l'activation.\nDates : 16 avril au 28 mai.\nExemple : Journée de la Terre (22 avril), Accessibilité (16 mai).\nDisplay en exclu sur certaines journées.`,
+                enriched: {
+                    persona: 'LES INNOVATEURS ÉTHIQUES',
+                    profil: 'Audience urbaine CSP+, éduquée, qui perçoit la technologie non plus comme un gadget mais comme un outil de responsabilité sociale. Ils sont très critiques envers le "greenwashing" et valorisent la transparence totale sur les données personnelles.',
+                    matchRate: '89%',
+                    matchLabel: 'Corrélation entre auditeurs de podcasts Tech et utilisateurs iOS en France.',
+                    section1Title: 'CONFIDENTIALITÉ ET CONFIANCE',
+                    section1Text: '78% des européens considèrent la protection des données comme le premier critère de confiance envers une marque technologique. L\'audio, média intime, est le canal idéal pour diffuser des messages sur la "Privacy" sans paraître intrusif.',
+                    section1Metric: '94%',
+                    section1Source: 'Deloitte Digital Trust Index',
+                    section1Url: 'https://www2.deloitte.com/fr/fr/pages/risque/articles/confiance-donnees-personnelles.html',
+                    section2Title: 'EFFICACITÉ DU HOST-READ',
+                    section2Text: 'L\'activation en Host-read sur des thématiques "Sustainability" génère une mémorisation du message 2,4 fois plus élevée qu\'un pré-roll classique. Cela renforce l\'aspect "Added Value" pour les dates clés comme le Earth Day.',
+                    section2Metric: 'x2.4',
+                    section2Source: 'Lumen Research - Attention',
+                    section2Url: 'https://www.lumen-research.com/',
+                    leviers: ['digital_privacy', 'eco_responsibility', 'inclusive_design', 'premium_tech', 'social_impact'],
+                    promis: ['exclusivité_sectorielle_100%', 'brand_suitability_premium', 'attention_score_garanti'],
+                    audioBrand: 'SOBRE, INSPIRANTE, HAUT DE GAMME'
+                }
+            },
+            {
+                id: 'chanel',
+                brand: 'CHANEL',
+                original: `Audio Ads panorama pour CHANEL. Investigation d'opportunités.\nQuestions : reach sur affluent audiences/Luxury fragrance & beauty? Couverture géo? Offre média (pre/mid-roll)? Buying methods? Data available? Sponsorship? Roadmap?\nBesoins : 100% share of screen, Category exclusivity, 1st position pre-roll/mid-roll, Ad pod exclusivity, Takeovers.\nMesure Brand Safety & Suitability via tiers.`,
+                enriched: {
+                    persona: 'LES ESTHÈTES DE PRÉCISION',
+                    profil: 'Consommateurs de luxe High-End. Ils ne cherchent pas seulement un produit mais un héritage. Très sensibles à la qualité de l\'environnement publicitaire : une mauvaise association peut dégrader la valeur perçue de Chanel.',
+                    matchRate: '92%',
+                    matchLabel: 'Indice d\'affinité avec les podcasts "Art de Vivre" et "Haute Culture".',
+                    section1Title: 'TRANSFORMATION DU LUXE',
+                    section1Text: 'Le luxe est en mutation : les acheteurs affluents exigent désormais une expérience personnalisée et premium. L\'audio digital permet de saturer l\'espace sonore avec une qualité studio sans bruits parasites.',
+                    section1Metric: '96%',
+                    section1Source: 'Ipsos World Luxury Tracking',
+                    section1Url: 'https://www.ipsos.com/fr-fr/world-luxury-tracking-2023-le-luxe-est-en-pleine-transformation',
+                    section2Title: 'DOMINANCE DU SOV',
+                    section2Text: 'La "First Position" (être le premier entendu dans un podcast) est cruciale. Elle capte 100% de la fenêtre d\'attention initiale, garantissant que l\'empreinte de Chanel soit la seule référence mémorisée.',
+                    section2Metric: 'x3.1',
+                    section2Source: 'Audion Luxury Benchmarks',
+                    section2Url: 'https://www.audion.fm/blog',
+                    leviers: ['heritage_branding', 'prestige_exclusivity', 'high_end_fragrance', 'affluent_travel', 'sensory_marketing'],
+                    promis: ['brand_safety_IAS_garantie', 'first_position_prioritaire', 'ad_pod_exclusivity'],
+                    audioBrand: 'SOPHISTIQUÉE, SENSORIELLE, DISCRÈTE'
+                }
+            },
+            {
+                id: 'linkedin',
+                brand: 'LINKEDIN',
+                original: `Campagne T1 2025 (20/01 au 30/03).\nCible : Decision makers, RH et DRH en priorité.\nMessage : Valoriser LinkedIn Talent Solution (LTS) comme plateforme de recrutement.\nBesoins : Host-read sur podcasts RH (Happywork, Remue manage, Story RH, Un Air de RH).\nDemande de BLS (Brand Lift Study).`,
+                enriched: {
+                    persona: 'LES DÉCIDEURS RH CONNECTÉS',
+                    profil: 'DRH et Managers de talents qui utilisent le podcast comme outil de formation. Ils cherchent des gains de productivité et des solutions qui améliorent leur marque employeur.',
+                    matchRate: '76%',
+                    matchLabel: 'Audience B2B qualifiée via les segments Data "Job Title" Audion.',
+                    section1Title: 'VEILLE PROFESSIONNELLE B2B',
+                    section1Text: '60% des cadres supérieurs écoutent des podcasts pour rester informés sur leur industrie. L\'audio B2B est devenu un canal d\'apprentissage où les messages complexes (LTS) sont mieux assimilés.',
+                    section1Metric: '88%',
+                    section1Source: 'GWI B2B Marketing Report',
+                    section1Url: 'https://www.gwi.com/reports/b2b',
+                    section2Title: 'PUISSANCE DE L\'INFLUENCE RH',
+                    section2Text: 'L\'utilisation de voix expertes (Happywork) transforme la publicité en conseil. Le transfert de légitimité permet de raccourcir le cycle de vente B2B en créant une confiance immédiate.',
+                    section2Metric: 'x2.7',
+                    section2Source: 'LinkedIn Solutions Success',
+                    section2Url: 'https://business.linkedin.com/marketing-solutions/success-stories',
+                    leviers: ['talent_strategy', 'recruitment_performance', 'employer_branding', 'hr_tech_adoption', 'leadership'],
+                    promis: ['ciblage_job_title_précis', 'host_read_authentique', 'brand_lift_study_intégrée'],
+                    audioBrand: 'EXPERTE, CONSTRUCTIVE, ENGAGEANTE'
+                }
+            },
+            {
+                id: 'huttopia',
+                brand: 'HUTTOPIA',
+                original: `Objectif : Notoriété & Considération (trafic site).\nCibles : Familles avec enfants < 14 ans. Marché FR & NL.\nPériode : Printemps + ponts de mai + juin.\nSuggestion : Sponsoring podcast "Les baladeurs".\nBesoin de reco sur les "ailes de saison".`,
+                enriched: {
+                    persona: 'LES EXPLORATEURS SLOW TRAVEL',
+                    profil: 'Familles urbaines cherchant à "débrancher". Ils privilégient les expériences authentiques et le plein air. Très sensibles au tourisme durable et aux expériences hors-sentiers battus.',
+                    matchRate: '81%',
+                    matchLabel: 'Affinité avec les auditeurs de podcasts Outdoor et Parentalité.',
+                    section1Title: 'AUDIO ET INSPIRATION VOYAGE',
+                    section1Text: 'Le podcast est le premier média consulté pour s\'inspirer avant un départ. L\'audio permet de transporter l\'auditeur dans l\'ambiance d\'un camping Huttopia avant même la réservation.',
+                    section1Metric: '93%',
+                    section1Source: 'Médiamétrie - Année Audio',
+                    section1Url: 'https://www.mediametrie.fr/fr/la-consommation-audio-en-france',
+                    section2Title: 'RÉSONANCE ÉMOTIONNELLE',
+                    section2Text: 'Le sponsoring de "Les Baladeurs" offre une immersion parfaite. L\'association récit d\'aventure / Huttopia crée une mémorisation spontanée très élevée pendant la planification (ailes de saison).',
+                    section2Metric: 'x2.2',
+                    section2Source: 'Audion Case Studies Tourism',
+                    section2Url: 'https://www.audion.fm/case-studies',
+                    leviers: ['slow_travel_trends', 'sustainable_tourism', 'family_adventure', 'unplugged_vacations', 'nature_retreats'],
+                    promis: ['sponsoring_immersif_Baladeurs', 'ciblage_FR/NL_croisé', 'storytelling_audio_premium'],
+                    audioBrand: 'ORGANIQUE, APAISANTE, INSPIRANTE'
+                }
+            }
+        ];
+
+        let activeIdx = 0;
+
+        function updateUI() {
+            const data = briefs[activeIdx];
+            
+            // Original
+            document.getElementById('original-content').textContent = data.original;
+
+            // Enriched
+            document.getElementById('persona-title').textContent = data.enriched.persona;
+            document.getElementById('persona-profil').textContent = data.enriched.profil;
+            document.getElementById('match-rate').textContent = data.enriched.matchRate;
+            document.getElementById('match-label').textContent = data.enriched.matchLabel;
+
+            document.getElementById('sec1-title').textContent = data.enriched.section1Title;
+            document.getElementById('sec1-text').textContent = data.enriched.section1Text;
+            document.getElementById('sec1-metric').textContent = data.enriched.section1Metric;
+            document.getElementById('sec1-source').textContent = "Consulter l'étude : " + data.enriched.section1Source;
+            document.getElementById('sec1-link').href = data.enriched.section1Url;
+
+            document.getElementById('sec2-title').textContent = data.enriched.section2Title;
+            document.getElementById('sec2-text').textContent = data.enriched.section2Text;
+            document.getElementById('sec2-metric').textContent = data.enriched.section2Metric;
+            document.getElementById('sec2-source').textContent = "Données Source : " + data.enriched.section2Source;
+            document.getElementById('sec2-link').href = data.enriched.section2Url;
+
+            // Leviers
+            const leviersContainer = document.getElementById('leviers-container');
+            leviersContainer.innerHTML = '';
+            data.enriched.leviers.forEach(item => {
+                const span = document.createElement('span');
+                span.className = 'text-[9px] px-2 py-1 bg-white border border-gray-100 text-slate-600 rounded font-medium shadow-sm';
+                span.textContent = item.replace(/_/g, ' ');
+                leviersContainer.appendChild(span);
+            });
+
+            // KPIs
+            const kpisContainer = document.getElementById('kpis-container');
+            kpisContainer.innerHTML = '';
+            data.enriched.promis.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-2 text-[10px] font-bold text-slate-700 bg-red-50/50 p-2 rounded border-l-2 border-[#E57373]';
+                div.innerHTML = `<span class="text-[#E57373]">✓</span> ${item.replace(/_/g, ' ')}`;
+                kpisContainer.appendChild(div);
+            });
+
+            document.getElementById('audio-brand').textContent = data.enriched.audioBrand;
+
+            // Update Tabs
+            renderTabs();
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+            briefs.forEach((b, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `px-6 py-2 rounded-full font-bold transition-all duration-200 uppercase text-[10px] tracking-widest shadow-sm ${idx === activeIdx ? 'tab-active' : 'bg-white text-slate-400 hover:bg-gray-200'}`;
+                btn.textContent = b.brand;
+                btn.onclick = () => {
+                    activeIdx = idx;
+                    updateUI();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Init
+        updateUI();
+    </script>
+</body>
+</html>
