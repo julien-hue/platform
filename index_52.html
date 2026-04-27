@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audion AI - Brief Enhancement</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Masquer la scrollbar pour les onglets */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 overflow-hidden h-screen flex">
+
+    <!-- SIDEBAR (Dark Mode) -->
+    <div class="w-64 bg-[#0A0D14] text-gray-300 flex flex-col justify-between flex-shrink-0">
+        <div>
+            <!-- Logo Area -->
+            <div class="flex items-center gap-3 p-6 text-white font-bold text-xl tracking-tight">
+                <div class="w-6 h-6 rounded-sm bg-white rotate-45 flex items-center justify-center">
+                    <div class="w-3 h-3 bg-[#0A0D14] rotate-45"></div>
+                </div>
+                Audion AI
+            </div>
+            
+            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Modules</div>
+            
+            <nav class="flex flex-col gap-1 px-3 mt-2">
+                <!-- Inventory -->
+                <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span class="text-sm font-medium">Inventory</span>
+                </div>
+                <div class="pl-10 flex flex-col gap-2 py-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">Content Explorer Agent</a>
+                    <a href="#" class="hover:text-white transition-colors">Content Mosaic</a>
+                    <a href="#" class="hover:text-white transition-colors">Content Selection</a>
+                </div>
+                
+                <!-- Strategy (Active) -->
+                <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer bg-white/10 text-white transition-colors">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                    <span class="text-sm font-medium">Strategy</span>
+                </div>
+                <div class="pl-10 flex flex-col gap-3 py-2 text-sm text-gray-400 border-l border-gray-700 ml-5">
+                    <a href="#" class="hover:text-white transition-colors pl-4">Competition Benchmark</a>
+                    <a href="#" class="text-white font-medium pl-4 relative">
+                        <span class="absolute left-[-1px] top-1/2 -translate-y-1/2 w-[2px] h-4 bg-[#FF5A5F]"></span>
+                        Brief Enhancement
+                    </a>
+                    <a href="#" class="hover:text-white transition-colors pl-4">CPA Benchmark</a>
+                </div>
+
+                <!-- Studio -->
+                <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+                    <i data-lucide="mic" class="w-4 h-4"></i>
+                    <span class="text-sm font-medium">Studio</span>
+                </div>
+                <div class="pl-10 flex flex-col gap-2 py-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">GenAI creatives</a>
+                    <a href="#" class="hover:text-white transition-colors">Creative analysis</a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- User Profile Area -->
+        <div class="p-4 border-t border-gray-800">
+            <div class="flex items-center gap-3 mb-4 text-sm hover:text-white cursor-pointer transition-colors text-gray-400">
+                <i data-lucide="layout" class="w-4 h-4"></i> Tools Library
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                    JR
+                </div>
+                <div class="text-sm">
+                    <p class="text-white font-medium">Julien Rialan</p>
+                    <p class="text-xs text-gray-500">julien@audion.fm</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Header / Tabs -->
+        <div class="bg-white border-b border-gray-200 px-8 py-5 flex flex-col gap-6 flex-shrink-0 z-10 shadow-sm">
+            <div class="flex justify-between items-end">
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Audion AI Dashboard</p>
+                    <h1 class="text-3xl font-black italic tracking-tight text-gray-900">BRIEFING AGENT SYNTHESIS</h1>
+                </div>
+                <button class="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i data-lucide="download" class="w-4 h-4"></i> Export Slide (.PPT)
+                </button>
+            </div>
+
+            <!-- Dynamic Tabs Container -->
+            <div id="tabs-container" class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                <!-- Les onglets seront générés ici par JavaScript -->
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-auto p-8 flex gap-6">
+            
+            <!-- LEFT COLUMN: Original Brief -->
+            <div class="w-[320px] flex-shrink-0">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sticky top-0">
+                    <div class="flex items-center gap-2 text-[#FF5A5F] mb-6">
+                        <i data-lucide="box" class="w-4.5 h-4.5"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Original Brief</span>
+                    </div>
+
+                    <h2 id="orig-brand" class="text-2xl font-bold text-gray-900 mb-2">Brand Name</h2>
+                    <p id="orig-obj" class="text-sm text-gray-500 leading-relaxed mb-6 pb-6 border-b border-gray-100">
+                        Objective description goes here...
+                    </p>
+
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Main Target</p>
+                            <p id="orig-target" class="text-sm font-medium text-gray-900"></p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Budget</p>
+                            <p id="orig-budget" class="text-xl text-emerald-600 font-bold"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Period</p>
+                            <p id="orig-period" class="text-sm font-medium text-gray-900"></p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Requested KPIs</p>
+                            <ul id="orig-kpis" class="space-y-2">
+                                <!-- KPIs générés par JS -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: AI Enriched Analysis -->
+            <div class="flex-1">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                    
+                    <!-- Enriched Header -->
+                    <div class="bg-[#1A1F2B] px-6 py-4 flex items-center justify-between border-b border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <div class="text-teal-400">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-white font-bold tracking-wide">AUDION AI ENRICHED STRATEGY</h3>
+                        </div>
+                        <div class="text-xs font-medium text-gray-400 bg-gray-800/50 px-3 py-1 rounded-full border border-gray-700">
+                            Report generated based on 6 criteria
+                        </div>
+                    </div>
+
+                    <!-- 6 Criteria Grid (Dynamic) -->
+                    <div id="criteria-grid" class="p-6 grid grid-cols-2 gap-6 bg-[#FAFAFA]">
+                        <!-- Les cartes IA seront générées ici par JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DONNÉES : Les 5 Briefs et leurs analyses IA structurées ---
+        const briefsData = {
+            qonto: {
+                id: 'qonto',
+                name: 'Qonto',
+                original: {
+                    brand: 'Qonto',
+                    objective: 'Awareness then Consideration per target.',
+                    target: 'Entrepreneurs in Germany (Near-zero awareness).',
+                    budget: '€1M+ (Classic + Host Read Podcasts).',
+                    period: 'Year 2026 (H1 classic focus)',
+                    kpis: ['Awareness Increase', 'Ad Sequencing'],
+                },
+                enriched: {
+                    criterion1: { title: "Household & Life Profile", icon: "users", analysis: "Founders of VSEs/SMEs and freelancers. Fragmented schedule with a highly porous work/life balance.", proposal: "Specifically target major urban hubs (Berlin, Munich) with 'Business Professionals' segments." },
+                    criterion2: { title: "Buying Behavior", icon: "shopping-cart", analysis: "Absolute search for efficiency and zero administrative friction. Highly rational decision-making.", proposal: "Focus the Call-to-Action on time-saving and capitalize on peer recommendations (Social Proof)." },
+                    criterion3: { title: "Listening Context", icon: "map-pin", analysis: "Concentrated 'Deep Work' listening on desktop at the office, or high mobility (commutes, airports).", proposal: "Apply strict Dayparting: Morning (7 AM-9 AM) and late evening (after 8 PM) to capture attention outside urgent tasks." },
+                    criterion4: { title: "Values & Affinities", icon: "heart", analysis: "Tech-savvy profiles, immersed in start-up culture and constant economic monitoring.", proposal: "Favor highly contextual sponsorship on major business (OMR, Business Punk) and innovation podcasts." },
+                    criterion5: { title: "Audience Maturity", icon: "target", analysis: "Mostly COLD audience in Germany (brand awareness needs to be built from the ground up).", proposal: "Enforce high repetition of the generic message ('The all-in-one business account') before doing segmented retargeting." },
+                    criterion6: { title: "Intent Signals", icon: "zap", analysis: "Going through key business life moments (company creation, fundraising, annual closing).", proposal: "Activate intent data from B2B sites (e.g., readers of lexoffice or banking comparators)." }
+                }
+            },
+            belambra: {
+                id: 'belambra',
+                name: 'Belambra',
+                original: {
+                    brand: 'Belambra',
+                    objective: 'Special Operation (Host reading preferred). Generate bookings.',
+                    target: 'Upper-middle class, 30-50 years old.',
+                    budget: '€100K over 2 waves.',
+                    period: 'W1: Feb-May / W2: Sep-Dec',
+                    kpis: ['Audience quality', 'Affinity context'],
+                },
+                enriched: {
+                    criterion1: { title: "Household & Life Profile", icon: "users", analysis: "Upper-middle class urban/suburban families. The mental load of organization is often carried by a 'lead' parent.", proposal: "Precisely target the 30-50 age bracket with school-aged children, addressing the household decision-maker." },
+                    criterion2: { title: "Buying Behavior", icon: "shopping-cart", analysis: "Absolute need for a 'hassle-free' status stay. The presence of kids' clubs is the #1 selection criterion.", proposal: "Highlight childcare and parental peace of mind as the ultimate argument in the ad." },
+                    criterion3: { title: "Listening Context", icon: "map-pin", analysis: "Joint listening moments in the car (weekend trips) or individual evening listening (research/booking phase).", proposal: "Prioritize mobile/tablet formats in the evening (7 PM-10 PM) and in-car listening on weekends." },
+                    criterion4: { title: "Values & Affinities", icon: "heart", analysis: "Vital need for escape, reconnection with nature, and security for the family unit.", proposal: "Recommended affinity placements on 'Positive Parenting' or 'Lifestyle/Culture' podcasts." },
+                    criterion5: { title: "Audience Maturity", icon: "target", analysis: "WARM audience. The brand is known, the challenge is consideration against competitors.", proposal: "Use the trust guarantee of a 'Host Read' format to stand out against Club Med or Center Parcs." },
+                    criterion6: { title: "Intent Signals", icon: "zap", analysis: "Early booking behaviors aligned with school calendars, or search for last-minute deals.", proposal: "Trigger the campaign by cross-referencing queries related to school holiday dates and weather (snow/sun)." }
+                }
+            },
+            myaudi: {
+                id: 'myaudi',
+                name: 'My Audi',
+                original: {
+                    brand: 'Audi',
+                    objective: 'Generate dealership visits (Drive-to-Store) for Open Days.',
+                    target: 'Drivers, dealership catchment areas.',
+                    budget: '€50K',
+                    period: 'June 12 to 26',
+                    kpis: ['Dealership visits', 'In-store CPV (Smart Traffik)'],
+                },
+                enriched: {
+                    criterion1: { title: "Household & Life Profile", icon: "users", analysis: "Wealthy urban or suburban households, often with multiple vehicles. Frequent drivers.", proposal: "Set up strict and exclusive radial targeting around participating dealerships." },
+                    criterion2: { title: "Buying Behavior", icon: "shopping-cart", analysis: "Status-driven and highly emotional purchasing process. Critical need for physical reassurance (see, touch, test).", proposal: "The CTA (Call-to-Action) must be ultra-direct and invite exclusively to a 'Test Drive' during Open Days." },
+                    criterion3: { title: "Listening Context", icon: "map-pin", analysis: "Maximum probability of listening while driving.", proposal: "Leverage a format with local tags (25+5s). Target 'In-Car' listening via Bluetooth and Apple CarPlay/Android Auto." },
+                    criterion4: { title: "Values & Affinities", icon: "heart", analysis: "Strong appetite for premium design, technological innovation, and the electric transition.", proposal: "Restrict broadcast to high-quality contexts: Continuous News, Economy, and 'Premium' web radios." },
+                    criterion5: { title: "Audience Maturity", icon: "target", analysis: "Overall HOT audience (auto intenders) or WARM (leasing renewal).", proposal: "Apply short but highly intense ad pressure (June 12 to 26) to create a sense of urgency." },
+                    criterion6: { title: "Intent Signals", icon: "zap", analysis: "Individuals actively looking for vehicles or using financing simulators.", proposal: "Activate 3rd party data to target recent visitors of automotive magazines, car configurators, or leasing simulators." }
+                }
+            },
+            vgrf: {
+                id: 'vgrf',
+                name: 'VGRF',
+                original: {
+                    brand: 'Volkswagen Group Retail',
+                    objective: '2026 Drive-to-Store Strategy / Local audio per dealership.',
+                    target: 'B2C, 35+ years old, automotive affinity.',
+                    budget: '€1,000 / dealership.',
+                    period: 'Year 2026',
+                    kpis: ['Local traffic', 'Competitive CPM'],
+                },
+                enriched: {
+                    criterion1: { title: "Household & Life Profile", icon: "users", analysis: "Households with strong local roots. The vehicle is perceived as an absolutely essential daily tool.", proposal: "Apply a hyper-localization strategy (granular targeting by city/zip code) around each dealership." },
+                    criterion2: { title: "Buying Behavior", icon: "shopping-cart", analysis: "Pragmatic and opportunity-oriented behavior (workshop promos, reliable certified used cars).", proposal: "Personalize the message locally (e.g., dynamic highlighting of a region-specific workshop promo)." },
+                    criterion3: { title: "Listening Context", icon: "map-pin", analysis: "Listening mainly occurs during very regular and short commutes (home-work, school).", proposal: "Focus budget on local web radios and mainstream music streaming during rush hours (7 AM-9 AM / 5 PM-7 PM)." },
+                    criterion4: { title: "Values & Affinities", icon: "heart", analysis: "Seeking trust, commercial proximity, and family safety.", proposal: "Select highly 'Brand Safe' broadcast environments: family entertainment and regional news." },
+                    criterion5: { title: "Audience Maturity", icon: "target", analysis: "WARM audience, often comprising existing customers whose vehicles are aging.", proposal: "Capitalize on loyalty messages and the reassurance of preventive maintenance (VW Workshop)." },
+                    criterion6: { title: "Intent Signals", icon: "zap", analysis: "Weak signals indicating an imminent need for maintenance or replacement.", proposal: "Specifically target Google Maps queries like 'Garage near me' or leverage data linked to technical inspection dates." }
+                }
+            },
+            marine: {
+                id: 'marine',
+                name: 'Marine Nationale',
+                original: {
+                    brand: 'French Navy',
+                    objective: 'Recruitment of new sailors (Awareness & Consideration).',
+                    target: '18-25 y/o (High School to +2) & 22-30 y/o (Career change).',
+                    budget: '€34k net',
+                    period: 'October 12 to November 1',
+                    kpis: ['100% Listen Through Rate', '100% CPE'],
+                },
+                enriched: {
+                    criterion1: { title: "Household & Life Profile", icon: "users", analysis: "18-30 y/o target often living with parents or in shared apartments. Highly technical profiles (construction, catering).", proposal: "Direct geographic targeting towards industrial employment basins or large student/university areas." },
+                    criterion2: { title: "Buying Behavior", icon: "shopping-cart", analysis: "(Commitment) Highly involving life choice. Seeking meaning, paid training, and adventure.", proposal: "The message must reassure about career progression to convince the target, but also their influencers (parents)." },
+                    criterion3: { title: "Listening Context", icon: "map-pin", analysis: "Extreme over-consumption on mobile devices, often in the evening, at night, or on public transport.", proposal: "Broadcast exclusively short and punchy formats (15s) on mobile, heavily weighted towards the evening." },
+                    criterion4: { title: "Values & Affinities", icon: "heart", analysis: "Strong affinities for Gaming, Esports, team spirit, and consumption of urban/electronic music.", proposal: "Focus media placements on Rap/Electro playlists and use 'Video Games' affinity targeting." },
+                    criterion5: { title: "Audience Maturity", icon: "target", analysis: "COLD (need to break military stereotypes) to WARM audience (youth already pondering career paths).", proposal: "Use 3D audio to create immersive 'Action' spots capable of breaking the traditional institutional image." },
+                    criterion6: { title: "Intent Signals", icon: "zap", analysis: "Individuals actively seeking career guidance, a first job, or feeling professional frustration.", proposal: "Actively retarget visitors of career guidance sites, temp agency platforms, or hotel/restaurant job boards." }
+                }
+            }
+        };
+
+        // État initial
+        let activeTab = 'qonto';
+
+        // Styles de couleurs pour les 6 critères
+        const criteriaColors = {
+            criterion1: { color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', num: '1' },
+            criterion2: { color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', num: '2' },
+            criterion3: { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', num: '3' },
+            criterion4: { color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100', num: '4' },
+            criterion5: { color: 'text-[#FF5A5F]', bg: 'bg-red-50', border: 'border-red-100', num: '5' },
+            criterion6: { color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-100', num: '6' }
+        };
+
+        // Fonction pour changer d'onglet
+        function setActiveTab(key) {
+            activeTab = key;
+            renderApp();
+        }
+
+        // Fonction pour générer le HTML d'une carte Critère
+        function createCriterionCard(key, data, styling) {
+            return `
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
+                <!-- Criterion Header -->
+                <div class="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${styling.color} ${styling.bg}">
+                        ${styling.num}
+                    </div>
+                    <h4 class="font-bold text-gray-900 flex-1">${data.title}</h4>
+                    <i data-lucide="${data.icon}" class="w-4.5 h-4.5 text-gray-300"></i>
+                </div>
+
+                <div class="flex-1 flex flex-col gap-4 justify-between">
+                    <!-- Part 1: The Analysis -->
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Observation & Insight</p>
+                        <p class="text-sm text-gray-600 leading-relaxed">${data.analysis}</p>
+                    </div>
+
+                    <!-- Part 2: The Highlighted Proposal -->
+                    <div class="p-3.5 rounded-lg border ${styling.bg} ${styling.border} bg-opacity-40 mt-2">
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 ${styling.color}"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest ${styling.color}">
+                                AI Activation Proposal
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-900 font-medium leading-snug">${data.proposal}</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // Fonction principale de rendu
+        function renderApp() {
+            // 1. Rendu des onglets (Tabs)
+            const tabsContainer = document.getElementById('tabs-container');
+            let tabsHtml = '';
+            for (const key in briefsData) {
+                const isActive = key === activeTab;
+                const baseClasses = "px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap";
+                const activeClasses = isActive 
+                    ? "bg-black text-white shadow-md" 
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50";
+                
+                tabsHtml += `
+                    <button onclick="setActiveTab('${key}')" class="${baseClasses} ${activeClasses}">
+                        ${briefsData[key].name}
+                    </button>
+                `;
+            }
+            tabsContainer.innerHTML = tabsHtml;
+
+            // 2. Rendu de la colonne de gauche (Original Brief)
+            const data = briefsData[activeTab];
+            
+            document.getElementById('orig-brand').innerText = data.original.brand;
+            document.getElementById('orig-obj').innerText = data.original.objective;
+            document.getElementById('orig-target').innerText = data.original.target;
+            document.getElementById('orig-budget').innerText = data.original.budget;
+            document.getElementById('orig-period').innerText = data.original.period;
+
+            // Rendu des KPIs
+            const kpisContainer = document.getElementById('orig-kpis');
+            kpisContainer.innerHTML = data.original.kpis.map(kpi => `
+                <li class="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#FF5A5F]"></i> ${kpi}
+                </li>
+            `).join('');
+
+            // 3. Rendu de la grille des 6 critères
+            const gridContainer = document.getElementById('criteria-grid');
+            
+            // Les 4 premiers critères (grille 2 colonnes standard)
+            let gridHtml = '';
+            ['criterion1', 'criterion2', 'criterion3', 'criterion4'].forEach(critKey => {
+                gridHtml += createCriterionCard(critKey, data.enriched[critKey], criteriaColors[critKey]);
+            });
+
+            // Les 2 derniers critères (Forcer la pleine largeur et re-diviser)
+            gridHtml += `
+            <div class="col-span-2 grid grid-cols-2 gap-6">
+                ${createCriterionCard('criterion5', data.enriched['criterion5'], criteriaColors['criterion5'])}
+                ${createCriterionCard('criterion6', data.enriched['criterion6'], criteriaColors['criterion6'])}
+            </div>
+            `;
+            gridContainer.innerHTML = gridHtml;
+
+            // 4. Initialisation des icônes Lucide (important après avoir modifié innerHTML)
+            lucide.createIcons();
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+        });
+    </script>
+</body>
+</html>
