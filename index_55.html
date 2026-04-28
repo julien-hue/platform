@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -109,7 +109,7 @@
             
             <!-- LEFT COLUMN: Brief Context -->
             <div class="w-[300px] flex-shrink-0">
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 sticky top-0">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 sticky top-0 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
                     <h2 id="orig-brand" class="text-2xl font-black text-gray-900 mb-1 tracking-tight">Brand</h2>
                     <p class="text-[10px] font-bold text-[#FF5A5F] uppercase tracking-widest mb-6 border-b border-gray-100 pb-4">Original Brief Context</p>
 
@@ -143,6 +143,13 @@
                                 <!-- KPIs injected via JS -->
                             </ul>
                         </div>
+                        
+                        <div class="pt-5 border-t border-gray-100">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brief Details & Context</p>
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <p id="orig-context" class="text-[12px] text-gray-700 leading-relaxed font-medium"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -171,7 +178,15 @@
             qonto: {
                 id: 'qonto',
                 name: 'Qonto',
-                original: { brand: 'Qonto', objective: 'Awareness then Consideration per target.', target: 'Entrepreneurs in Germany.', budget: '€1M+', period: 'Year 2026 (H1 focus)', kpis: ['Awareness Increase', 'Ad Sequencing'] },
+                original: { 
+                    brand: 'Qonto', 
+                    objective: 'Awareness then Consideration per target.', 
+                    target: 'Entrepreneurs in Germany.', 
+                    budget: '€1.04M (Classic) + €500k (Hosts)', 
+                    period: 'Year 2026 (H1 focus)', 
+                    kpis: ['Awareness Increase', 'Ad Sequencing'],
+                    context: "Spontaneous awareness in Germany is near zero. Prospects often confuse the brand with accounting tools. Strategy: Saturate specific target podcasts (Business Punk, OMR, Digital Kompakt) rather than spreading thin. Key competitors: Sparkasse, Revolut, Finom."
+                },
                 enriched: [
                     { id: '1', title: "Household Profile", icon: "users", color: "blue", analysis: "Founders of VSEs/SMEs and freelancers. Fragmented schedule.", proposal: "Target major urban hubs (Berlin, Munich) with 'Business' segments.", visual: { type: 'persona', label: 'The Busy Founder' } },
                     { id: '2', title: "Engagement Behavior", icon: "shopping-cart", color: "emerald", analysis: "Absolute search for efficiency, demanding zero administrative friction and seamless digital integration. These users exhibit highly rational decision-making patterns, evaluating tools strictly based on measurable ROI, time saved per task, and ease of onboarding for their teams.", proposal: "Focus the CTA heavily on time-saving metrics and operational fluidity. Capitalize on strong peer recommendations and social proof by referencing other successful entrepreneurs. Use clear, benefit-driven language that promises immediate business impact without any complex setup.", visual: { type: 'scale', labelLeft: 'Rational', labelRight: 'Emotional', val: 90 } },
@@ -184,7 +199,15 @@
             belambra: {
                 id: 'belambra',
                 name: 'Belambra',
-                original: { brand: 'Belambra', objective: 'Special Operation (Host reading). Generate bookings.', target: 'Upper-middle class, 30-50 y/o.', budget: '€100K', period: 'W1: Feb-May / W2: Sep-Dec', kpis: ['Audience quality', 'Affinity context'] },
+                original: { 
+                    brand: 'Belambra', 
+                    objective: 'Special Operation (Host reading). Generate bookings.', 
+                    target: 'Upper-middle class, 30-50 y/o.', 
+                    budget: '€100K (Over 2 waves)', 
+                    period: 'W1: Feb-May / W2: Sep-Dec', 
+                    kpis: ['Audience quality', 'Affinity context'],
+                    context: "Urgent pitch for a Special Operation (OPS). High scrutiny on budget efficiency (need to know if technical fees are absorbed). Focus is strictly on qualitative context and capturing the CSP++ audience rather than pure volume."
+                },
                 enriched: [
                     { id: '1', title: "Household Profile", icon: "users", color: "blue", analysis: "Upper-middle class families. Mental load carried by 'lead' parent.", proposal: "Precisely target 30-50 age bracket with school-aged children.", visual: { type: 'persona', label: 'The Lead Parent' } },
                     { id: '2', title: "Engagement Behavior", icon: "shopping-cart", color: "emerald", analysis: "Strong overarching need for a completely 'hassle-free', premium status stay where all logistics are handled. The presence and quality of kids' clubs remain the undisputed #1 selection criterion, acting as the primary trigger for finalizing the booking process for the whole family.", proposal: "Highlight exceptional childcare facilities and total parental peace of mind as the ultimate converting argument. The creative should vividly paint a picture of parents finally relaxing while their children are fully engaged in safe, enriching activities, prompting immediate booking action.", visual: { type: 'scale', labelLeft: 'Rational', labelRight: 'Emotional', val: 30 } },
@@ -197,7 +220,15 @@
             myaudi: {
                 id: 'myaudi',
                 name: 'My Audi',
-                original: { brand: 'Audi', objective: 'Drive-to-Store for Open Days.', target: 'Drivers in dealership catchment areas.', budget: '€50K', period: 'June 12 to 26', kpis: ['Dealership visits', 'In-store CPV'] },
+                original: { 
+                    brand: 'Audi', 
+                    objective: 'Drive-to-Store for Open Days.', 
+                    target: 'Drivers in dealership catchment areas.', 
+                    budget: '€50K', 
+                    period: 'June 12 to 26', 
+                    kpis: ['Dealership visits', 'In-store CPV'],
+                    context: "Multi-local campaign to generate visits across the Audi network. Dealerships are equipped with Smart Traffik boxes for precise Drive-to-Store measurement. Expected format: 25s main audio + 5s local tag."
+                },
                 enriched: [
                     { id: '1', title: "Household Profile", icon: "users", color: "blue", analysis: "Wealthy urban or suburban households, often multi-motorized.", proposal: "Set up strict and exclusive radial targeting around dealerships.", visual: { type: 'persona', label: 'The Premium Driver' } },
                     { id: '2', title: "Engagement Behavior", icon: "shopping-cart", color: "emerald", analysis: "This is a highly status-driven and emotionally charged purchasing process. Despite extensive online research, there is an absolute, critical need for physical reassurance—prospects must see, touch, and test drive the vehicle to validate their premium investment and finalize their choice.", proposal: "The CTA must be ultra-direct, creating a sense of exclusivity and immediate opportunity. It should explicitly invite the listener to schedule a 'Premium Test Drive' today, leveraging the limited-time nature of the Open Days to transform passive interest into an active dealership visit.", visual: { type: 'scale', labelLeft: 'Rational', labelRight: 'Emotional', val: 15 } },
@@ -210,7 +241,15 @@
             vgrf: {
                 id: 'vgrf',
                 name: 'VGRF',
-                original: { brand: 'Volkswagen Group', objective: 'Local audio strategy per dealership.', target: 'B2C, 35+ y/o, automotive affinity.', budget: '€1,000 / dealer', period: 'Year 2026', kpis: ['Local traffic', 'Competitive CPM'] },
+                original: { 
+                    brand: 'Volkswagen Group', 
+                    objective: 'Local audio strategy per dealership.', 
+                    target: 'B2C, 35+ y/o, automotive affinity.', 
+                    budget: '€1,000 / dealer', 
+                    period: 'Year 2026', 
+                    kpis: ['Local traffic', 'Competitive CPM'],
+                    context: "Preparation for 2026 local strategy. Needs to be a scalable recommendation based on a single pilot dealership to duplicate easily across interested locations. Media mix: digital radio, streaming, and podcasts."
+                },
                 enriched: [
                     { id: '1', title: "Household Profile", icon: "users", color: "blue", analysis: "Households with strong local roots. Vehicle is an essential tool.", proposal: "Apply hyper-localization strategy around each dealer.", visual: { type: 'persona', label: 'The Pragmatic Local' } },
                     { id: '2', title: "Engagement Behavior", icon: "shopping-cart", color: "emerald", analysis: "Demonstrates a highly pragmatic and localized opportunity-oriented behavior. This audience is particularly sensitive to targeted workshop promotions, reliable certified used car offers, and transparent pricing, prioritizing long-term vehicle reliability over purely emotional brand appeal.", proposal: "Personalize the audio message at a hyper-local level using dynamic creative optimization. Highlight specific, regional promotional offers on maintenance or trade-ins, emphasizing proximity, trust, and practical benefits to drive immediate foot traffic to the nearest local dealership.", visual: { type: 'scale', labelLeft: 'Rational', labelRight: 'Emotional', val: 85 } },
@@ -223,7 +262,15 @@
             marine: {
                 id: 'marine',
                 name: 'Marine Nationale',
-                original: { brand: 'French Navy', objective: 'Recruitment & breaking military stereotypes.', target: 'Youth (18-25) & Career Changers (22-30).', budget: '€34k net', period: 'Oct 12 to Nov 1', kpis: ['100% Listen Rate', '100% CPE'] },
+                original: { 
+                    brand: 'French Navy', 
+                    objective: 'Recruitment & breaking military stereotypes.', 
+                    target: 'Youth (18-25) & Career Changers (22-30).', 
+                    budget: '€34k net', 
+                    period: 'Oct 12 to Nov 1', 
+                    kpis: ['100% Listen Rate', '100% CPE'],
+                    context: "TF5 mass recruitment campaign targeting school leavers (BAC to BAC+2) and career changers (hospitality, retail, construction). Crucial need to positively influence parents/educators. Strict constraints: 99% Brand Safety, 80% viewability minimum."
+                },
                 enriched: [
                     { id: '1', title: "Household Profile", icon: "users", color: "blue", analysis: "18-30 y/o target living with parents. Highly technical profiles.", proposal: "Direct geographic targeting towards industrial or university areas.", visual: { type: 'persona', label: 'The Action Seeker' } },
                     { id: '2', title: "Engagement Behavior", icon: "shopping-cart", color: "emerald", analysis: "Represents a highly involving, life-altering choice rather than a simple consumer purchase. The target is actively seeking profound personal meaning, structured paid training, and intense physical adventure, often contrasting these desires against a backdrop of current professional frustration or uncertainty.", proposal: "Strategically reassure about structured career progression, tangible skills acquisition, and long-term stability to simultaneously convince the primary target and their key influencers (parents). The CTA should frame engagement as a prestigious, life-enhancing opportunity rather than just a job application.", visual: { type: 'scale', labelLeft: 'Rational', labelRight: 'Emotional', val: 40 } },
@@ -379,6 +426,7 @@
             document.getElementById('orig-target').innerText = data.original.target;
             document.getElementById('orig-budget').innerText = data.original.budget;
             document.getElementById('orig-period').innerText = data.original.period;
+            document.getElementById('orig-context').innerText = data.original.context;
 
             const kpisContainer = document.getElementById('orig-kpis');
             kpisContainer.innerHTML = data.original.kpis.map(kpi => `
