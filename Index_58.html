@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Analysis Dashboard</title>
+    
+    <!-- Intégration de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Intégration de Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Ajout d'une transition fluide pour le layout */
+        #layout-container {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FB] font-sans text-gray-900">
+
+    <div class="min-h-screen flex flex-col py-10 px-4">
+        
+        <!-- --- ONGLETS POUR CHANGER DE VUE --- -->
+        <div class="flex bg-[#E4ECE6] p-1 rounded-lg mb-12 self-center">
+            <button 
+                id="tab-stacked"
+                onclick="setViewMode('stacked')"
+                class="px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900"
+            >
+                Vue Superposée
+            </button>
+            <button 
+                id="tab-split"
+                onclick="setViewMode('split')"
+                class="px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
+            >
+                Vue Gauche/Droite
+            </button>
+        </div>
+
+        <!-- --- CONTENEUR PRINCIPAL DU LAYOUT --- -->
+        <!-- Par défaut en mode "stacked" (superposé) -->
+        <div id="layout-container" class="flex flex-col items-center w-full">
+            
+            <!-- SECTION UPLOAD -->
+            <div id="upload-wrapper" class="w-full max-w-[640px] mb-16">
+                <!-- Dropzone -->
+                <div class="border border-dashed border-[#C5D2C9] rounded-2xl py-12 px-8 flex flex-col items-center justify-center bg-[#F3F6F4] hover:bg-[#EEF2EF] transition-colors cursor-pointer group">
+                    <div class="bg-[#E4ECE6] p-3.5 rounded-full mb-5 text-[#7A9D84] group-hover:scale-105 transition-transform">
+                        <i data-lucide="upload-cloud" class="w-7 h-7" stroke-width="2"></i>
+                    </div>
+                    
+                    <h2 class="text-[17px] font-bold text-gray-900 mb-2">Upload your audio creative</h2>
+                    
+                    <p class="text-[#7A7A7A] text-center text-[13px] mb-6 max-w-[380px] leading-relaxed">
+                        Drop an MP3 or WAV file. Analysis scores 6 axes and produces 3 scores based on advertising objective.
+                    </p>
+                    
+                    <button class="bg-[#2B2B2B] text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-black transition-colors flex items-center gap-2">
+                        <i data-lucide="file-audio" class="w-4 h-4 text-gray-300"></i>
+                        Select a file
+                    </button>
+                </div>
+
+                <!-- Ligne des caractéristiques -->
+                <div class="flex justify-center gap-12 sm:gap-20 mt-8">
+                    <div class="flex flex-col items-center gap-2 text-center">
+                        <i data-lucide="activity" class="w-6 h-6 text-[#8FBA9B]" stroke-width="1.5"></i>
+                        <span class="text-[12px] font-medium text-[#7A7A7A]">Acoustic measures</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 text-center">
+                        <i data-lucide="brain" class="w-6 h-6 text-[#8FBA9B]" stroke-width="1.5"></i>
+                        <span class="text-[12px] font-medium text-[#7A7A7A]">Storytelling & attention</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 text-center">
+                        <i data-lucide="target" class="w-6 h-6 text-[#8FBA9B]" stroke-width="1.5"></i>
+                        <span class="text-[12px] font-medium text-[#7A7A7A]">3 advertising objectives</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION BIBLIOTHÈQUE -->
+            <div id="library-wrapper" class="w-full max-w-[1000px]">
+                <h3 class="text-[11px] font-bold text-[#A8A8A8] uppercase tracking-widest mb-4">
+                    Or pick from the library
+                </h3>
+                
+                <!-- Conteneur des cartes générées par JS -->
+                <div id="cards-container" class="flex flex-col gap-3"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- --- LOGIQUE JAVASCRIPT --- -->
+    <script>
+        // 1. Données factices (Mock Data)
+        const mockData = [
+            { id: '1', brand: 'Fortuneo', campaign: 'Q2 Acquisition', description: 'Dynamic spot highlighting the new welcome offer with no hidden fees.', category: 'Banking & Finance', format: 'Classic Spot', duration: '30s', language: '🇫🇷', color: 'bg-emerald-500' },
+            { id: '2', brand: 'IKEA', campaign: 'Summer Collection', description: 'Warm host-read message focusing on patio setup.', category: 'Home & Decor', format: 'Host-read', duration: '20s', language: '🇬🇧', color: 'bg-blue-600' },
+            { id: '3', brand: 'La Poste', campaign: 'Pro Services', description: 'Informative segment detailing new shipping solutions for small businesses.', category: 'Services', format: 'Segment', duration: '45s', language: '🇫🇷', color: 'bg-yellow-500' },
+            { id: '4', brand: 'Qonto', campaign: 'Company Creators', description: 'Short and punchy sponsorship targeting entrepreneurs during account creation.', category: 'B2B', format: 'Sponsorship', duration: '30s', language: '🇫🇷', color: 'bg-purple-600' }
+        ];
+
+        let currentlyPlayingId = null;
+        let progressInterval = null;
+
+        // 2. Génération de la forme d'onde audio (HTML String)
+        function generateWaveform(id) {
+            let html = `<div class="flex items-end gap-[2px] h-6 w-40" id="waveform-${id}">`;
+            for(let i = 0; i < 30; i++) {
+                let height = Math.floor(Math.random() * 60) + 15;
+                let delay = Math.random() * 0.5;
+                html += `<div class="waveform-bar w-1 rounded-full bg-gray-200 transition-all duration-300 ease-in-out" style="height: ${height}%; animation-delay: ${delay}s;"></div>`;
+            }
+            html += `</div>`;
+            return html;
+        }
+
+        // 3. Rendu initial des cartes audio
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            let html = '';
+
+            mockData.forEach(item => {
+                const initial = item.brand.charAt(0);
+                html += `
+                <div id="card-${item.id}" class="group relative bg-white border border-gray-200 rounded-xl p-3 sm:px-4 sm:py-3 transition-all duration-200 hover:shadow-sm">
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center gap-4">
+                        
+                        <!-- IDENTITÉ -->
+                        <div class="flex items-center gap-3 flex-1 w-full min-w-[250px]">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shadow-inner shrink-0 ${item.color}">
+                                ${initial}
+                            </div>
+                            <div class="flex flex-col overflow-hidden">
+                                <h3 class="text-[14px] font-bold text-gray-900 truncate leading-tight">${item.brand}</h3>
+                                <p class="text-[12px] text-gray-500 mb-1 mt-0.5 leading-tight line-clamp-1">${item.description}</p>
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-700">${item.category}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#E4ECE6] text-[#4A6B53]">${item.format}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-gray-50 border border-gray-100 cursor-default" title="Audio Language">${item.language}</span>
+                                    <span class="inline-flex items-center text-[10px] text-gray-400 gap-1 ml-1">
+                                        <i data-lucide="clock" class="w-3 h-3"></i> ${item.duration}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LECTEUR AUDIO -->
+                        <div class="flex items-center gap-3 w-full xl:w-auto bg-[#FAFAFA] p-1.5 sm:p-2 rounded-lg border border-gray-100">
+                            <button id="play-btn-${item.id}" onclick="togglePlay('${item.id}')" class="flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:text-[#779C81] shadow-sm">
+                                <i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>
+                            </button>
+
+                            <div class="flex flex-col gap-1 w-full xl:w-auto">
+                                ${generateWaveform(item.id)}
+                                <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                                    <div id="progress-${item.id}" class="bg-[#779C81] h-full w-0 transition-all duration-300 ease-linear"></div>
+                                </div>
+                                <div class="flex justify-between text-[9px] text-gray-400 font-medium">
+                                    <span id="timer-${item.id}">0:00</span>
+                                    <span>${item.duration}</span>
+                                </div>
+                            </div>
+
+                            <button class="hidden sm:flex text-gray-400 hover:text-gray-600 p-1">
+                                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="flex items-center justify-end w-full xl:w-auto gap-3 pl-0 xl:pl-3 xl:border-l border-gray-100">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-[11px] font-medium transition-colors" title="View analysis report">
+                                    <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
+                                    <span class="hidden sm:inline">View Analysis</span>
+                                </button>
+                                <div class="flex items-center opacity-100 xl:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="p-1 text-gray-400 hover:text-gray-700 rounded-md hover:bg-gray-100" title="Reprocess audio">
+                                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            lucide.createIcons(); // Initialise les icônes après l'injection HTML
+        }
+
+        // 4. Logique de Lecture/Pause
+        function togglePlay(id) {
+            // Si on clique sur celui qui joue déjà -> Pause
+            if (currentlyPlayingId === id) {
+                stopPlayback(currentlyPlayingId);
+                currentlyPlayingId = null;
+                return;
+            }
+
+            // Si un autre jouait -> Stop
+            if (currentlyPlayingId) {
+                stopPlayback(currentlyPlayingId);
+            }
+
+            // Démarrer le nouveau
+            currentlyPlayingId = id;
+            startPlayback(id);
+        }
+
+        function startPlayback(id) {
+            // UI Carte : Bordure et Ombre
+            const card = document.getElementById(`card-${id}`);
+            card.classList.replace('border-gray-200', 'border-[#779C81]');
+            card.classList.add('shadow-sm', 'ring-1', 'ring-[#779C81]/20');
+
+            // UI Bouton : Fond Vert + Icône Pause
+            const btn = document.getElementById(`play-btn-${id}`);
+            btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#779C81] text-white shadow-md hover:bg-[#65876E]";
+            btn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5 fill-current"></i>`;
+
+            // UI Onde (Waveform) : Couleur + Animation
+            const bars = document.querySelectorAll(`#waveform-${id} .waveform-bar`);
+            bars.forEach(bar => {
+                bar.classList.replace('bg-gray-200', 'bg-[#779C81]');
+                bar.classList.add('animate-pulse');
+            });
+
+            // UI Timer
+            document.getElementById(`timer-${id}`).innerText = '0:12';
+
+            // Animation de la barre de progression
+            let progress = 0;
+            const pBar = document.getElementById(`progress-${id}`);
+            progressInterval = setInterval(() => {
+                progress += 1;
+                if (progress > 100) progress = 0;
+                pBar.style.width = progress + '%';
+            }, 300);
+
+            // Re-rendre la nouvelle icône
+            lucide.createIcons(); 
+        }
+
+        function stopPlayback(id) {
+            clearInterval(progressInterval);
+
+            // Reset UI Carte
+            const card = document.getElementById(`card-${id}`);
+            card.classList.replace('border-[#779C81]', 'border-gray-200');
+            card.classList.remove('shadow-sm', 'ring-1', 'ring-[#779C81]/20');
+
+            // Reset UI Bouton
+            const btn = document.getElementById(`play-btn-${id}`);
+            btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:text-[#779C81] shadow-sm";
+            btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>`;
+
+            // Reset UI Onde (Waveform)
+            const bars = document.querySelectorAll(`#waveform-${id} .waveform-bar`);
+            bars.forEach(bar => {
+                bar.classList.replace('bg-[#779C81]', 'bg-gray-200');
+                bar.classList.remove('animate-pulse');
+            });
+
+            // Reset Timer & Progress
+            document.getElementById(`timer-${id}`).innerText = '0:00';
+            document.getElementById(`progress-${id}`).style.width = '0%';
+
+            // Re-rendre l'icône
+            lucide.createIcons(); 
+        }
+
+        // 5. Logique de Changement de Vue (Layout)
+        function setViewMode(mode) {
+            const tabStacked = document.getElementById('tab-stacked');
+            const tabSplit = document.getElementById('tab-split');
+            const layoutContainer = document.getElementById('layout-container');
+            const uploadWrapper = document.getElementById('upload-wrapper');
+            const libraryWrapper = document.getElementById('library-wrapper');
+
+            const activeTabClasses = "px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900";
+            const inactiveTabClasses = "px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]";
+
+            if (mode === 'stacked') {
+                tabStacked.className = activeTabClasses;
+                tabSplit.className = inactiveTabClasses;
+
+                layoutContainer.className = "flex flex-col items-center w-full";
+                uploadWrapper.className = "w-full max-w-[640px] mb-16";
+                libraryWrapper.className = "w-full max-w-[1000px]";
+            } else if (mode === 'split') {
+                tabSplit.className = activeTabClasses;
+                tabStacked.className = inactiveTabClasses;
+
+                layoutContainer.className = "w-full max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-14 items-start";
+                uploadWrapper.className = "lg:col-span-5 sticky top-8 w-full";
+                libraryWrapper.className = "lg:col-span-7 w-full";
+            }
+        }
+
+        // Initialisation au chargement de la page
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCards();
+            lucide.createIcons();
+        });
+
+    </script>
+</body>
+</html>
