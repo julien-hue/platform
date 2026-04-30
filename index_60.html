@@ -38,32 +38,38 @@
     <div class="min-h-screen flex flex-col py-10 px-4">
         
         <!-- --- ONGLETS POUR CHANGER DE VUE --- -->
-        <div class="flex bg-[#E4ECE6] p-1 rounded-lg mb-12 self-center">
+        <div class="flex flex-wrap justify-center bg-[#E4ECE6] p-1 rounded-lg mb-12 self-center gap-1 sm:gap-0">
             <button 
                 id="tab-stacked"
                 onclick="setViewMode('stacked')"
-                class="px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900"
+                class="px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900"
             >
                 Vue Superposée
             </button>
             <button 
                 id="tab-split"
                 onclick="setViewMode('split')"
-                class="px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
+                class="px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
             >
                 Vue Gauche/Droite
             </button>
             <button 
                 id="tab-inverted"
                 onclick="setViewMode('inverted')"
-                class="px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
+                class="px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
             >
                 Vue Inversée
+            </button>
+            <button 
+                id="tab-bandeau"
+                onclick="setViewMode('bandeau')"
+                class="px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]"
+            >
+                Vue Bandeau
             </button>
         </div>
 
         <!-- --- CONTENEUR PRINCIPAL DU LAYOUT --- -->
-        <!-- Par défaut en mode "stacked" (superposé) -->
         <div id="layout-container" class="flex flex-col items-center w-full">
             
             <!-- SECTION UPLOAD -->
@@ -103,7 +109,7 @@
                 </div>
             </div>
 
-            <!-- SECTION BIBLIOTHÈQUE (Avec design pour beaucoup de fichiers) -->
+            <!-- SECTION BIBLIOTHÈQUE -->
             <div id="library-wrapper" class="w-full max-w-[1000px] order-2">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-[11px] font-bold text-[#A8A8A8] uppercase tracking-widest">
@@ -112,8 +118,8 @@
                     <span id="library-count" class="text-[11px] text-gray-400 font-medium">7 fichiers</span>
                 </div>
                 
-                <!-- Barre de recherche et filtres (Pour gérer une grande liste) -->
-                <div class="flex flex-col sm:flex-row items-center justify-between mb-4 gap-3 bg-white p-2 rounded-xl border border-gray-200 shadow-sm">
+                <!-- Barre de recherche et filtres (Masquée en vue bandeau) -->
+                <div id="search-filters" class="flex flex-col sm:flex-row items-center justify-between mb-4 gap-3 bg-white p-2 rounded-xl border border-gray-200 shadow-sm">
                     <div class="relative w-full sm:max-w-sm">
                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
                         <input type="text" placeholder="Rechercher une marque, campagne..." onkeyup="filterCards(this.value)" class="w-full pl-9 pr-4 py-1.5 bg-transparent text-[13px] focus:outline-none placeholder-gray-400">
@@ -128,7 +134,7 @@
                     </div>
                 </div>
 
-                <!-- Conteneur avec scrollbar personnalisée (Passage en Grille 2 colonnes) -->
+                <!-- Conteneur Dynamique -->
                 <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar pb-4"></div>
             </div>
 
@@ -137,7 +143,7 @@
 
     <!-- --- LOGIQUE JAVASCRIPT --- -->
     <script>
-        // 1. Données factices (Plus de données pour démontrer le scroll)
+        // 1. Données factices
         const mockData = [
             { id: '1', brand: 'Fortuneo', campaign: 'Q2 Acquisition', description: 'Dynamic spot highlighting the new welcome offer with no hidden fees.', category: 'Banking & Finance', format: 'Classic Spot', duration: '30s', language: '🇫🇷', color: 'bg-emerald-500' },
             { id: '2', brand: 'IKEA', campaign: 'Summer Collection', description: 'Warm host-read message focusing on patio setup.', category: 'Home & Decor', format: 'Host-read', duration: '20s', language: '🇬🇧', color: 'bg-blue-600' },
@@ -150,11 +156,11 @@
 
         let currentlyPlayingId = null;
         let progressInterval = null;
+        let currentViewMode = 'stacked'; // Mode actif
 
-        // 2. Génération de la forme d'onde audio (Adaptée pour la grille)
+        // 2. Génération de la forme d'onde audio
         function generateWaveform(id) {
             let html = `<div class="flex items-end justify-between h-5 w-full" id="waveform-${id}">`;
-            // On réduit le nombre de barres à 20 pour que ça respire mieux dans un petit espace
             for(let i = 0; i < 20; i++) {
                 let height = Math.floor(Math.random() * 60) + 15;
                 let delay = Math.random() * 0.5;
@@ -164,65 +170,124 @@
             return html;
         }
 
-        // 3. Rendu initial des cartes audio (Design interne refondu pour les colonnes)
+        // 3. Rendu initial des cartes audio selon le mode
         function renderCards() {
             const container = document.getElementById('cards-container');
             let html = '';
 
             mockData.forEach(item => {
                 const initial = item.brand.charAt(0);
-                html += `
-                <div id="card-${item.id}" class="group relative bg-white border border-gray-200 rounded-xl p-4 transition-all duration-200 hover:shadow-sm flex flex-col justify-between h-full">
-                    
-                    <!-- IDENTITÉ (Haut de la carte) -->
-                    <div class="flex items-start gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shadow-inner shrink-0 ${item.color}">
+
+                if (currentViewMode === 'bandeau') {
+                    // --- RENDU : VUE BANDEAU (Logos + Popover au survol) ---
+                    html += `
+                    <div class="relative group cursor-pointer">
+                        
+                        <!-- Logo (Avatar de la marque) -->
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-md shrink-0 ${item.color} group-hover:ring-4 ring-offset-2 ring-[#7A9D84]/40 transition-all duration-300">
                             ${initial}
                         </div>
-                        <div class="flex flex-col overflow-hidden w-full">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-[14px] font-bold text-gray-900 truncate leading-tight">${item.brand}</h3>
-                                <button class="text-gray-400 hover:text-gray-700 transition-colors opacity-0 group-hover:opacity-100" title="Reprocess audio">
-                                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
-                            <p class="text-[12px] text-gray-500 mb-2 mt-0.5 leading-tight line-clamp-2">${item.description}</p>
-                            <div class="flex flex-wrap items-center gap-1.5">
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-700">${item.category}</span>
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#E4ECE6] text-[#4A6B53]">${item.format}</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- LECTEUR AUDIO ET ACTIONS (Bas de la carte) -->
-                    <div class="flex items-center justify-between gap-3 mt-auto pt-3 border-t border-gray-100">
-                        
-                        <div class="flex items-center gap-2.5 flex-1 w-full">
-                            <button id="play-btn-${item.id}" onclick="togglePlay('${item.id}')" class="flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#FAFAFA] text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm">
-                                <i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>
-                            </button>
+                        <!-- Popover (Détails de la créa) caché par défaut -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-72 sm:w-80 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                            <div id="card-${item.id}" class="relative bg-white border border-gray-200 rounded-xl p-4 shadow-xl flex flex-col cursor-default">
+                                
+                                <!-- Flèche du popover -->
+                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-t border-l border-gray-200 rotate-45"></div>
 
-                            <div class="flex flex-col gap-1 w-20 sm:w-28 flex-1">
-                                ${generateWaveform(item.id)}
-                                <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
-                                    <div id="progress-${item.id}" class="bg-[#779C81] h-full w-0 transition-all duration-300 ease-linear"></div>
+                                <div class="relative z-10">
+                                    <!-- Identité -->
+                                    <div class="flex flex-col overflow-hidden w-full mb-3">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <h3 class="text-[15px] font-bold text-gray-900 truncate leading-tight">${item.brand}</h3>
+                                            <span class="inline-flex items-center text-[10px] text-gray-400 gap-1">
+                                                <i data-lucide="clock" class="w-3 h-3"></i> ${item.duration}
+                                            </span>
+                                        </div>
+                                        <p class="text-[12px] text-gray-500 mb-2 leading-tight line-clamp-2">${item.description}</p>
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-700">${item.category}</span>
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#E4ECE6] text-[#4A6B53]">${item.format}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Lecteur Audio & Actions -->
+                                    <div class="flex flex-col gap-3 pt-3 border-t border-gray-100">
+                                        <div class="flex items-center gap-2.5 w-full bg-[#FAFAFA] p-2 rounded-lg border border-gray-100">
+                                            <button id="play-btn-${item.id}" onclick="togglePlay('${item.id}')" class="flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm">
+                                                <i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>
+                                            </button>
+                                            <div class="flex flex-col gap-1 flex-1">
+                                                ${generateWaveform(item.id)}
+                                                <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                                                    <div id="progress-${item.id}" class="bg-[#779C81] h-full w-0 transition-all duration-300 ease-linear"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="flex justify-center items-center gap-1.5 w-full px-3 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-[11px] font-medium transition-colors" title="View analysis report">
+                                            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
+                                            <span>View Analysis</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>`;
+                } else {
+                    // --- RENDU : VUES GRILLES CLASSIQUES (Stacked, Split, Inverted) ---
+                    html += `
+                    <div id="card-${item.id}" class="group relative bg-white border border-gray-200 rounded-xl p-4 transition-all duration-200 hover:shadow-sm flex flex-col justify-between h-full">
                         
-                        <button class="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-[11px] font-medium transition-colors shrink-0" title="View analysis report">
-                            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
-                            <span class="hidden xl:inline">View Analysis</span>
-                            <span class="inline xl:hidden">View</span>
-                        </button>
-                    </div>
+                        <!-- IDENTITÉ (Haut de la carte) -->
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shadow-inner shrink-0 ${item.color}">
+                                ${initial}
+                            </div>
+                            <div class="flex flex-col overflow-hidden w-full">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-[14px] font-bold text-gray-900 truncate leading-tight">${item.brand}</h3>
+                                    <button class="text-gray-400 hover:text-gray-700 transition-colors opacity-0 group-hover:opacity-100" title="Reprocess audio">
+                                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                                <p class="text-[12px] text-gray-500 mb-2 mt-0.5 leading-tight line-clamp-2">${item.description}</p>
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-700">${item.category}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#E4ECE6] text-[#4A6B53]">${item.format}</span>
+                                </div>
+                            </div>
+                        </div>
 
-                </div>`;
+                        <!-- LECTEUR AUDIO ET ACTIONS (Bas de la carte) -->
+                        <div class="flex items-center justify-between gap-3 mt-auto pt-3 border-t border-gray-100">
+                            
+                            <div class="flex items-center gap-2.5 flex-1 w-full">
+                                <button id="play-btn-${item.id}" onclick="togglePlay('${item.id}')" class="flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#FAFAFA] text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm">
+                                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>
+                                </button>
+
+                                <div class="flex flex-col gap-1 w-20 sm:w-28 flex-1">
+                                    ${generateWaveform(item.id)}
+                                    <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                                        <div id="progress-${item.id}" class="bg-[#779C81] h-full w-0 transition-all duration-300 ease-linear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-[11px] font-medium transition-colors shrink-0" title="View analysis report">
+                                <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
+                                <span class="hidden xl:inline">View Analysis</span>
+                                <span class="inline xl:hidden">View</span>
+                            </button>
+                        </div>
+
+                    </div>`;
+                }
             });
 
             container.innerHTML = html;
             document.getElementById('library-count').innerText = `${mockData.length} fichiers`;
-            lucide.createIcons(); // Initialise les icônes
+            lucide.createIcons(); // Initialise les icônes après rendu
         }
 
         // 4. Logique de Recherche/Filtre en temps réel
@@ -264,7 +329,12 @@
             card.classList.add('shadow-sm', 'ring-1', 'ring-[#779C81]/20');
 
             const btn = document.getElementById(`play-btn-${id}`);
-            btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#779C81] text-white shadow-md hover:bg-[#65876E]";
+            // Adapter les couleurs selon le mode de vue
+            if (currentViewMode === 'bandeau') {
+                btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#779C81] text-white shadow-md hover:bg-[#65876E]";
+            } else {
+                btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#779C81] text-white shadow-md hover:bg-[#65876E]";
+            }
             btn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5 fill-current"></i>`;
 
             const bars = document.querySelectorAll(`#waveform-${id} .waveform-bar`);
@@ -272,8 +342,6 @@
                 bar.classList.replace('bg-gray-200', 'bg-[#779C81]');
                 bar.classList.add('animate-pulse');
             });
-
-            document.getElementById(`timer-${id}`).innerText = '0:12';
 
             let progress = 0;
             const pBar = document.getElementById(`progress-${id}`);
@@ -293,9 +361,12 @@
             card.classList.replace('border-[#779C81]', 'border-gray-200');
             card.classList.remove('shadow-sm', 'ring-1', 'ring-[#779C81]/20');
 
-            // Reset UI Bouton (avec les nouvelles couleurs)
             const btn = document.getElementById(`play-btn-${id}`);
-            btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#FAFAFA] text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm";
+            if (currentViewMode === 'bandeau') {
+                btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm";
+            } else {
+                btn.className = "flex items-center justify-center w-8 h-8 rounded-full transition-colors shrink-0 bg-[#FAFAFA] text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-[#779C81] shadow-sm";
+            }
             btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current ml-0.5"></i>`;
 
             const bars = document.querySelectorAll(`#waveform-${id} .waveform-bar`);
@@ -304,7 +375,6 @@
                 bar.classList.remove('animate-pulse');
             });
 
-            document.getElementById(`timer-${id}`).innerText = '0:00';
             document.getElementById(`progress-${id}`).style.width = '0%';
 
             lucide.createIcons(); 
@@ -312,9 +382,16 @@
 
         // 6. Logique de Changement de Vue (Layout)
         function setViewMode(mode) {
-            const tabs = ['stacked', 'split', 'inverted'];
-            const activeClasses = "px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900";
-            const inactiveClasses = "px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]";
+            // Empêcher la lecture de continuer lors d'un changement de vue qui recharge le DOM
+            if (currentlyPlayingId) {
+                clearInterval(progressInterval);
+                currentlyPlayingId = null;
+            }
+
+            currentViewMode = mode;
+            const tabs = ['stacked', 'split', 'inverted', 'bandeau'];
+            const activeClasses = "px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors bg-white shadow-sm text-gray-900";
+            const inactiveClasses = "px-3 sm:px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors text-[#7A9D84] hover:text-[#4A6B53]";
 
             // Mise à jour des classes des boutons
             tabs.forEach(t => {
@@ -324,25 +401,41 @@
             const layoutContainer = document.getElementById('layout-container');
             const uploadWrapper = document.getElementById('upload-wrapper');
             const libraryWrapper = document.getElementById('library-wrapper');
+            const cardsContainer = document.getElementById('cards-container');
+            const searchFilters = document.getElementById('search-filters');
 
             if (mode === 'stacked') {
-                // Upload en haut, Bibliothèque en bas
                 layoutContainer.className = "flex flex-col items-center w-full";
                 uploadWrapper.className = "w-full max-w-[640px] mb-16 order-1";
                 libraryWrapper.className = "w-full max-w-[1000px] order-2";
+                cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar pb-4";
+                searchFilters.style.display = "flex";
                 
             } else if (mode === 'split') {
-                // Upload à gauche, Bibliothèque à droite
                 layoutContainer.className = "w-full max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-14 items-start";
                 uploadWrapper.className = "lg:col-span-5 sticky top-8 w-full order-1 mb-0";
                 libraryWrapper.className = "lg:col-span-7 w-full order-2";
+                cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar pb-4";
+                searchFilters.style.display = "flex";
                 
             } else if (mode === 'inverted') {
-                // Bibliothèque en haut, Upload en bas
                 layoutContainer.className = "flex flex-col items-center w-full";
                 libraryWrapper.className = "w-full max-w-[1000px] mb-16 order-1";
                 uploadWrapper.className = "w-full max-w-[640px] order-2 mb-0";
+                cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar pb-4";
+                searchFilters.style.display = "flex";
+
+            } else if (mode === 'bandeau') {
+                layoutContainer.className = "flex flex-col items-center w-full";
+                uploadWrapper.className = "w-full max-w-[640px] mb-16 order-1";
+                libraryWrapper.className = "w-full max-w-[1000px] order-2";
+                // En mode bandeau : flex wrap (logos en ligne), débordement visible (pour les popovers) et pas de scroll
+                cardsContainer.className = "flex flex-wrap justify-center gap-6 mt-6 pb-64 overflow-visible"; 
+                // Masquer les filtres pour épurer la vue bandeau
+                searchFilters.style.display = "none";
             }
+
+            renderCards(); // Re-générer les cartes avec le bon HTML
         }
 
         // Initialisation au chargement de la page
