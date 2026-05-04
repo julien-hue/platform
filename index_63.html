@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief Master Hub - Audion AI</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chargement des icônes Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-[#f9fafb] overflow-hidden">
+
+    <!-- Barre latérale sombre -->
+    <div class="w-64 bg-black text-white flex flex-col justify-between flex-shrink-0">
+        <div>
+            <!-- Logo & Titre -->
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-md flex items-center justify-center transform rotate-45">
+                    <div class="w-4 h-4 bg-white transform -rotate-45" style="clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"></div>
+                </div>
+                <span class="text-xl font-bold tracking-wide">Audion AI</span>
+            </div>
+
+            <!-- Menu des modules -->
+            <div class="px-4 overflow-y-auto">
+                <div class="text-xs font-semibold text-zinc-500 mb-3 mt-4 tracking-wider uppercase">Modules</div>
+                
+                <!-- Inventory -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 px-2 text-zinc-400 mb-2 text-sm font-medium">
+                        <i data-lucide="search" class="w-3.5 h-3.5"></i> <span>Inventory</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="search" class="w-4 h-4"></i> <span>Content Explorer</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i> <span>Mosaic</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="check-square" class="w-4 h-4"></i> <span>Content Selection</span>
+                    </div>
+                </div>
+
+                <!-- Strategy -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 px-2 text-zinc-400 mb-2 text-sm font-medium">
+                        <i data-lucide="target" class="w-3.5 h-3.5"></i> <span>Strategy</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> <span>Competition Benchmark</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors bg-zinc-800 text-white border-l-2 border-indigo-500">
+                        <i data-lucide="zap" class="w-4 h-4"></i> <span>Brief Enhancement</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="target" class="w-4 h-4"></i> <span>CPA Benchmark</span>
+                    </div>
+                </div>
+
+                <!-- Studio -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 px-2 text-zinc-400 mb-2 text-sm font-medium">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> <span>Studio</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="mic" class="w-4 h-4"></i> <span>GenAI creatives</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2 my-1 rounded-md cursor-pointer text-sm font-medium transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900">
+                        <i data-lucide="file-audio" class="w-4 h-4"></i> <span>Creative Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profil utilisateur -->
+        <div class="p-4 border-t border-zinc-800 flex items-center gap-3 cursor-pointer hover:bg-zinc-900 transition-colors">
+            <div class="w-8 h-8 bg-zinc-700 rounded-full overflow-hidden">
+                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Julien Rialan" class="w-full h-full object-cover" />
+            </div>
+            <div class="flex flex-col">
+                <span class="text-sm font-medium">Julien Rialan</span>
+                <span class="text-xs text-zinc-500">julien@audion.fm</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <div class="flex-1 overflow-y-auto flex flex-col relative">
+        <!-- En-tête -->
+        <div class="px-10 py-8 bg-white border-b border-gray-200 z-10 sticky top-0 flex justify-between items-start">
+            <div>
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="text-3xl font-bold text-gray-900">Brief Master Hub</h1>
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full border border-gray-200">
+                        No budget extracted
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-500 text-sm">
+                    <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                    <span>Health-conscious French 25-54, 54+ CSP+</span>
+                    <span class="mx-2">•</span>
+                    <span class="font-semibold text-indigo-600">Zespri Campaign</span>
+                </div>
+            </div>
+            <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 shadow-sm transition-all">
+                <i data-lucide="zap" class="w-4 h-4"></i> New Analysis
+            </button>
+        </div>
+
+        <div class="p-10 max-w-7xl mx-auto w-full">
+            <!-- Section Contexte du Brief -->
+            <div class="mb-10">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Original Brief Context</h3>
+                <div class="p-5 bg-gray-50 rounded-xl text-gray-600 text-sm italic leading-relaxed border border-gray-100 shadow-inner">
+                    "Hello Paul, I hope you are doing well. I am getting back to you with a new brief for Zespri. The brand is launching a new brand platform where nutrition is at the heart of the message. The objectives are as follows: 1/ Challenge nutritional misinformation... 2/ Make Zespri the champion of nutrition. Communicate the nutritional benefits of the Zespri kiwi. Campaign period: From May 11 to mid-August..."
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                <h2 class="text-sm font-bold text-gray-500 tracking-widest uppercase">6-Point Analytical Breakdown</h2>
+            </div>
+
+            <!-- Grille des 6 Critères d'analyse -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                
+                <!-- Carte 1: Profil du foyer -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 01</div>
+                            <h3 class="text-lg font-bold text-gray-900">Household Profile</h3>
+                        </div>
+                        <i data-lucide="user" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg mb-4">
+                        <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">P</div>
+                        <div>
+                            <div class="text-xs text-blue-400 uppercase font-semibold">Primary Persona</div>
+                            <div class="text-sm text-blue-700 font-bold">The Health-Conscious Seeker</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">This household is highly attuned to health and nutrition. They seek simple, natural solutions for themselves and their families, balancing work, commutes, and personal activities.</p>
+                    </div>
+                </div>
+
+                <!-- Carte 2: Comportement d'engagement -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 02</div>
+                            <h3 class="text-lg font-bold text-gray-900">Engagement Behavior</h3>
+                        </div>
+                        <i data-lucide="shopping-cart" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <div class="flex justify-between text-xs text-gray-500 font-medium mb-2">
+                            <span>Rational</span>
+                            <span>Emotional</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-gray-100 rounded-full relative">
+                            <div class="absolute top-1/2 -translate-y-1/2 left-[70%] w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">The decision to choose Zespri kiwi is driven by rational benefits but mostly by an emotional desire to alleviate food anxiety and find reassurance.</p>
+                    </div>
+                </div>
+
+                <!-- Carte 3: Contexte d'écoute -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 03</div>
+                            <h3 class="text-lg font-bold text-gray-900">Listening Context</h3>
+                        </div>
+                        <i data-lucide="headphones" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <div class="flex justify-between text-xs text-gray-500 font-medium mb-2">
+                            <span>00:00</span>
+                            <span>Dayparting</span>
+                            <span>24:00</span>
+                        </div>
+                        <div class="flex gap-1 justify-between">
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="h-2.5 w-2.5 rounded-full bg-gray-100"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">The audience consumes audio mostly during their morning routine (prep/commute) and at the end of the day (commute home, sports activities).</p>
+                    </div>
+                </div>
+
+                <!-- Carte 4: Valeurs & Affinités -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 04</div>
+                            <h3 class="text-lg font-bold text-gray-900">Values & Affinities</h3>
+                        </div>
+                        <i data-lucide="heart" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-md border border-purple-100">Nutrition</span>
+                        <span class="px-2 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-md border border-purple-100">Healthy Living</span>
+                        <span class="px-2 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-md border border-purple-100">Well-being</span>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">This audience actively seeks information and solutions to improve their well-being and manage dietary concerns.</p>
+                    </div>
+                </div>
+
+                <!-- Carte 5: Maturité de l'audience -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 05</div>
+                            <h3 class="text-lg font-bold text-gray-900">Audience Maturity</h3>
+                        </div>
+                        <i data-lucide="disc" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <div class="flex justify-between text-xs text-gray-500 font-medium mb-1">
+                            <span>Cold</span>
+                            <span>Warm</span>
+                            <span>Hot</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden flex">
+                            <div class="h-full bg-red-500 w-1/2"></div>
+                        </div>
+                        <div class="text-center text-xs text-red-500 font-bold mt-1">Warm (Growing)</div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">Zespri is well-known, but the new platform against misinformation is unprecedented. The audience needs to be educated on this specific positioning.</p>
+                    </div>
+                </div>
+
+                <!-- Carte 6: Signaux d'intention -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-xs text-gray-400 font-semibold mb-1 uppercase">Criterion 06</div>
+                            <h3 class="text-lg font-bold text-gray-900">Intent Signals</h3>
+                        </div>
+                        <i data-lucide="zap" class="text-gray-300"></i>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <div class="flex justify-between text-xs font-semibold text-indigo-600 mb-1">
+                            <span>Awareness & Consideration</span>
+                            <span>35%</span>
+                        </div>
+                        <div class="flex gap-1 h-1.5">
+                            <div class="h-full bg-indigo-500 w-1/3 rounded-l-full"></div>
+                            <div class="h-full bg-gray-100 w-1/3"></div>
+                            <div class="h-full bg-gray-100 w-1/3 rounded-r-full"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>Low</span>
+                            <span>Ready to Buy</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="text-xs font-semibold text-gray-400 mb-1 uppercase">Observation</div>
+                        <p class="text-sm text-gray-600">The campaign's primary objective is to shift perception and build brand association (Brand Lift) rather than generate immediate performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZONE DÉDIÉE AUX RECOMMANDATIONS (WORKFLOW) -->
+            <div class="bg-indigo-900 rounded-3xl p-8 text-white shadow-xl bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] relative overflow-hidden">
+                <!-- Icône d'arrière plan -->
+                <div class="absolute top-0 right-0 p-10 opacity-10">
+                    <i data-lucide="sparkles" class="w-[120px] h-[120px]"></i>
+                </div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white tracking-wide">AI Recommended Workflow</h2>
+                            <p class="text-indigo-200 text-sm">Actionable steps generated from your brief's analytical breakdown.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        
+                        <!-- Recommandation 1 -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/20 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-300"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white mb-1">Source Niche Audio Content</h4>
+                                    <p class="text-sm text-indigo-100 mb-4">Target specific podcasts categories: health, fitness, lifestyle, and parenting. Filter to find the best shows.</p>
+                                    
+                                    <button class="w-full mt-4 flex items-center justify-between px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition-colors border border-indigo-100 group shadow-sm">
+                                        <div class="flex items-center gap-3 font-semibold text-sm">
+                                            <div class="p-1.5 bg-indigo-200 text-indigo-800 rounded-md group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                <i data-lucide="search" class="w-4 h-4"></i>
+                                            </div>
+                                            Explore Audio Inventory
+                                        </div>
+                                        <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommandation 2 -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/20 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-300"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white mb-1">Select Content (Media Plan)</h4>
+                                    <p class="text-sm text-indigo-100 mb-4">Focus on brand lift. Select the best broadcast contexts to maximize coverage while controlling repetition.</p>
+                                    
+                                    <button class="w-full mt-4 flex items-center justify-between px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition-colors border border-indigo-100 group shadow-sm">
+                                        <div class="flex items-center gap-3 font-semibold text-sm">
+                                            <div class="p-1.5 bg-indigo-200 text-indigo-800 rounded-md group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                <i data-lucide="check-square" class="w-4 h-4"></i>
+                                            </div>
+                                            Select Content (Media Plan)
+                                        </div>
+                                        <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommandation 3 -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/20 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-300"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white mb-1">Check Competitor Authority</h4>
+                                    <p class="text-sm text-indigo-100 mb-4">Compare Zespri to its biggest competitors. Analyze their audio ad activity and share of voice to find opportunities.</p>
+                                    
+                                    <button class="w-full mt-4 flex items-center justify-between px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition-colors border border-indigo-100 group shadow-sm">
+                                        <div class="flex items-center gap-3 font-semibold text-sm">
+                                            <div class="p-1.5 bg-indigo-200 text-indigo-800 rounded-md group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                            </div>
+                                            Launch Competitive Benchmark
+                                        </div>
+                                        <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommandation 4 -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/20 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-300"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white mb-1">Implement Dayparting Strategy</h4>
+                                    <p class="text-sm text-indigo-100 mb-4">Adapt the message according to the time of day. Generate dynamic versions for morning vs. evening contexts.</p>
+                                    
+                                    <button class="w-full mt-4 flex items-center justify-between px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition-colors border border-indigo-100 group shadow-sm">
+                                        <div class="flex items-center gap-3 font-semibold text-sm">
+                                            <div class="p-1.5 bg-indigo-200 text-indigo-800 rounded-md group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                <i data-lucide="mic" class="w-4 h-4"></i>
+                                            </div>
+                                            Generate DCO Versions
+                                        </div>
+                                        <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommandation 5 -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/20 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-300"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white mb-1">Pre-Test Campaign Tone</h4>
+                                    <p class="text-sm text-indigo-100 mb-4">Combine emotional storytelling (peace of mind) with rational proofs. Evaluate your current creative's impact.</p>
+                                    
+                                    <button class="w-full mt-4 flex items-center justify-between px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition-colors border border-indigo-100 group shadow-sm">
+                                        <div class="flex items-center gap-3 font-semibold text-sm">
+                                            <div class="p-1.5 bg-indigo-200 text-indigo-800 rounded-md group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                <i data-lucide="file-audio" class="w-4 h-4"></i>
+                                            </div>
+                                            Analyze Audio Creative
+                                        </div>
+                                        <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- FIN DE LA ZONE DE RECOMMANDATIONS -->
+             
+        </div>
+    </div>
+
+    <!-- Initialisation des icônes -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
