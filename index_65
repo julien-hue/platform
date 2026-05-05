@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Benchmark - Share of Voice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        
+        /* Custom progress bars (SOV) */
+        .progress-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+        }
+        
+        /* Tooltip arrow */
+        .tooltip-arrow {
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 8px;
+            height: 8px;
+            background-color: #0F172A;
+            border-right: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-y-auto flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT                               -->
+    <!-- ========================================== -->
+    <div class="max-w-[1400px] mx-auto w-full px-6 md:px-12 py-8 flex-1 flex flex-col">
+
+        <!-- CLEAN HEADER -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-200">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6 text-indigo-600"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">Competitive Analysis</h1>
+                    <p class="text-slate-500 text-sm mt-1">Share of Voice (SOV) and Media Investments by industry.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition-colors shadow-sm">
+                    <i data-lucide="calendar" class="w-4 h-4"></i> Last 12 Months
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold shadow-md transition-colors">
+                    <i data-lucide="download" class="w-4 h-4"></i> Export
+                </button>
+            </div>
+        </div>
+
+        <!-- FILTERS AND GRAND TOTAL BLOCK -->
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 mb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-slate-50 to-transparent pointer-events-none"></div>
+            
+            <!-- Filters Area -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10 w-full lg:w-auto">
+                <div class="w-full sm:w-auto">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Target Country</label>
+                    <div class="relative">
+                        <select id="country-selector" onchange="updateMarketData()" class="w-full sm:w-48 appearance-none bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-semibold text-sm rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors cursor-pointer shadow-sm">
+                            <option value="eu">🇪🇺 Europe (Global)</option>
+                            <option value="fr">🇫🇷 France</option>
+                            <option value="uk">🇬🇧 United Kingdom</option>
+                            <option value="de">🇩🇪 Germany</option>
+                            <option value="es">🇪🇸 Spain</option>
+                            <option value="it">🇮🇹 Italy</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                    </div>
+                </div>
+                
+                <div class="w-full sm:w-auto">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Industry</label>
+                    <div class="relative">
+                        <select id="industry-selector" onchange="updateMarketData()" class="w-full sm:w-56 appearance-none bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-semibold text-sm rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors cursor-pointer shadow-sm">
+                            <option value="betting">Sports Betting & Gaming</option>
+                            <option value="auto">Automotive</option>
+                            <option value="cosmetics">Beauty & Cosmetics</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grand Total -->
+            <div class="flex flex-col items-start lg:items-end relative z-10">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                    Total Investments (100% SOV)
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="market-total" class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">120 M€</div>
+                    <div id="market-trend-container" class="flex items-center gap-1 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+                        <i data-lucide="trending-up" id="market-trend-icon" class="w-4 h-4 text-emerald-600"></i>
+                        <span id="market-trend" class="text-sm font-bold text-emerald-600">+4.2%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPETITORS GRID -->
+        <div class="mb-5 flex items-center gap-3">
+            <h2 class="text-lg font-bold text-slate-800">Top Advertisers by Share of Voice</h2>
+            <span id="competitor-count" class="text-[10px] font-bold text-slate-500 bg-slate-200/60 px-2.5 py-0.5 rounded-full uppercase tracking-wider">5 results</span>
+        </div>
+
+        <div id="competitors-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-10">
+            <!-- Dynamically generated cards will appear here -->
+        </div>
+
+        <!-- MONTHLY CHART -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900">Media Investments Evolution</h3>
+                    <p class="text-sm text-slate-500">Cumulative monthly spend (Millions of Euros)</p>
+                </div>
+                <!-- Legend -->
+                <div id="chart-legend" class="flex flex-wrap gap-2 md:justify-end">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+            
+            <div class="relative h-72 flex items-end pb-6 mt-4 ml-8 sm:ml-10">
+                <!-- Grid Lines (Y-Axis) -->
+                <div class="absolute inset-0 flex flex-col justify-between pb-6 pointer-events-none z-0">
+                    <div class="border-b border-slate-100 border-dashed w-full h-0 relative"><span id="y-axis-max" class="text-[10px] font-bold text-slate-400 absolute -translate-y-1/2 right-full pr-3"></span></div>
+                    <div class="border-b border-slate-100 border-dashed w-full h-0 relative"><span id="y-axis-mid" class="text-[10px] font-bold text-slate-400 absolute -translate-y-1/2 right-full pr-3"></span></div>
+                    <div class="border-b border-slate-100 border-dashed w-full h-0 relative"><span id="y-axis-low" class="text-[10px] font-bold text-slate-400 absolute -translate-y-1/2 right-full pr-3"></span></div>
+                    <div class="border-b border-slate-200 w-full h-0 relative"><span class="text-[10px] font-bold text-slate-400 absolute -translate-y-1/2 right-full pr-3">0</span></div>
+                </div>
+                
+                <!-- Chart Columns -->
+                <div id="monthly-chart-container" class="relative z-10 flex-1 flex justify-between h-full pl-2 sm:pl-4">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC                           -->
+    <!-- ========================================== -->
+    <script>
+        // Simulated data by industry
+        const marketData = {
+            "betting": {
+                totalBase: 120,
+                trend: "+4.2%",
+                isUp: true,
+                competitors: [
+                    { name: "Winamax", investBase: 40, sov: 33.3, trend: "+12.4%", isUp: true, color: "bg-indigo-600", lightColor: "bg-indigo-50", textColor: "text-indigo-700", initial: "W", views: "3.2M", duration: "0:30", imgPos: "object-bottom" },
+                    { name: "Parions Sport", investBase: 30, sov: 25.0, trend: "+5.1%", isUp: true, color: "bg-blue-500", lightColor: "bg-blue-50", textColor: "text-blue-700", initial: "P", views: "2.1M", duration: "0:25", imgPos: "object-right-bottom" },
+                    { name: "Betclic", investBase: 25, sov: 20.8, trend: "-2.3%", isUp: false, color: "bg-rose-500", lightColor: "bg-rose-50", textColor: "text-rose-700", initial: "B", views: "1.8M", duration: "0:15", imgPos: "object-left-bottom" },
+                    { name: "FDJ", investBase: 15, sov: 12.5, trend: "+1.2%", isUp: true, color: "bg-amber-500", lightColor: "bg-amber-50", textColor: "text-amber-700", initial: "F", views: "950K", duration: "0:30", imgPos: "object-center" },
+                    { name: "Unibet", investBase: 10, sov: 8.3, trend: "-8.5%", isUp: false, color: "bg-emerald-500", lightColor: "bg-emerald-50", textColor: "text-emerald-700", initial: "U", views: "600K", duration: "0:20", imgPos: "object-left" }
+                ],
+                monthlyData: [
+                    { month: "May", values: [2.5, 2.0, 1.8, 1.0, 0.8] },
+                    { month: "Jun", values: [3.0, 2.5, 2.0, 1.2, 0.9] },
+                    { month: "Jul", values: [2.8, 2.2, 2.1, 1.1, 0.8] },
+                    { month: "Aug", values: [3.5, 2.8, 1.9, 1.0, 0.7] },
+                    { month: "Sep", values: [4.2, 3.1, 2.5, 1.5, 1.0] },
+                    { month: "Oct", values: [4.0, 3.0, 2.4, 1.4, 0.9] },
+                    { month: "Nov", values: [3.8, 2.9, 2.3, 1.3, 0.8] },
+                    { month: "Dec", values: [3.5, 2.7, 2.0, 1.2, 0.8] },
+                    { month: "Jan", values: [2.9, 2.3, 1.8, 1.0, 0.7] },
+                    { month: "Feb", values: [3.1, 2.4, 2.0, 1.3, 0.8] },
+                    { month: "Mar", values: [3.4, 2.6, 2.1, 1.4, 0.9] },
+                    { month: "Apr", values: [3.3, 1.5, 2.1, 1.1, 0.9] }
+                ]
+            },
+            "auto": {
+                totalBase: 350,
+                trend: "-1.5%",
+                isUp: false,
+                competitors: [
+                    { name: "Renault", investBase: 100, sov: 28.5, trend: "-4.2%", isUp: false, color: "bg-amber-400", lightColor: "bg-amber-50", textColor: "text-amber-600", initial: "R", views: "5.4M", duration: "0:30", imgPos: "object-left-bottom" },
+                    { name: "Peugeot", investBase: 90, sov: 25.7, trend: "+2.1%", isUp: true, color: "bg-slate-800", lightColor: "bg-slate-100", textColor: "text-slate-800", initial: "P", views: "4.8M", duration: "0:30", imgPos: "object-bottom" },
+                    { name: "Volkswagen", investBase: 70, sov: 20.0, trend: "+6.8%", isUp: true, color: "bg-blue-600", lightColor: "bg-blue-50", textColor: "text-blue-600", initial: "V", views: "3.5M", duration: "0:45", imgPos: "object-right-bottom" },
+                    { name: "Toyota", investBase: 50, sov: 14.2, trend: "-1.1%", isUp: false, color: "bg-rose-600", lightColor: "bg-rose-50", textColor: "text-rose-600", initial: "T", views: "2.1M", duration: "0:15", imgPos: "object-center" },
+                    { name: "Ford", investBase: 40, sov: 11.4, trend: "+8.5%", isUp: true, color: "bg-blue-800", lightColor: "bg-blue-50", textColor: "text-blue-800", initial: "F", views: "1.9M", duration: "0:20", imgPos: "object-left" }
+                ],
+                monthlyData: [
+                    { month: "May", values: [8.5, 7.0, 5.5, 4.0, 3.0] },
+                    { month: "Jun", values: [9.0, 7.5, 6.0, 4.2, 3.2] },
+                    { month: "Jul", values: [7.5, 6.0, 5.0, 3.5, 2.5] },
+                    { month: "Aug", values: [6.0, 5.0, 4.5, 3.0, 2.0] },
+                    { month: "Sep", values: [10.5, 9.5, 7.5, 5.0, 4.5] },
+                    { month: "Oct", values: [11.0, 9.0, 7.0, 4.8, 4.0] },
+                    { month: "Nov", values: [9.5, 8.5, 6.5, 4.5, 3.5] },
+                    { month: "Dec", values: [8.0, 7.0, 5.5, 3.8, 3.0] },
+                    { month: "Jan", values: [7.5, 6.5, 5.0, 3.5, 2.8] },
+                    { month: "Feb", values: [6.5, 7.0, 4.8, 4.0, 3.2] },
+                    { month: "Mar", values: [8.0, 8.5, 6.2, 4.5, 4.0] },
+                    { month: "Apr", values: [8.5, 8.5, 6.5, 5.2, 4.3] }
+                ]
+            },
+            "cosmetics": {
+                totalBase: 85,
+                trend: "+8.9%",
+                isUp: true,
+                competitors: [
+                    { name: "L'Oréal", investBase: 35, sov: 41.1, trend: "+15.2%", isUp: true, color: "bg-slate-900", lightColor: "bg-slate-100", textColor: "text-slate-900", initial: "L", views: "4.2M", duration: "0:15", imgPos: "object-bottom" },
+                    { name: "Sephora", investBase: 20, sov: 23.5, trend: "-3.4%", isUp: false, color: "bg-black", lightColor: "bg-gray-100", textColor: "text-black", initial: "S", views: "2.8M", duration: "0:20", imgPos: "object-right-bottom" },
+                    { name: "Yves Rocher", investBase: 15, sov: 17.6, trend: "+4.1%", isUp: true, color: "bg-emerald-600", lightColor: "bg-emerald-50", textColor: "text-emerald-700", initial: "Y", views: "1.5M", duration: "0:30", imgPos: "object-left-bottom" },
+                    { name: "Nocibé", investBase: 10, sov: 11.7, trend: "-1.2%", isUp: false, color: "bg-sky-400", lightColor: "bg-sky-50", textColor: "text-sky-600", initial: "N", views: "900K", duration: "0:15", imgPos: "object-center" },
+                    { name: "Marionnaud", investBase: 5, sov: 5.8, trend: "-12.5%", isUp: false, color: "bg-purple-600", lightColor: "bg-purple-50", textColor: "text-purple-600", initial: "M", views: "450K", duration: "0:20", imgPos: "object-left" }
+                ],
+                monthlyData: [
+                    { month: "May", values: [3.0, 1.8, 1.2, 0.8, 0.4] },
+                    { month: "Jun", values: [2.8, 1.5, 1.1, 0.7, 0.3] },
+                    { month: "Jul", values: [2.5, 1.2, 1.0, 0.6, 0.3] },
+                    { month: "Aug", values: [2.0, 1.0, 0.8, 0.5, 0.2] },
+                    { month: "Sep", values: [3.2, 2.0, 1.5, 0.9, 0.5] },
+                    { month: "Oct", values: [2.9, 1.8, 1.3, 0.8, 0.4] },
+                    { month: "Nov", values: [4.5, 3.5, 2.2, 1.8, 1.0] },
+                    { month: "Dec", values: [5.0, 4.0, 3.0, 2.5, 1.2] },
+                    { month: "Jan", values: [2.5, 1.5, 1.2, 0.8, 0.3] },
+                    { month: "Feb", values: [3.5, 2.2, 1.8, 1.0, 0.5] },
+                    { month: "Mar", values: [3.1, 1.9, 1.4, 0.9, 0.4] },
+                    { month: "Apr", values: [3.0, 1.8, 1.3, 0.8, 0.4] }
+                ]
+            }
+        };
+
+        const countryMultipliers = {
+            "eu": 1.0,
+            "fr": 0.35,
+            "uk": 0.25,
+            "de": 0.20,
+            "es": 0.12,
+            "it": 0.08
+        };
+
+        function updateMarketData() {
+            const industryKey = document.getElementById('industry-selector').value;
+            const countryKey = document.getElementById('country-selector').value;
+            
+            const data = marketData[industryKey];
+            const multiplier = countryMultipliers[countryKey];
+            
+            if (!data) return;
+
+            // 1. Update Grand Total
+            const currentTotal = (data.totalBase * multiplier).toFixed(1);
+            document.getElementById('market-total').textContent = `${currentTotal} M€`;
+            document.getElementById('market-trend').textContent = data.trend;
+            
+            const trendContainer = document.getElementById('market-trend-container');
+            const trendIcon = document.getElementById('market-trend-icon');
+            
+            if (data.isUp) {
+                trendContainer.className = "flex items-center gap-1 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-100";
+                trendIcon.innerHTML = `<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline>`;
+                trendIcon.setAttribute("class", "w-4 h-4 text-emerald-600");
+                document.getElementById('market-trend').className = "text-sm font-bold text-emerald-600";
+            } else {
+                trendContainer.className = "flex items-center gap-1 bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-100";
+                trendIcon.innerHTML = `<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline>`;
+                trendIcon.setAttribute("class", "w-4 h-4 text-rose-600");
+                document.getElementById('market-trend').className = "text-sm font-bold text-rose-600";
+            }
+
+            document.getElementById('competitor-count').textContent = `${data.competitors.length} results`;
+
+            // 2. Generate Competitor Cards
+            const grid = document.getElementById('competitors-grid');
+            grid.innerHTML = ''; 
+
+            data.competitors.forEach((comp, index) => {
+                const isLeader = index === 0;
+                const adjustedInvest = (comp.investBase * multiplier).toFixed(1);
+                
+                const trendUI = comp.isUp 
+                    ? `<span class="flex items-center gap-0.5 text-emerald-600 text-xs font-bold bg-emerald-50 px-1.5 py-0.5 rounded"><i data-lucide="arrow-up-right" class="w-3 h-3"></i> ${comp.trend}</span>`
+                    : `<span class="flex items-center gap-0.5 text-rose-600 text-xs font-bold bg-rose-50 px-1.5 py-0.5 rounded"><i data-lucide="arrow-down-right" class="w-3 h-3"></i> ${comp.trend}</span>`;
+
+                const cardHTML = `
+                    <div class="bg-white rounded-2xl border ${isLeader ? 'ring-2 ring-indigo-500/20 border-transparent shadow-md shadow-indigo-100/50' : 'border-slate-200 shadow-sm hover:shadow-md'} flex flex-col group hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
+                        
+                        <!-- Video Header -->
+                        <div class="relative w-full h-32 bg-slate-900 overflow-hidden cursor-pointer group/video border-b border-slate-100 shrink-0">
+                            ${isLeader ? `<div class="absolute top-2 left-2 z-20 bg-white/95 backdrop-blur text-indigo-700 text-[10px] font-black px-2 py-1 rounded shadow-sm uppercase tracking-widest flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> Leader</div>` : ''}
+                            
+                            <img src="Capture d’écran 2026-05-04 à 16.26.12.png" alt="Video cover" class="w-full h-full object-cover ${comp.imgPos} opacity-70 group-hover/video:opacity-90 group-hover/video:scale-105 transition-all duration-700" onerror="this.style.display='none'">
+                            
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-10 h-10 bg-black/40 group-hover/video:bg-indigo-600 rounded-full flex items-center justify-center backdrop-blur-md transition-colors duration-300 ring-1 ring-white/30 shadow-lg">
+                                    <svg class="w-4 h-4 text-white fill-white ml-0.5" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-md">${comp.duration}</div>
+                            <div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-md">
+                                <i data-lucide="eye" class="w-3 h-3"></i> ${comp.views}
+                            </div>
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="p-4 md:p-5 flex flex-col flex-grow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-8 h-8 rounded-full ${comp.lightColor} ${comp.textColor} flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-white/50">
+                                    ${comp.initial}
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-base truncate pr-2">${comp.name}</h3>
+                            </div>
+                            
+                            <div class="mb-5 flex justify-between items-end">
+                                <div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Investment</div>
+                                    <div class="text-2xl font-black text-slate-900 leading-none">${adjustedInvest} <span class="text-sm font-semibold text-slate-500">M€</span></div>
+                                </div>
+                                <div>${trendUI}</div>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <div class="flex justify-between items-end mb-1.5">
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Share of Voice</span>
+                                    <span class="font-black text-sm ${comp.textColor}">${comp.sov}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                    <div class="${comp.color} h-full rounded-full transition-all duration-1000 ease-out progress-striped" style="width: ${comp.sov}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            });
+            
+            // 3. Generate Stacked Monthly Chart
+            const legendContainer = document.getElementById('chart-legend');
+            legendContainer.innerHTML = data.competitors.map(comp => `
+                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2 py-1 rounded-md shadow-sm">
+                    <div class="w-2.5 h-2.5 rounded-sm ${comp.color}"></div>
+                    <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">${comp.name}</span>
+                </div>
+            `).join('');
+
+            const chartContainer = document.getElementById('monthly-chart-container');
+            chartContainer.innerHTML = '';
+
+            const adjustedMonthlyData = data.monthlyData.map(m => ({
+                month: m.month,
+                values: m.values.map(v => v * multiplier)
+            }));
+
+            const maxMonthTotal = Math.max(...adjustedMonthlyData.map(m => m.values.reduce((a,b) => a+b, 0)));
+            const scaleMax = maxMonthTotal * 1.15;
+            
+            document.getElementById('y-axis-max').textContent = Math.ceil(scaleMax) + "M";
+            document.getElementById('y-axis-mid').textContent = Math.ceil(scaleMax * 0.66) + "M";
+            document.getElementById('y-axis-low').textContent = Math.ceil(scaleMax * 0.33) + "M";
+
+            adjustedMonthlyData.forEach(monthData => {
+                let segmentsHTML = '';
+                
+                monthData.values.forEach((val, i) => {
+                    const comp = data.competitors[i];
+                    const heightPct = (val / scaleMax) * 100;
+                    
+                    if (heightPct > 0) {
+                        segmentsHTML += `
+                            <div class="w-full ${comp.color} hover:brightness-110 transition-all border-b border-white/20 relative group/segment" style="height: ${heightPct}%">
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/segment:block z-50 pointer-events-none w-max">
+                                    <div class="bg-[#0F172A] text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-xl flex items-center gap-2">
+                                        <div class="w-2 h-2 rounded-full ${comp.color} ring-1 ring-white/30"></div>
+                                        <span>${comp.name} <span class="text-slate-400 font-normal ml-1">|</span> <span class="text-white ml-1">${val.toFixed(1)} M€</span></span>
+                                    </div>
+                                    <div class="tooltip-arrow"></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                const colHTML = `
+                    <div class="flex-1 flex flex-col items-center justify-end h-full px-1 sm:px-3 lg:px-4 group cursor-pointer">
+                        <div class="w-full max-w-[48px] flex flex-col-reverse justify-start h-full rounded-t-sm overflow-visible hover:opacity-90 transition-opacity duration-300">
+                            ${segmentsHTML}
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 mt-3 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">${monthData.month}</span>
+                    </div>
+                `;
+                chartContainer.insertAdjacentHTML('beforeend', colHTML);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Initialize on load
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            updateMarketData();
+        });
+    </script>
+</body>
+</html>
